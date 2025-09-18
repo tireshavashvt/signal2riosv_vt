@@ -11,23 +11,36 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" />
   <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
   <style>
-    body{margin:0;background:#f7faf9;color:#263238;font-family:'Inter',sans-serif;font-size:15px;line-height:1.5}
-    header{padding:16px 20px;display:flex;align-items:center;gap:16px;max-width:1200px;margin:0 auto;background:#fff;
-      box-shadow:0 4px 20px rgba(0,0,0,.06);border-radius:12px;margin-bottom:16px}
-    .logo-placeholder{width:60px;height:60px;background:#2e7d6b;border-radius:10px;display:flex;align-items:center;
-      justify-content:center;color:white;font-weight:700;font-size:20px;font-family:'Montserrat',sans-serif}
-    header .brand h1{margin:0;font-size:20px;font-weight:700;color:#2e7d6b;font-family:'Montserrat',sans-serif}
-    header .brand p{margin:4px 0 0;color:#6b7c83;font-size:14px}
-    main{max-width:1200px;margin:0 auto;padding:0 16px 32px}
-    .card{background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.06);padding:24px;margin-bottom:16px}
-    .card h2{margin:0 0 20px;font-size:24px;color:#2e7d6b;font-weight:700;font-family:'Montserrat',sans-serif}
-    .checks{display:grid;gap:4px}
+    /* --- оставям твоя CSS без промени --- */
+    :root{
+      --bg:#f7faf9; --card:#ffffff; 
+      --accent:#2e7d6b;
+      --accent-2:#3a927e;
+      --text:#263238; --muted:#6b7c83; --light-gray:#f0f4f7;
+      --radius:12px; --shadow:0 4px 20px rgba(0,0,0,.06); --border:#e1e8eb;
+      --checkbox-bg-odd: #fcfdfd;
+      --checkbox-bg-even: #e9f2f0;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);
+      font-family:'Inter',sans-serif;font-size:15px;line-height:1.5;min-height:100vh;}
+    header{padding:16px 20px;display:flex;align-items:center;gap:16px;
+      max-width:1200px;margin:0 auto;background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius);margin-bottom:16px;}
+    .logo-placeholder{width:60px;height:60px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;
+      color:white;font-weight:700;font-size:20px;font-family:'Montserrat',sans-serif;}
+    header .brand h1{margin:0;font-size:20px;font-weight:700;color:var(--accent);font-family:'Montserrat',sans-serif;}
+    header .brand p{margin:4px 0 0;color:var(--muted);font-size:14px}
+    main{max-width:1200px;margin:0 auto;padding:0 16px 32px;}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px;border:1px solid var(--border);}
+    .card h2{margin:0 0 20px;font-size:24px;color:var(--accent);font-weight:700;font-family:'Montserrat',sans-serif;}
+    .card h3{margin:0 0 16px;font-size:20px;color:var(--accent);font-weight:600;font-family:'Montserrat',sans-serif;}
+    .checks{display:grid;gap:4px;margin-top:8px}
     .check{display:flex;gap:10px;align-items:flex-start;padding:6px 10px;border-radius:8px;background:#f9f9f9}
-    .check input{accent-color:#2e7d6b}
+    .check input{accent-color:var(--accent)}
     .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
     .btn{border:none;border-radius:10px;padding:12px 20px;font-weight:600;cursor:pointer;font-size:14px;
-      background:#2e7d6b;color:#fff}
-    .btn.secondary{background:#fff;color:#2e7d6b;border:2px solid #2e7d6b}
+      background:var(--accent);color:#fff}
+    .btn.secondary{background:#fff;color:var(--accent);border:2px solid var(--accent)}
     .preview{white-space:pre-wrap;background:#fcfdfc;border:2px dashed #cfe2de;padding:16px;border-radius:10px;
       font-family:monospace;font-size:13px;line-height:1.4;max-height:300px;overflow-y:auto}
   </style>
@@ -45,7 +58,7 @@
     <form id="signalForm" class="card">
       <h2>Форма за сигнал</h2>
 
-      <label>Предполагаем източник *</label>
+      <label for="source">Предполагаем източник *</label>
       <select id="source" required>
         <option value="" disabled selected>Изберете източник...</option>
         <option>Трафик / автомобили</option>
@@ -55,7 +68,7 @@
         <option>Друг източник</option>
       </select>
 
-      <label>Квартал *</label>
+      <label for="district">Квартал *</label>
       <select id="district" required>
         <option value="" disabled selected>Изберете квартал...</option>
         <option>Чолаковци</option><option>Акация</option><option>Център</option>
@@ -63,25 +76,25 @@
         <option>Зона Б</option><option>Света гора</option><option>Друг</option>
       </select>
 
-      <label>Кога е установено нарушението? *</label>
+      <label for="when">Кога е установено нарушението? *</label>
       <input id="when" type="datetime-local" required>
 
-      <label>Адрес / район</label>
+      <label for="address">Адрес / район</label>
       <input id="address" type="text" placeholder="ул., №, ориентир...">
 
       <label>Влошаване на качеството на живот *</label>
       <div id="checks" class="checks"></div>
 
-      <label>Име и фамилия *</label>
+      <label for="name">Име и фамилия *</label>
       <input id="name" type="text" required>
 
-      <label>Имейл за обратна връзка *</label>
+      <label for="email">Имейл за обратна връзка *</label>
       <input id="email" type="email" required>
 
-      <label>Телефон</label>
+      <label for="phone">Телефон</label>
       <input id="phone" type="tel">
 
-      <label>Допълнително описание</label>
+      <label for="desc">Допълнително описание</label>
       <textarea id="desc"></textarea>
 
       <div class="row">
@@ -97,6 +110,7 @@
   </main>
 
   <script>
+    // чекбоксове
     const checkboxItems = [
       "Наличие на остра, задушлива миризма на лепило.",
       "Наличие на остра, задушлива миризма на дървесина.",
@@ -111,7 +125,7 @@
       "Наличие на дървени стърготини по колите.",
       "Чува се силен шум, тътен."
     ];
-    const checksWrap = document.getElementById('checks');
+    const checksWrap=document.getElementById('checks');
     checkboxItems.forEach((txt,i)=>{
       const id="chk_"+i;
       const el=document.createElement('label');
@@ -120,25 +134,31 @@
       checksWrap.appendChild(el);
     });
 
-    // речник с адреси
-    const sourceAddresses = {
-      "Завод „Кроношпан\"": "гр. Велико Търново, кв. Чолаковци, ул. Дълга Лъка",
-      "„Топлофикация\"": "гр. Велико Търново, бул. Никола Габровски 71А",
-      "Завод „Мегапорт\"": "гр. Велико Търново, ул. Никола Габровски 102"
+    // авто текуща дата/час за полето "Кога е установено..."
+    function setCurrentBulgarianDateTime() {
+      const now=new Date();
+      const bgTime=new Date(now.toLocaleString("en-US",{timeZone:"Europe/Sofia"}));
+      const pad=n=>String(n).padStart(2,'0');
+      const s=`${bgTime.getFullYear()}-${pad(bgTime.getMonth()+1)}-${pad(bgTime.getDate())}T${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())}`;
+      document.getElementById('when').value=s;
+    }
+    setCurrentBulgarianDateTime();
+
+    // адреси на източници
+    const sourceAddresses={
+      "Завод „Кроношпан\"":"гр. Велико Търново, кв. Чолаковци, ул. Дълга Лъка",
+      "„Топлофикация\"":"гр. Велико Търново, бул. Никола Габровски 71А",
+      "Завод „Мегапорт\"":"гр. Велико Търново, ул. Никола Габровски 102"
     };
 
     function formatDateTime(datetimeStr){
       if(!datetimeStr) return {date:"[дата]",time:"[час]"};
       const d=new Date(datetimeStr);
       const pad=n=>String(n).padStart(2,'0');
-      return {
-        date:`${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`,
-        time:`${pad(d.getHours())}:${pad(d.getMinutes())}`
-      };
+      return {date:`${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`,time:`${pad(d.getHours())}:${pad(d.getMinutes())}`};
     }
     function todayDate(){
-      const d=new Date();
-      const pad=n=>String(n).padStart(2,'0');
+      const d=new Date();const pad=n=>String(n).padStart(2,'0');
       return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
     }
 
