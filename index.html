@@ -491,6 +491,7 @@
     const sourceSelect = document.getElementById('source');
     const customSourceGroup = document.getElementById('customSourceGroup');
     const customSourceInput = document.getElementById('customSource');
+    const violationContent = document.getElementById('violation-content'); // Reference to the accordion content
 
     // Рендер на чекбоксовете
     checkboxItems.forEach((txt, i) => {
@@ -512,10 +513,20 @@
     }
     setCurrentBulgarianDateTime();
 
-    // Показване/скриване на полето за "Друг източник"
+    // Показване/скриване на полето за "Друг източник" и преизчисляване на височината на акордеона
     sourceSelect.addEventListener('change', () => {
       const show = sourceSelect.value === 'Друг източник';
       customSourceGroup.style.display = show ? 'block' : 'none';
+      
+      // Recalculate the height of the parent accordion content
+      if (violationContent.classList.contains('open')) {
+        // Temporarily remove max-height to get full scrollHeight
+        violationContent.style.maxHeight = 'none';
+        // Force reflow to ensure scrollHeight is accurate
+        void violationContent.offsetHeight; 
+        // Set new max-height
+        violationContent.style.maxHeight = violationContent.scrollHeight + 'px';
+      }
     });
 
     // Показване на статус съобщение
@@ -562,7 +573,13 @@
       const subject = sel('#subject') ? sel('#subject').value || '' : '';
       const name = sel('#name').value || '';
       const email = sel('#email').value || '';
-      const phone = sel('#phone') ? sel('#phone').value || '' : '';
+      
+      let rawPhone = sel('#phone') ? sel('#phone').value.trim() : ''; // Get raw input value
+      let phone = '';
+      if (rawPhone) { // If user entered any digits
+        phone = `+359${rawPhone}`; // Prepend +359
+      }
+
       const desc = sel('#desc').value || '';
       const checks = Array.from(document.querySelectorAll('#checks input:checked')).map(c => c.value);
 
@@ -596,7 +613,7 @@
     // Генериране на текста
     function buildLetterText(d){
       const {date, time} = formatDateTime(d.whenVal);
-      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ";
+      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ 1";
       
       let fromParts = [d.name, d.email];
       if (d.phone) {
