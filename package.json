@@ -1,0 +1,12 @@
+{
+  "name": "ti-reshavash-form",
+  "version": "1.0.0",
+  "description": "Air pollution report form for Veliko Tarnovo",
+  "scripts": {
+    "dev": "http-server -p 3000 -c-1 --cors -a localhost"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "vercel": "^32.3.0"
+  }
+}
