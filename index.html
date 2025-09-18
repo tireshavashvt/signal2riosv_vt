@@ -333,6 +333,11 @@
   </header>
 
   <main>
+    <div style="background:#fff3cd; color:#856404; padding:12px 20px; font-size:15px; text-align:center; border-bottom:1px solid #ffeeba; border-radius: var(--radius); margin-bottom: 16px;">
+      ⚠️ Важно: В извънработно време сигналите по имейл не се следят.  
+      Моля, звънете на <strong>Зеления телефон</strong>:  
+      <strong>062/620 358</strong>, <strong>0885 322 969</strong>.
+    </div>
     <form id="signalForm" class="card" autocomplete="on">
       <h2>Форма за сигнал</h2>
       
@@ -648,8 +653,9 @@
         conditionalTexts.push("Mоля да бъде извършено извънредно контролно измерване в часовите диапазони 22-24ч. и 6-8ч.), на основание : Чл. 17, ал. 3, т. 2. (Контролни измервания извън предвидените с годишните графици по ал. 1 могат да се извършват по искане на засегната общественост по смисъла на ЗООС.)");
       }
 
-      // Condition 2: Kronospan + Odor
-      if (d.source === "Завод „Кроношпан\"" && d.checks.some(check => check.includes("миризма"))) {
+      // Condition 2: Kronospan + Odor OR Obgazyavane
+      const hasOdorOrObgazyavane = d.checks.some(check => check.includes("миризма") || check.includes("обгазяване"));
+      if (d.source === "Завод „Кроношпан\"" && hasOdorOrObgazyavane) {
         conditionalTexts.push("Моля, да се има предвид, че това е в нарушение на условие 9.4.1. от Комплексно разрешително № 570-Н0/2018г., а именно „Притежателят на настоящото разрешително да извършва всички дейности на площадката по начин, недопускащ разпространението на миризми извън границите на производствената площадка.");
       }
 
