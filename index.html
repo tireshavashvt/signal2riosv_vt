@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- version 0.0.1 -->
+<!-- version 0.0.2 -->
 <html lang="bg">
 <head>
   <meta charset="utf-8" />
@@ -322,6 +322,15 @@
       .checks{grid-template-columns:1fr 1fr; gap:2px 6px}
       .preview{max-height:200px}
     }
+
+    /* Phone link styling */
+    .phone-link {
+      color: inherit; /* Inherit color from parent */
+      text-decoration: none; /* Remove underline */
+    }
+    .phone-link:hover, .phone-link:focus {
+      text-decoration: underline; /* Add underline on hover/focus for accessibility */
+    }
   </style>
 </head>
 <body>
@@ -335,66 +344,59 @@
 
   <main>
     <div style="background:#fff3cd; color:#856404; padding:12px 20px; font-size:15px; text-align:center; border-bottom:1px solid #ffeeba; border-radius: var(--radius); margin-bottom: 16px;">
-      ⚠️ Важно: В извънработно време сигналите по имейл не се следят. Работно време на инспекцията – 08:30-17:30 ч.  
+      ⚠️ Важно: В извънработно време сигналите по имейл не се следят.  
       Моля, звънете на <strong>Зеления телефон</strong>:  
-      <strong>062/620 358</strong>, <strong>0885 322 969</strong>.
+      <strong><a href="tel:+35962620358" class="phone-link">062/620 358</a></strong>, <strong><a href="tel:+359885322969" class="phone-link">0885 322 969</a></strong>.
     </div>
     <form id="signalForm" class="card" autocomplete="on">
       <h2>Форма за сигнал</h2>
       
       <div class="status" id="status" role="alert"></div>
       
-      <fieldset class="accordion-item">
-        <legend class="sr-only">Информация за нарушението</legend>
-        <button type="button" class="accordion-header" aria-expanded="true" aria-controls="violation-content">
-          <i class="fas fa-info-circle"></i> Информация за нарушението
-          <i class="fas fa-chevron-down accordion-icon"></i>
-        </button>
-        <div id="violation-content" class="accordion-content open">
-          <div class="grid">
-            <div class="form-group">
-              <label for="source"><i class="fas fa-smog"></i> Предполагаем източник *</label>
-              <select id="source" required aria-describedby="source-hint">
-                <option value="" disabled selected>Изберете източник...</option>
-                <option>Трафик / автомобили</option>
-                <option>Завод „Кроношпан"</option>
-                <option>„Топлофикация"</option>
-                <option>Завод „Мегапорт"</option>
-                <option>Друг източник</option>
-              </select>
+      <section class="card"> <!-- Changed from fieldset.accordion-item -->
+        <h2><i class="fas fa-info-circle"></i> Информация за нарушението</h2> <!-- Changed from accordion-header button -->
+        <div class="grid">
+          <div class="form-group">
+            <label for="source"><i class="fas fa-smog"></i> Предполагаем източник *</label>
+            <select id="source" required aria-describedby="source-hint">
+              <option value="" disabled selected>Изберете източник...</option>
+              <option>Трафик / автомобили</option>
+              <option>Завод „Кроношпан"</option>
+              <option>„Топлофикация"</option>
+              <option>Завод „Мегапорт"</option>
+              <option>Друг източник</option>
+            </select>
 
-              <!-- НОВО: поле за "Друг източник" (показва се само при избор) -->
-              <!-- Moved inside the same form-group to prevent layout shift -->
-              <div id="customSourceGroup" style="display:none; margin-top: 16px;">
-                <label for="customSource"><i class="fas fa-industry"></i> Посочете източника *</label>
-                <input id="customSource" type="text" placeholder="Пример: Малка производствена база в кв. ..." required>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label for="district"><i class="fas fa-city"></i> Квартал (Велико Търново) *</label>
-              <select id="district" required aria-describedby="district-hint">
-                <option value="" disabled selected>Изберете квартал...</option>
-                <option>Чолаковци</option><option>Акация</option><option>Център</option>
-                <option>Бузлуджа</option><option>Картала</option><option>Кольо Фичето</option>
-                <option>Зона Б</option><option>Света гора</option><option>Друг</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="when"><i class="fas fa-calendar-alt"></i> Кога е извършено нарушението? *</label>
-              <input id="when" type="datetime-local" required aria-describedby="when-hint">
-              <div class="hint" id="when-hint"></div>
-            </div>
-            
-            <div class="form-group">
-              <label for="address"><i class="fas fa-map-marker-alt"></i> Адрес / район</label>
-              <input id="address" type="text" placeholder="ул., №, ориентир..." aria-describedby="address-hint">
-              <div class="hint" id="address-hint">Опционално - помага за по-точна локализация</div>
+            <!-- НОВО: поле за "Друг източник" (показва се само при избор) -->
+            <div id="customSourceGroup" style="display:none; margin-top: 16px;">
+              <label for="customSource"><i class="fas fa-industry"></i> Посочете източника *</label>
+              <input id="customSource" type="text" placeholder="Пример: Малка производствена база в кв. ..." required>
             </div>
           </div>
+          
+          <div class="form-group">
+            <label for="district"><i class="fas fa-city"></i> Квартал (Велико Търново) *</label>
+            <select id="district" required aria-describedby="district-hint">
+              <option value="" disabled selected>Изберете квартал...</option>
+              <option>Чолаковци</option><option>Акация</option><option>Център</option>
+              <option>Бузлуджа</option><option>Картала</option><option>Кольо Фичето</option>
+              <option>Зона Б</option><option>Света гора</option><option>Друг</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="when"><i class="fas fa-calendar-alt"></i> Кога е извършено нарушението? *</label>
+            <input id="when" type="datetime-local" required aria-describedby="when-hint">
+            <div class="hint" id="when-hint"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="address"><i class="fas fa-map-marker-alt"></i> Адрес / район</label>
+            <input id="address" type="text" placeholder="ул., №, ориентир..." aria-describedby="address-hint">
+            <div class="hint" id="address-hint">Опционално - помага за по-точна локализация</div>
+          </div>
         </div>
-      </fieldset>
+      </section>
 
       <fieldset class="standalone-fieldset">
         <legend><i class="fas fa-exclamation-triangle"></i> Влошаване на качеството на живот *</legend>
@@ -497,7 +499,7 @@
     const sourceSelect = document.getElementById('source');
     const customSourceGroup = document.getElementById('customSourceGroup');
     const customSourceInput = document.getElementById('customSource');
-    const violationContent = document.getElementById('violation-content'); // Reference to the accordion content
+    // Removed violationContent reference as it's no longer an accordion
 
     // Рендер на чекбоксовете
     checkboxItems.forEach((txt, i) => {
@@ -519,20 +521,10 @@
     }
     setCurrentBulgarianDateTime();
 
-    // Показване/скриване на полето за "Друг източник" и преизчисляване на височината на акордеона
+    // Показване/скриване на полето за "Друг източник" (no accordion height recalculation needed here)
     sourceSelect.addEventListener('change', () => {
       const show = sourceSelect.value === 'Друг източник';
       customSourceGroup.style.display = show ? 'block' : 'none';
-      
-      // Recalculate the height of the parent accordion content
-      if (violationContent.classList.contains('open')) {
-        // Temporarily remove max-height to get full scrollHeight
-        violationContent.style.maxHeight = 'none';
-        // Force reflow to ensure scrollHeight is accurate
-        void violationContent.offsetHeight; 
-        // Set new max-height
-        violationContent.style.maxHeight = violationContent.scrollHeight + 'px';
-      }
     });
 
     // Показване на статус съобщение
@@ -619,7 +611,7 @@
     // Генериране на текста
     function buildLetterText(d){
       const {date, time} = formatDateTime(d.whenVal);
-      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ";
+      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ 1";
       
       let fromParts = [d.name, d.email];
       if (d.phone) {
@@ -749,7 +741,7 @@
       }
     });
 
-    // Accordion
+    // Accordion logic for other accordion items (optional info)
     document.querySelectorAll('.accordion-item .accordion-header').forEach(header => {
       header.addEventListener('click', () => {
         const content = header.nextElementSibling;
@@ -767,7 +759,7 @@
       });
     });
 
-    // Open first accordion
+    // Open the first *remaining* accordion (if any)
     const firstAccordionHeader = document.querySelector('.accordion-item:first-of-type .accordion-header');
     if (firstAccordionHeader) {
       const firstContent = firstAccordionHeader.nextElementSibling;
@@ -776,7 +768,7 @@
       setTimeout(() => { firstContent.style.maxHeight = firstContent.scrollHeight + 'px'; }, 0);
     }
 
-    // Recalc on resize
+    // Recalc on resize for remaining accordions
     window.addEventListener('resize', () => {
       document.querySelectorAll('.accordion-content.open').forEach(content => {
         content.style.maxHeight = 'none';
@@ -789,3 +781,4 @@
   </script>
 </body>
 </html>
+
