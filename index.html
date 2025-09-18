@@ -640,9 +640,22 @@
       }
 
       const descLine = d.desc ? `Допълнително описание: ${d.desc}` : "";
+
+      let conditionalTexts = [];
+
+      // Condition 1: Kronospan + Noise
+      if (d.source === "Завод „Кроношпан\"" && d.checks.includes("Чува се силен шум, тътен.")) {
+        conditionalTexts.push("Mоля да бъде извършено извънредно контролно измерване в часовите диапазони 22-24ч. и 6-8ч.), на основание : Чл. 17, ал. 3, т. 2. (Контролни измервания извън предвидените с годишните графици по ал. 1 могат да се извършват по искане на засегната общественост по смисъла на ЗООС.)");
+      }
+
+      // Condition 2: Kronospan + Odor
+      if (d.source === "Завод „Кроношпан\"" && d.checks.some(check => check.includes("миризма"))) {
+        conditionalTexts.push("Моля, да се има предвид, че това е в нарушение на условие 9.4.1. от Комплексно разрешително № 570-Н0/2018г., а именно „Притежателят на настоящото разрешително да извършва всички дейности на площадката по начин, недопускащ разпространението на миризми извън границите на производствената площадка.");
+      }
+
       const footer = `Моля за входящ номер, както и за отговор от Ваша страна в законоустановения срок - на e-mail: ${d.email}.\n\nДата: ${todayBG()}    Подпис: ${d.name}`;
 
-      return [header, fromLine, "", intro, bullets, violationLine, descLine, footer].filter(Boolean).join("\n\n");
+      return [header, fromLine, "", intro, bullets, violationLine, descLine, ...conditionalTexts, footer].filter(Boolean).join("\n\n");
     }
 
     // Преглед
