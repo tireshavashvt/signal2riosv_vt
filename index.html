@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" />
   <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
   <style>
-    /* --- оставям твоя CSS без промени --- */
+    /* --- стиловете от твоя оригинал --- */
     :root{
       --bg:#f7faf9; --card:#ffffff; 
       --accent:#2e7d6b;
@@ -22,27 +22,34 @@
       --checkbox-bg-even: #e9f2f0;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);
-      font-family:'Inter',sans-serif;font-size:15px;line-height:1.5;min-height:100vh;}
-    header{padding:16px 20px;display:flex;align-items:center;gap:16px;
-      max-width:1200px;margin:0 auto;background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius);margin-bottom:16px;}
-    .logo-placeholder{width:60px;height:60px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;
-      color:white;font-weight:700;font-size:20px;font-family:'Montserrat',sans-serif;}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.5;min-height:100vh;}
+    header{padding:16px 20px;display:flex;align-items:center;gap:16px;max-width:1200px;margin:0 auto;background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius);margin-bottom:16px;}
+    .logo-placeholder{width:60px;height:60px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;font-family:'Montserrat',sans-serif;}
     header .brand h1{margin:0;font-size:20px;font-weight:700;color:var(--accent);font-family:'Montserrat',sans-serif;}
     header .brand p{margin:4px 0 0;color:var(--muted);font-size:14px}
     main{max-width:1200px;margin:0 auto;padding:0 16px 32px;}
     .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px;border:1px solid var(--border);}
     .card h2{margin:0 0 20px;font-size:24px;color:var(--accent);font-weight:700;font-family:'Montserrat',sans-serif;}
     .card h3{margin:0 0 16px;font-size:20px;color:var(--accent);font-weight:600;font-family:'Montserrat',sans-serif;}
-    .checks{display:grid;gap:4px;margin-top:8px}
-    .check{display:flex;gap:10px;align-items:flex-start;padding:6px 10px;border-radius:8px;background:#f9f9f9}
-    .check input{accent-color:var(--accent)}
-    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
-    .btn{border:none;border-radius:10px;padding:12px 20px;font-weight:600;cursor:pointer;font-size:14px;
-      background:var(--accent);color:#fff}
+    .accordion-item{margin-bottom:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);overflow:hidden;}
+    .accordion-header{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 24px;background:var(--light-gray);border:none;border-bottom:1px solid var(--border);font-family:'Montserrat',sans-serif;font-size:20px;font-weight:700;color:var(--accent);cursor:pointer;}
+    .accordion-header .accordion-icon{margin-left:16px;transition:transform 0.3s ease;font-size:16px;color:var(--muted);}
+    .accordion-header[aria-expanded="true"] .accordion-icon{transform:rotate(180deg);}
+    .accordion-content{max-height:0;overflow:hidden;transition:max-height 0.4s ease-out,padding 0.4s ease-out;padding:0 24px;}
+    .accordion-content.open{padding:24px;}
+    fieldset.standalone-fieldset{border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;background:var(--card);box-shadow:var(--shadow);}
+    fieldset.standalone-fieldset>legend{font-weight:700;font-size:20px;color:var(--accent);padding:0 0 16px 0;margin-left:0;font-family:'Montserrat',sans-serif;display:block;border-bottom:1px solid var(--border);margin-bottom:20px;}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-group{margin-bottom:16px;position:relative;}
+    label{display:block;font-weight:600;margin-bottom:6px;color:var(--text);font-size:14px;display:flex;align-items:center;gap:8px}
+    input,select,textarea{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:8px;background:#fff;outline:none;font-size:14px;font-family:inherit;}
+    textarea{min-height:100px;resize:vertical;line-height:1.4}
+    .checks{display:grid;gap:2px;margin-top:8px}
+    .check{display:flex;gap:10px;align-items:flex-start;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:14px;}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:20px}
+    .btn{border:none;border-radius:10px;padding:12px 20px;font-weight:600;cursor:pointer;font-size:14px;background:var(--accent);color:#fff}
     .btn.secondary{background:#fff;color:var(--accent);border:2px solid var(--accent)}
-    .preview{white-space:pre-wrap;background:#fcfdfc;border:2px dashed #cfe2de;padding:16px;border-radius:10px;
-      font-family:monospace;font-size:13px;line-height:1.4;max-height:300px;overflow-y:auto}
+    .preview{white-space:pre-wrap;background:#fcfdfc;border:2px dashed #cfe2de;padding:16px;border-radius:10px;font-family:monospace;font-size:13px;line-height:1.4;max-height:300px;overflow-y:auto}
   </style>
 </head>
 <body>
@@ -55,163 +62,155 @@
   </header>
 
   <main>
-    <form id="signalForm" class="card">
+    <form id="signalForm" class="card" autocomplete="on">
       <h2>Форма за сигнал</h2>
+      <div class="status" id="status"></div>
 
-      <label for="source">Предполагаем източник *</label>
-      <select id="source" required>
-        <option value="" disabled selected>Изберете източник...</option>
-        <option>Трафик / автомобили</option>
-        <option>Завод „Кроношпан"</option>
-        <option>„Топлофикация"</option>
-        <option>Завод „Мегапорт"</option>
-        <option>Друг източник</option>
-      </select>
+      <fieldset class="accordion-item">
+        <legend class="sr-only">Информация за нарушението</legend>
+        <button type="button" class="accordion-header" aria-expanded="true" aria-controls="violation-content">
+          <i class="fas fa-info-circle"></i> Информация за нарушението
+          <i class="fas fa-chevron-down accordion-icon"></i>
+        </button>
+        <div id="violation-content" class="accordion-content open">
+          <div class="grid">
+            <div class="form-group">
+              <label for="source"><i class="fas fa-smog"></i> Предполагаем източник *</label>
+              <select id="source" required>
+                <option value="" disabled selected>Изберете източник...</option>
+                <option>Трафик / автомобили</option>
+                <option>Завод „Кроношпан"</option>
+                <option>„Топлофикация"</option>
+                <option>Завод „Мегапорт"</option>
+                <option>Друг източник</option>
+              </select>
+            </div>
+            <!-- ново поле за друг източник -->
+            <div class="form-group" id="customSourceGroup" style="display:none;">
+              <label for="customSource"><i class="fas fa-industry"></i> Посочете източника *</label>
+              <input id="customSource" type="text" placeholder="Въведете източник">
+            </div>
+            <div class="form-group">
+              <label for="district"><i class="fas fa-city"></i> Квартал *</label>
+              <select id="district" required>
+                <option value="" disabled selected>Изберете квартал...</option>
+                <option>Чолаковци</option><option>Акация</option><option>Център</option>
+                <option>Бузлуджа</option><option>Картала</option><option>Кольо Фичето</option>
+                <option>Зона Б</option><option>Света гора</option><option>Друг</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="when"><i class="fas fa-calendar-alt"></i> Кога е установено нарушението? *</label>
+              <input id="when" type="datetime-local" required>
+            </div>
+            <div class="form-group">
+              <label for="address"><i class="fas fa-map-marker-alt"></i> Адрес / район</label>
+              <input id="address" type="text" placeholder="ул., №, ориентир...">
+            </div>
+          </div>
+        </div>
+      </fieldset>
 
-      <label for="district">Квартал *</label>
-      <select id="district" required>
-        <option value="" disabled selected>Изберете квартал...</option>
-        <option>Чолаковци</option><option>Акация</option><option>Център</option>
-        <option>Бузлуджа</option><option>Картала</option><option>Кольо Фичето</option>
-        <option>Зона Б</option><option>Света гора</option><option>Друг</option>
-      </select>
+      <fieldset class="standalone-fieldset">
+        <legend><i class="fas fa-exclamation-triangle"></i> Влошаване на качеството на живот *</legend>
+        <div id="checks" class="checks"></div>
+      </fieldset>
 
-      <label for="when">Кога е установено нарушението? *</label>
-      <input id="when" type="datetime-local" required>
-
-      <label for="address">Адрес / район</label>
-      <input id="address" type="text" placeholder="ул., №, ориентир...">
-
-      <label>Влошаване на качеството на живот *</label>
-      <div id="checks" class="checks"></div>
-
-      <label for="name">Име и фамилия *</label>
-      <input id="name" type="text" required>
-
-      <label for="email">Имейл за обратна връзка *</label>
-      <input id="email" type="email" required>
-
-      <label for="phone">Телефон</label>
-      <input id="phone" type="tel">
-
-      <label for="desc">Допълнително описание</label>
-      <textarea id="desc"></textarea>
+      <fieldset class="standalone-fieldset">
+        <legend><i class="fas fa-address-card"></i> Контакт *</legend>
+        <div class="grid">
+          <div class="form-group">
+            <label for="name"><i class="fas fa-user-alt"></i> Име и фамилия *</label>
+            <input id="name" type="text" required>
+          </div>
+          <div class="form-group">
+            <label for="email"><i class="fas fa-envelope"></i> Имейл *</label>
+            <input id="email" type="email" required>
+          </div>
+        </div>
+      </fieldset>
 
       <div class="row">
         <button type="button" class="btn" id="downloadDocx">Свали DOCX</button>
-        <button type="button" class="btn secondary" id="sendToRiosv">Изпрати към РИОСВ</button>
       </div>
     </form>
 
     <section class="card">
-      <h3>Преглед на текста</h3>
+      <h3><i class="fas fa-eye"></i> Преглед</h3>
       <div id="preview" class="preview"></div>
     </section>
   </main>
 
   <script>
-    // чекбоксове
-    const checkboxItems = [
-      "Наличие на остра, задушлива миризма на лепило.",
-      "Наличие на остра, задушлива миризма на дървесина.",
-      "Наличие на остра, задушлива миризма на лепило и дървесина.",
-      "Наличие на остра, задушлива миризма на химикали.",
-      "Наличие на остра, задушлива миризма, от която имам физическо неразположение – люти на очите.",
-      "Наличие на остра, задушлива миризма, от която имам физическо неразположение – люти на носа.",
-      "Наличие на остра, задушлива миризма, от която имам физическо неразположение – люти на гърлото.",
-      "Наличие на остра, задушлива миризма, от която имам физическо неразположение – получавам задух.",
-      "Наблюдава се обгазяване, задимяване, наличие на синкава мъгла.",
-      "Наблюдава се силно запрашаване на въздуха.",
-      "Наличие на дървени стърготини по колите.",
-      "Чува се силен шум, тътен."
-    ];
-    const checksWrap=document.getElementById('checks');
-    checkboxItems.forEach((txt,i)=>{
-      const id="chk_"+i;
-      const el=document.createElement('label');
-      el.className='check';
-      el.innerHTML=`<input type="checkbox" id="${id}" value="${txt}"><span>${txt}</span>`;
-      checksWrap.appendChild(el);
-    });
-
-    // авто текуща дата/час за полето "Кога е установено..."
-    function setCurrentBulgarianDateTime() {
-      const now=new Date();
-      const bgTime=new Date(now.toLocaleString("en-US",{timeZone:"Europe/Sofia"}));
-      const pad=n=>String(n).padStart(2,'0');
-      const s=`${bgTime.getFullYear()}-${pad(bgTime.getMonth()+1)}-${pad(bgTime.getDate())}T${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())}`;
-      document.getElementById('when').value=s;
-    }
-    setCurrentBulgarianDateTime();
-
-    // адреси на източници
     const sourceAddresses={
       "Завод „Кроношпан\"":"гр. Велико Търново, кв. Чолаковци, ул. Дълга Лъка",
       "„Топлофикация\"":"гр. Велико Търново, бул. Никола Габровски 71А",
       "Завод „Мегапорт\"":"гр. Велико Търново, ул. Никола Габровски 102"
     };
 
-    function formatDateTime(datetimeStr){
-      if(!datetimeStr) return {date:"[дата]",time:"[час]"};
-      const d=new Date(datetimeStr);
+    const checkboxItems=["Наличие на остра, задушлива миризма на лепило.","Наличие на остра, задушлива миризма на дървесина."];
+    const checksWrap=document.getElementById('checks');
+    checkboxItems.forEach((txt,i)=>{const el=document.createElement('label');el.className='check';el.innerHTML=`<input type="checkbox" value="${txt}"><span>${txt}</span>`;checksWrap.appendChild(el);});
+
+    function setCurrentBulgarianDateTime(){
+      const now=new Date();const bg=new Date(now.toLocaleString("en-US",{timeZone:"Europe/Sofia"}));
       const pad=n=>String(n).padStart(2,'0');
-      return {date:`${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`,time:`${pad(d.getHours())}:${pad(d.getMinutes())}`};
-    }
-    function todayDate(){
-      const d=new Date();const pad=n=>String(n).padStart(2,'0');
-      return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
-    }
+      document.getElementById('when').value=`${bg.getFullYear()}-${pad(bg.getMonth()+1)}-${pad(bg.getDate())}T${pad(bg.getHours())}:${pad(bg.getMinutes())}`;
+    }setCurrentBulgarianDateTime();
+
+    function todayDate(){const d=new Date();const p=n=>String(n).padStart(2,'0');return `${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()}`;}
 
     function collectData(){
       return {
         source:document.getElementById('source').value,
+        customSource:document.getElementById('customSource').value,
         district:document.getElementById('district').value,
         when:document.getElementById('when').value,
         address:document.getElementById('address').value,
         name:document.getElementById('name').value,
         email:document.getElementById('email').value,
-        phone:document.getElementById('phone').value,
-        desc:document.getElementById('desc').value,
         checks:Array.from(document.querySelectorAll('#checks input:checked')).map(c=>c.value)
       };
     }
 
     function buildLetterText(d){
-      const {date,time}=formatDateTime(d.when);
+      const dt=new Date(d.when);
+      const pad=n=>String(n).padStart(2,'0');
+      const date=`${pad(dt.getDate())}.${pad(dt.getMonth()+1)}.${dt.getFullYear()}`;
+      const time=`${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
       const header="ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ";
-      const fromLine=`От: ${[d.name,d.phone,d.email].filter(Boolean).join(" / ")}`;
-
+      const fromLine=`От: ${d.name} / ${d.email}`;
       let intro="";
       if(sourceAddresses[d.source]){
         intro=`Моля за извършване на проверка на ${d.source}, находящ се в ${sourceAddresses[d.source]}, във връзка с нарушение, водещо до влошаване на качеството ми на живот, а именно :`;
-      }else{
-        intro=`Моля за извършване на проверка във връзка с нарушение, водещо до влошаване на качеството ми на живот, а именно :`;
+      }else if(d.source==="Трафик / автомобили"){
+        intro=`Моля за извършване на проверка за замърсяване от "Трафик / автомобили", във връзка с нарушение, водещо до влошаване на качеството ми на живот, а именно :`;
+      }else if(d.source==="Друг източник"){
+        intro=`Моля за извършване на проверка за замърсяване от "${d.customSource||"[източник]"}", във връзка с нарушение, водещо до влошаване на качеството ми на живот, а именно :`;
       }
-
-      const bullets=d.checks.length?d.checks.map(t=>"• "+t).join("\n"):"• [изберете поне една опция]";
-      const violationLine=`Нарушението е установено на ${date} в ${time}`;
-      const descLine=d.desc?`Допълнително описание: ${d.desc}`:"";
-      const footer=`Моля за входящ номер, както и за отговор от Ваша страна в законоустановения срок.\n\nДата: ${todayDate()}    Подпис: ${d.name}`;
-
-      return [header,fromLine,"",intro,bullets,violationLine,descLine,footer].filter(Boolean).join("\n\n");
+      const bullets=d.checks.map(t=>"• "+t).join("\n");
+      const violation=`Нарушението е установено на ${date} в ${time}`;
+      const footer=`Моля за входящ номер...\n\nДата: ${todayDate()}    Подпис: ${d.name}`;
+      return [header,fromLine,intro,bullets,violation,footer].join("\n\n");
     }
 
-    function updatePreview(){preview.textContent=buildLetterText(collectData());}
-    const preview=document.getElementById('preview');
+    function updatePreview(){document.getElementById('preview').textContent=buildLetterText(collectData());}
     document.getElementById('signalForm').addEventListener('input',updatePreview);
 
-    // DOCX download
+    // показване на customSource поле
+    document.getElementById('source').addEventListener('change',e=>{
+      document.getElementById('customSourceGroup').style.display=(e.target.value==="Друг източник")?"block":"none";
+    });
+
     document.getElementById('downloadDocx').addEventListener('click',async()=>{
-      const text=buildLetterText(collectData());
+      const d=collectData();
+      if(d.source==="Друг източник"&&!d.customSource.trim()){alert("Моля попълнете източника!");return;}
+      const text=buildLetterText(d);
       const {Document,Packer,Paragraph,TextRun}=docx;
       const paras=text.split("\n").map(line=>new Paragraph({children:[new TextRun(line)]}));
       const doc=new Document({sections:[{children:paras}]});
       const blob=await Packer.toBlob(doc);
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download="signal_riosv_vt.docx";
-      a.click();
-      URL.revokeObjectURL(a.href);
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download="signal.docx";a.click();URL.revokeObjectURL(a.href);
     });
 
     updatePreview();
