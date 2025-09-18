@@ -8,352 +8,28 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" />
   <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
   <style>
-    :root{
-      --bg:#f7faf9; --card:#ffffff; 
-      --accent:#2e7d6b;
-      --accent-2:#3a927e;
-      --text:#263238; --muted:#6b7c83; --light-gray:#f0f4f7;
-      --radius:12px; --shadow:0 4px 20px rgba(0,0,0,.06); --border:#e1e8eb;
-      --checkbox-bg-odd: #fcfdfd;
-      --checkbox-bg-even: #e9f2f0;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; background:var(--bg); color:var(--text); 
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      font-size:15px; line-height:1.5;
-      min-height:100vh;
-    }
-    
-    /* Header improvements */
-    header{
-      padding:16px 20px; display:flex; align-items:center; gap:16px; 
-      max-width:1200px; margin:0 auto; background:var(--card);
-      box-shadow:var(--shadow); border-radius:var(--radius); margin-bottom:16px;
-    }
-    .logo-placeholder{
-      width:60px; height:60px; background:var(--accent); 
-      border-radius:10px; display:flex; align-items:center; justify-content:center;
-      color:white; font-weight:700; font-size:20px; flex-shrink:0;
-      font-family: 'Montserrat', sans-serif;
-    }
-    header .brand h1{
-      margin:0; font-size:20px; font-weight:700; color:var(--accent);
-      font-family: 'Montserrat', sans-serif;
-    }
-    header .brand p{margin:4px 0 0; color:var(--muted); font-size:14px}
-    
-    main{max-width:1200px; margin:0 auto; padding:0 16px 32px;}
-    
-    /* Enhanced card styling */
-    .card{
-      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
-      padding:24px; margin-bottom:16px; border:1px solid var(--border);
-    }
-    .card h2{
-      margin:0 0 20px; font-size:24px; color:var(--accent); font-weight:700;
-      font-family: 'Montserrat', sans-serif;
-    }
-    .card h3{
-      margin:0 0 16px; font-size:20px; color:var(--accent); font-weight:600;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    /* Accordion styling */
-    .accordion-item {
-      margin-bottom: 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--card);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .accordion-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 18px 24px;
-      background: var(--light-gray);
-      border: none;
-      border-bottom: 1px solid var(--border);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent);
-      cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .accordion-header:hover {
-      background: #e9f2f0;
-    }
-
-    .accordion-header:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(46,125,107,.08);
-    }
-
-    .accordion-header .accordion-icon {
-      margin-left: 16px;
-      transition: transform 0.3s ease;
-      font-size: 16px;
-      color: var(--muted);
-    }
-
-    .accordion-header[aria-expanded="true"] .accordion-icon {
-      transform: rotate(180deg);
-    }
-
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease-out, padding 0.4s ease-out;
-      padding: 0 24px; /* Initial padding for collapsed state */
-    }
-
-    .accordion-content.open {
-      padding: 24px; /* Padding for open state */
-    }
-
-    /* Adjustments for fieldset legend in non-accordion sections */
-    fieldset.standalone-fieldset {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 16px;
-      background: var(--card);
-      box-shadow: var(--shadow);
-    }
-    fieldset.standalone-fieldset > legend {
-      font-weight: 700;
-      font-size: 20px;
-      color: var(--accent);
-      padding: 0 0 16px 0; /* Adjust padding for standalone legend */
-      margin-left: 0;
-      font-family: 'Montserrat', sans-serif;
-      display: block; /* Ensure legend is visible */
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
-    }
-    fieldset.standalone-fieldset > legend i {
-      margin-right: 8px;
-    }
-    
-    /* Grid and form improvements */
-    .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
-    @media (max-width:768px){ 
-      .grid{grid-template-columns:1fr}
-      header{padding:16px; text-align:center}
-      header .brand h1{font-size:18px}
-      header .brand p{font-size:13px}
-      .card{padding:20px 16px; margin-bottom:12px}
-      .card h2{font-size:22px; margin-bottom:16px}
-      main{padding:0 12px 24px}
-      .accordion-header {padding: 14px 16px; font-size: 18px;}
-      .accordion-content.open {padding: 16px;}
-      fieldset.standalone-fieldset {padding: 20px 16px; margin-bottom: 12px;}
-      fieldset.standalone-fieldset > legend {font-size: 18px; padding-bottom: 12px; margin-bottom: 16px;}
-    }
-    
-    /* Enhanced form controls */
-    .form-group{margin-bottom:16px; position:relative;}
-    label{
-      display:block; font-weight:600; margin-bottom:6px; color:var(--text);
-      font-size:14px;
-      display:flex; align-items:center; gap:8px; /* For icons */
-    }
-    input[type="text"], input[type="email"], input[type="tel"], select, textarea, input[type="datetime-local"]{
-      width:100%; padding:10px 14px; border:2px solid var(--border); 
-      border-radius:8px; background:#fff; outline:none; 
-      transition:all .2s ease; font-size:14px; font-family:inherit;
-    }
-    textarea{min-height:100px; resize:vertical; line-height:1.4}
-    input:focus, select:focus, textarea:focus{
-      border-color:var(--accent-2); box-shadow:0 0 0 3px rgba(46,125,107,.08);
-      transform:translateY(-1px); /* Subtle lift on focus */
-    }
-    input:hover, select:hover, textarea:hover{border-color:var(--accent-2)}
-
-    /* Input with prefix */
-    .input-with-prefix {
-      display: flex;
-      align-items: center;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      background: #fff;
-      transition: all .2s ease;
-    }
-    .input-with-prefix:focus-within {
-      border-color:var(--accent-2); box-shadow:0 0 0 3px rgba(46,125,107,.08);
-      transform:translateY(-1px);
-    }
-    .input-with-prefix .prefix {
-      padding: 10px 0 10px 14px;
-      color: var(--muted);
-      font-size: 14px;
-      pointer-events: none; /* Allow clicks to pass through to input */
-    }
-    .input-with-prefix input {
-      border: none;
-      padding: 10px 14px 10px 0;
-      flex-grow: 1;
-      background: transparent;
-    }
-    .input-with-prefix input:focus {
-      box-shadow: none;
-      transform: none;
-    }
-
-    /* Clear button for textarea */
-    .textarea-wrapper {
-      position: relative;
-    }
-    .clear-textarea {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      background: var(--muted);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-    textarea:not(:placeholder-shown) + .clear-textarea {
-      opacity: 1;
-    }
-    textarea:focus + .clear-textarea {
-      opacity: 1;
-    }
-    
-    /* Compact checkbox styling with alternating colors */
-    .checks{display:grid; gap:2px; margin-top:8px} /* Reduced gap here */
-    .check{
-      display:flex; gap:10px; align-items:flex-start; 
-      padding:6px 10px; /* Reduced padding here */
-      border-radius:8px;
-      border:1px solid transparent; transition:all .2s ease;
-      cursor:pointer; font-size:14px;
-    }
-    .check:nth-child(odd) {
-      background: var(--checkbox-bg-odd);
-    }
-    .check:nth-child(even) {
-      background: var(--checkbox-bg-even);
-    }
-    .check:hover{background:#e9f2f0; border-color:var(--accent-2)}
-    .check input[type="checkbox"]{
-      width:18px; height:18px; margin:0; cursor:pointer; flex-shrink:0;
-      accent-color:var(--accent); margin-top:1px;
-    }
-    .check span{line-height:1.3}
-    .check:has(input:checked){background:#d4edda; border-color:var(--accent)}
-    
-    /* Button improvements */
-    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:20px}
-    .btn{
-      appearance:none; border:none; border-radius:10px; padding:12px 20px; 
-      font-weight:600; cursor:pointer; font-size:14px; font-family:inherit;
-      background:var(--accent); color:#fff; 
-      box-shadow:0 4px 16px rgba(46,125,107,.25);
-      transition:all .2s ease; position:relative; overflow:hidden;
-    }
-    .btn:hover{
-      background:var(--accent-2); transform:translateY(-1px);
-      box-shadow:0 6px 20px rgba(46,125,107,.3);
-    }
-    .btn:active{transform:translateY(0)}
-    .btn.secondary{
-      background:#fff; color:var(--accent); 
-      box-shadow:0 2px 12px rgba(0,0,0,.1); border:2px solid var(--accent);
-    }
-    .btn.secondary:hover{background:#f8fbfa; transform:translateY(-1px)}
-    .btn:disabled{opacity:.6; cursor:not-allowed; transform:none}
-    
-    /* Enhanced hint and preview */
-    .hint{color:var(--muted); font-size:13px; margin-top:4px; line-height:1.3}
-    .preview{
-      white-space:pre-wrap; background:#fcfdfc; 
-      border:2px dashed #cfe2de; padding:16px; border-radius:10px;
-      font-family:monospace; font-size:13px; line-height:1.4;
-      max-height:300px; overflow-y:auto;
-    }
-    .footer-note{color:var(--muted); font-size:12px; margin-top:12px}
-    
-    /* Loading states */
-    .btn.loading{pointer-events:none}
-    .btn.loading::after{
-      content:''; position:absolute; top:50%; left:50%;
-      width:16px; height:16px; margin:-8px 0 0 -8px;
-      border:2px solid transparent; border-top:2px solid currentColor;
-      border-radius:50%; animation:spin 1s linear infinite;
-    }
-    @keyframes spin{0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)}}
-    
-    /* Success/Error states */
-    .status{
-      padding:10px 14px; border-radius:8px; margin:10px 0; font-weight:500;
-      display:none; font-size:14px;
-    }
-    .status.success{background:#d4edda; color:#155724; border:1px solid #c3e6cb}
-    .status.error{background:#f8d7da; color:#721c24; border:1px solid #f5c6cb}
-    .status.show{
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      animation: fadeIn 0.3s ease-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .status.success i { color: #155724; }
-    .status.error i { color: #721c24; }
-    
-    /* Accessibility improvements */
-    .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0}
-    
-    /* Form validation */
-    input:invalid, select:invalid{border-color:#dc3545}
-    input:valid, select:valid{border-color:#28a745}
-    
-    /* Mobile-specific optimizations */
-    @media (max-width:640px){
-      .row{flex-direction:column; align-items:stretch; gap:10px}
-      .btn{width:100%; justify-content:center; padding:14px 20px}
-      .preview{max-height:250px; font-size:12px; padding:12px}\
-      .checks{gap:2px} /* Adjusted for mobile */
-      .check{padding:6px 8px; font-size:13px}
-      .check input[type="checkbox"]{width:16px; height:16px}
-      fieldset.standalone-fieldset {padding: 16px; margin-bottom: 12px;}
-      fieldset.standalone-fieldset > legend {font-size: 16px; padding-bottom: 10px; margin-bottom: 12px;}
-    }
-    
-    /* Very small screens */
-    @media (max-width:480px){
-      header{flex-direction:column; gap:12px}
-      .logo-placeholder{width:50px; height:50px; font-size:18px;}
-      .card{margin-bottom:8px}
-      .form-group{margin-bottom:12px}
-    }
-    
-    /* Landscape mobile */
-    @media (max-width:768px) and (orientation:landscape){
-      .checks{grid-template-columns:1fr 1fr; gap:2px 6px} /* Adjusted for mobile landscape */
-      .preview{max-height:200px}
-    }
+    body{margin:0;background:#f7faf9;color:#263238;font-family:'Inter',sans-serif;font-size:15px;line-height:1.5}
+    header{padding:16px 20px;display:flex;align-items:center;gap:16px;max-width:1200px;margin:0 auto;background:#fff;
+      box-shadow:0 4px 20px rgba(0,0,0,.06);border-radius:12px;margin-bottom:16px}
+    .logo-placeholder{width:60px;height:60px;background:#2e7d6b;border-radius:10px;display:flex;align-items:center;
+      justify-content:center;color:white;font-weight:700;font-size:20px;font-family:'Montserrat',sans-serif}
+    header .brand h1{margin:0;font-size:20px;font-weight:700;color:#2e7d6b;font-family:'Montserrat',sans-serif}
+    header .brand p{margin:4px 0 0;color:#6b7c83;font-size:14px}
+    main{max-width:1200px;margin:0 auto;padding:0 16px 32px}
+    .card{background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.06);padding:24px;margin-bottom:16px}
+    .card h2{margin:0 0 20px;font-size:24px;color:#2e7d6b;font-weight:700;font-family:'Montserrat',sans-serif}
+    .checks{display:grid;gap:4px}
+    .check{display:flex;gap:10px;align-items:flex-start;padding:6px 10px;border-radius:8px;background:#f9f9f9}
+    .check input{accent-color:#2e7d6b}
+    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+    .btn{border:none;border-radius:10px;padding:12px 20px;font-weight:600;cursor:pointer;font-size:14px;
+      background:#2e7d6b;color:#fff}
+    .btn.secondary{background:#fff;color:#2e7d6b;border:2px solid #2e7d6b}
+    .preview{white-space:pre-wrap;background:#fcfdfc;border:2px dashed #cfe2de;padding:16px;border-radius:10px;
+      font-family:monospace;font-size:13px;line-height:1.4;max-height:300px;overflow-y:auto}
   </style>
 </head>
 <body>
@@ -366,132 +42,61 @@
   </header>
 
   <main>
-    <form id="signalForm" class="card" autocomplete="on">
+    <form id="signalForm" class="card">
       <h2>Форма за сигнал</h2>
-      
-      <div class="status" id="status" role="alert"></div>
-      
-      <fieldset class="accordion-item">
-        <legend class="sr-only">Информация за нарушението</legend>
-        <button type="button" class="accordion-header" aria-expanded="true" aria-controls="violation-content">
-          <i class="fas fa-info-circle"></i> Информация за нарушението
-          <i class="fas fa-chevron-down accordion-icon"></i>
-        </button>
-        <div id="violation-content" class="accordion-content open">
-          <div class="grid">
-            <div class="form-group">
-              <label for="source"><i class="fas fa-smog"></i> Предполагаем източник *</label>
-              <select id="source" required aria-describedby="source-hint">
-                <option value="" disabled selected>Изберете източник...</option>
-                <option>Трафик / автомобили</option>
-                <option>Завод „Кроношпан"</option>
-                <option>„Топлофикация"</option>
-                <option>Завод „Мегапорт"</option>
-                <option>Друг източник</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="district"><i class="fas fa-city"></i> Квартал (Велико Търново) *</label>
-              <select id="district" required aria-describedby="district-hint">
-                <option value="" disabled selected>Изберете квартал...</option>
-                <option>Чолаковци</option><option>Акация</option><option>Център</option>
-                <option>Бузлуджа</option><option>Картала</option><option>Кольо Фичето</option>
-                <option>Зона Б</option><option>Света гора</option><option>Друг</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="when"><i class="fas fa-calendar-alt"></i> Кога е извършено нарушението? *</label>
-              <input id="when" type="datetime-local" required aria-describedby="when-hint">
-              <div class="hint" id="when-hint"></div>
-            </div>
-            
-            <div class="form-group">
-              <label for="address"><i class="fas fa-map-marker-alt"></i> Адрес / район</label>
-              <input id="address" type="text" placeholder="ул., №, ориентир..." aria-describedby="address-hint">
-              <div class="hint" id="address-hint">Опционално - помага за по-точна локализация</div>
-            </div>
-          </div>
-        </div>
-      </fieldset>
 
-      <fieldset class="standalone-fieldset">
-        <legend><i class="fas fa-exclamation-triangle"></i> Влошаване на качеството на живот *</legend>
-        <div class="form-group">
-          <label class="sr-only">Нарушението води до влошаване на качеството ми на живот:</label>
-          <div class="checks" id="checks" role="group" aria-required="true">
-            <!-- чекбоксовете ще бъдат добавени от JavaScript -->
-          </div>
-        </div>
-      </fieldset>
+      <label>Предполагаем източник *</label>
+      <select id="source" required>
+        <option value="" disabled selected>Изберете източник...</option>
+        <option>Трафик / автомобили</option>
+        <option>Завод „Кроношпан"</option>
+        <option>„Топлофикация"</option>
+        <option>Завод „Мегапорт"</option>
+        <option>Друг източник</option>
+      </select>
 
-      <fieldset class="standalone-fieldset">
-        <legend><i class="fas fa-address-card"></i> Задължителна информация за контакт *</legend>
-        <div class="grid">
-          <div class="form-group">
-            <label for="name"><i class="fas fa-user-alt"></i> Име и фамилия *</label>
-            <input id="name" type="text" placeholder="Вашите имена" autocomplete="name" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="email"><i class="fas fa-envelope"></i> Имейл за обратна връзка *</label>
-            <input id="email" type="email" placeholder="name@example.com" autocomplete="email" required>
-          </div>
-        </div>
-      </fieldset>
+      <label>Квартал *</label>
+      <select id="district" required>
+        <option value="" disabled selected>Изберете квартал...</option>
+        <option>Чолаковци</option><option>Акация</option><option>Център</option>
+        <option>Бузлуджа</option><option>Картала</option><option>Кольо Фичето</option>
+        <option>Зона Б</option><option>Света гора</option><option>Друг</option>
+      </select>
 
-      <fieldset class="accordion-item">
-        <legend class="sr-only">Допълнителна информация (по желание)</legend>
-        <button type="button" class="accordion-header" aria-expanded="false" aria-controls="optional-info-content">
-          <i class="fas fa-user"></i> Допълнителна информация (по желание)
-          <i class="fas fa-chevron-down accordion-icon"></i>
-        </button>
-        <div id="optional-info-content" class="accordion-content">
-          <div class="grid">
-            <div class="form-group">
-              <label for="subject"><i class="fas fa-tag"></i> Относно</label>
-              <input id="subject" type="text" placeholder="Кратко описание на сигнала">
-            </div>
-            
-            <div class="form-group">
-              <label for="phone"><i class="fas fa-phone"></i> Телефон</label>
-              <div class="input-with-prefix">
-                <span class="prefix">+359</span>
-                <input id="phone" type="tel" placeholder="888 123 456" autocomplete="tel">
-              </div>
-            </div>
-          </div>
+      <label>Кога е установено нарушението? *</label>
+      <input id="when" type="datetime-local" required>
 
-          <div class="form-group">
-            <label for="desc"><i class="fas fa-comment-alt"></i> Описание на нарушението</label>
-            <div class="textarea-wrapper">
-              <textarea id="desc" placeholder="Ако имате да добавите детайли..."></textarea>
-              <button type="button" class="clear-textarea" title="Изчисти описанието"><i class="fas fa-times"></i></button>
-            </div>
-          </div>
-        </div>
-      </fieldset>
+      <label>Адрес / район</label>
+      <input id="address" type="text" placeholder="ул., №, ориентир...">
+
+      <label>Влошаване на качеството на живот *</label>
+      <div id="checks" class="checks"></div>
+
+      <label>Име и фамилия *</label>
+      <input id="name" type="text" required>
+
+      <label>Имейл за обратна връзка *</label>
+      <input id="email" type="email" required>
+
+      <label>Телефон</label>
+      <input id="phone" type="tel">
+
+      <label>Допълнително описание</label>
+      <textarea id="desc"></textarea>
 
       <div class="row">
-        <button type="button" class="btn" id="downloadDocx">
-          <span><i class="fas fa-file-word"></i> Свали DOCX</span>
-        </button>
-        <button type="button" class="btn secondary" id="sendToRiosv">
-          <span><i class="fas fa-paper-plane"></i> Изпрати към РИОСВ</span>
-        </button>
+        <button type="button" class="btn" id="downloadDocx">Свали DOCX</button>
+        <button type="button" class="btn secondary" id="sendToRiosv">Изпрати към РИОСВ</button>
       </div>
     </form>
 
     <section class="card">
-      <h3><i class="fas fa-eye"></i> Преглед на текста</h3>
-      <div id="preview" class="preview" role="region" aria-label="Преглед на генерирания текст"></div>
-      <p class="footer-note">Текстът се генерира автоматично въз основа на Вашия избор</p>
+      <h3>Преглед на текста</h3>
+      <div id="preview" class="preview"></div>
     </section>
   </main>
 
   <script>
-    // Чекбоксове от бланката
     const checkboxItems = [
       "Наличие на остра, задушлива миризма на лепило.",
       "Наличие на остра, задушлива миризма на дървесина.",
@@ -506,307 +111,89 @@
       "Наличие на дървени стърготини по колите.",
       "Чува се силен шум, тътен."
     ];
-
-    // DOM елементи
-    const form = document.getElementById('signalForm');
-    const preview = document.getElementById('preview');
     const checksWrap = document.getElementById('checks');
-    const status = document.getElementById('status');
-    const downloadBtn = document.getElementById('downloadDocx');
-    const sendBtn = document.getElementById('sendToRiosv');
-    const descTextarea = document.getElementById('desc');
-    const clearDescBtn = document.querySelector('.clear-textarea');
-
-    // Рендер на чекбоксовете
-    checkboxItems.forEach((txt, i) => {
-      const id = "chk_" + i;
-      const el = document.createElement('label');
-      el.className = 'check';
-      el.innerHTML = `<input type="checkbox" id="${id}" value="${txt}"><span>${txt}</span>`;
+    checkboxItems.forEach((txt,i)=>{
+      const id="chk_"+i;
+      const el=document.createElement('label');
+      el.className='check';
+      el.innerHTML=`<input type="checkbox" id="${id}" value="${txt}"><span>${txt}</span>`;
       checksWrap.appendChild(el);
     });
 
-    // Автопопълване на дата/час с BG време
-    function setCurrentBulgarianDateTime() {
-      const now = new Date();
-      const bgTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Sofia"}));
-      
-      const pad = n => String(n).padStart(2,'0');
-      const s = `${bgTime.getFullYear()}-${pad(bgTime.getMonth()+1)}-${pad(bgTime.getDate())}T${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())}`;
-      document.getElementById('when').value = s;
+    // речник с адреси
+    const sourceAddresses = {
+      "Завод „Кроношпан\"": "гр. Велико Търново, кв. Чолаковци, ул. Дълга Лъка",
+      "„Топлофикация\"": "гр. Велико Търново, бул. Никола Габровски 71А",
+      "Завод „Мегапорт\"": "гр. Велико Търново, ул. Никола Габровски 102"
+    };
+
+    function formatDateTime(datetimeStr){
+      if(!datetimeStr) return {date:"[дата]",time:"[час]"};
+      const d=new Date(datetimeStr);
+      const pad=n=>String(n).padStart(2,'0');
+      return {
+        date:`${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`,
+        time:`${pad(d.getHours())}:${pad(d.getMinutes())}`
+      };
     }
-    setCurrentBulgarianDateTime();
-
-    // Показване на статус съобщение
-    function showStatus(message, type = 'info') {
-      let icon = '';
-      if (type === 'success') icon = '<i class="fas fa-check-circle"></i>';
-      else if (type === 'error') icon = '<i class="fas fa-exclamation-circle"></i>';
-      else icon = '<i class="fas fa-info-circle"></i>';
-
-      status.innerHTML = `${icon} <span>${message}</span>`;
-      status.className = `status ${type} show`;
-      setTimeout(() => status.classList.remove('show'), 5000);
-    }
-
-    // Валидация на формата
-    function validateForm() {
-      const source = document.getElementById('source').value;
-      const district = document.getElementById('district').value;
-      const when = document.getElementById('when').value;
-      const checks = document.querySelectorAll('#checks input:checked');
-      const name = document.getElementById('name').value; // New mandatory field
-      const email = document.getElementById('email').value; // New mandatory field
-
-      if (!source) {
-        showStatus('Моля изберете предполагаем източник', 'error');
-        document.getElementById('source').focus();
-        return false;
-      }
-      if (!district) {
-        showStatus('Моля изберете квартал', 'error');
-        document.getElementById('district').focus();
-        return false;
-      }
-      if (!when) {
-        showStatus('Моля въведете дата и час', 'error');
-        document.getElementById('when').focus();
-        return false;
-      }
-      if (checks.length === 0) {
-        showStatus('Моля изберете поне един начин на влошаване на качеството на живот', 'error');
-        checksWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return false;
-      }
-      if (!name.trim()) { // Check if name is not just whitespace
-        showStatus('Моля въведете Вашето име и фамилия', 'error');
-        document.getElementById('name').focus();
-        return false;
-      }
-      if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { // Basic email validation
-        showStatus('Моля въведете валиден имейл за обратна връзка', 'error');
-        document.getElementById('email').focus();
-        return false;
-      }
-      return true;
+    function todayDate(){
+      const d=new Date();
+      const pad=n=>String(n).padStart(2,'0');
+      return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
     }
 
-    // Събиране на данни от формата
     function collectData(){
-      const sel = s => document.querySelector(s);
-      const source = sel('#source').value || '';
-      const district = sel('#district').value || '';
-      const whenVal = sel('#when').value || '';
-      const address = sel('#address').value || '';
-      const subject = sel('#subject').value || '';
-      const name = sel('#name').value || '';
-      const email = sel('#email').value || '';
-      const phone = sel('#phone').value || '';
-      const desc = sel('#desc').value || '';
-      const checks = Array.from(document.querySelectorAll('#checks input:checked')).map(c => c.value);
-
-      return {source, district, whenVal, address, subject, name, email, phone, desc, checks};
+      return {
+        source:document.getElementById('source').value,
+        district:document.getElementById('district').value,
+        when:document.getElementById('when').value,
+        address:document.getElementById('address').value,
+        name:document.getElementById('name').value,
+        email:document.getElementById('email').value,
+        phone:document.getElementById('phone').value,
+        desc:document.getElementById('desc').value,
+        checks:Array.from(document.querySelectorAll('#checks input:checked')).map(c=>c.value)
+      };
     }
 
-    // Helper to format time from datetime-local input (HH:mm)
-    function formatTime(datetimeLocalString) {
-      if (!datetimeLocalString) return '';
-      const parts = datetimeLocalString.split('T');
-      return parts.length > 1 ? parts[1] : ''; // Returns HH:mm
-    }
-
-    // Генериране на текст на писмото
     function buildLetterText(d){
-      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ";
-      const fromLine = `От: ${[d.name, d.phone, d.email].filter(Boolean).join(" / ")}`; // Name and Email are now mandatory
-      const subject = d.subject ? `Относно: ${d.subject}\n` : "";
-      
-      let introSentence = `Моля за извършване на проверка в гр. Велико Търново във връзка с явно замърсяване на въздуха, което смятам, че е с произход ${d.source || "[изберете източник]"}. Замърсяването се наблюдава в ${d.district || "[изберете квартал]"}`;
+      const {date,time}=formatDateTime(d.when);
+      const header="ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ";
+      const fromLine=`От: ${[d.name,d.phone,d.email].filter(Boolean).join(" / ")}`;
 
-      if (d.address) {
-        introSentence += ` на адрес/район: ${d.address}`;
+      let intro="";
+      if(sourceAddresses[d.source]){
+        intro=`Моля за извършване на проверка на ${d.source}, находящ се в ${sourceAddresses[d.source]}, във връзка с нарушение, водещо до влошаване на качеството ми на живот, а именно :`;
+      }else{
+        intro=`Моля за извършване на проверка във връзка с нарушение, водещо до влошаване на качеството ми на живот, а именно :`;
       }
 
-      const formattedTime = formatTime(d.whenVal);
-      if (formattedTime) {
-        introSentence += ` около ${formattedTime} часа`;
-      }
-      introSentence += '.'; // End the sentence
+      const bullets=d.checks.length?d.checks.map(t=>"• "+t).join("\n"):"• [изберете поне една опция]";
+      const violationLine=`Нарушението е установено на ${date} в ${time}`;
+      const descLine=d.desc?`Допълнително описание: ${d.desc}`:"";
+      const footer=`Моля за входящ номер, както и за отговор от Ваша страна в законоустановения срок.\n\nДата: ${todayDate()}    Подпис: ${d.name}`;
 
-      const intro = 
-`УВАЖАЕМИ ГОСПОДИН ДИРЕКТОР,
-
-${introSentence}
-Нарушението води до влошаване на качеството ми на живот, както следва:`;
-
-      const bullets = d.checks.length ? d.checks.map(t => `• ${t}`).join("\n") : "• [изберете поне една опция]";
-
-      let detailsParts = [];
-      detailsParts.push(`Кога е установено нарушението?: ${d.whenVal || "[въведете дата и час]"}`);
-      if (d.address) {
-        detailsParts.push(`Къде? Адрес / Район: ${d.address}`);
-      }
-      if (d.desc) {
-        detailsParts.push(`Описание: ${d.desc}`);
-      }
-      const details = detailsParts.length ? `\n${detailsParts.join("\n")}\n` : "";
-
-      let footerText = "Моля за входящ номер, както и за отговор от Ваша страна в законоустановения срок";
-      if (d.email) {
-        footerText += ` на email: ${d.email}`;
-      }
-      const footer = `${footerText}.\n\nДата: ____________    Подпис: ____________`;
-
-      return [header, fromLine, subject, intro, bullets, details, footer].filter(Boolean).join("\n\n");
+      return [header,fromLine,"",intro,bullets,violationLine,descLine,footer].filter(Boolean).join("\n\n");
     }
 
-    // Актуализиране на прегледа
-    function updatePreview(){
-      const data = collectData();
-      preview.textContent = buildLetterText(data);
-    }
+    function updatePreview(){preview.textContent=buildLetterText(collectData());}
+    const preview=document.getElementById('preview');
+    document.getElementById('signalForm').addEventListener('input',updatePreview);
 
-    // Настройване на бутон в loading състояние
-    function setButtonLoading(button, loading) {
-      if (loading) {
-        button.classList.add('loading');
-        button.disabled = true;
-        button.querySelector('span').style.visibility = 'hidden'; // Hide text
-      } else {
-        button.classList.remove('loading');
-        button.disabled = false;
-        button.querySelector('span').style.visibility = 'visible'; // Show text
-      }
-    }
-
-    // Event listeners
-    form.addEventListener('input', updatePreview);
-    form.addEventListener('change', updatePreview);
-    clearDescBtn.addEventListener('click', () => {
-      descTextarea.value = '';
-      updatePreview();
+    // DOCX download
+    document.getElementById('downloadDocx').addEventListener('click',async()=>{
+      const text=buildLetterText(collectData());
+      const {Document,Packer,Paragraph,TextRun}=docx;
+      const paras=text.split("\n").map(line=>new Paragraph({children:[new TextRun(line)]}));
+      const doc=new Document({sections:[{children:paras}]});
+      const blob=await Packer.toBlob(doc);
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download="signal_riosv_vt.docx";
+      a.click();
+      URL.revokeObjectURL(a.href);
     });
 
-    // Генериране на DOCX
-    downloadBtn.addEventListener('click', async () => {
-      if (!validateForm()) return;
-
-      setButtonLoading(downloadBtn, true);
-      
-      try {
-        const d = collectData();
-        const text = buildLetterText(d);
-        const { Document, Packer, Paragraph, TextRun } = docx;
-
-        const paras = text.split("\n").map(line => 
-          new Paragraph({ children: [new TextRun(line)] })
-        );
-
-        const doc = new Document({
-          creator: "ТИ решаваш!",
-          title: "Сигнал – замърсяване на въздуха",
-          description: "Автоматично генериран сигнал към РИОСВ – Велико Търново",
-          sections: [{ properties: {}, children: paras }]
-        });
-
-        const blob = await Packer.toBlob(doc);
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = "signal_riosv_vt.docx";
-        a.click();
-        URL.revokeObjectURL(a.href);
-        
-        showStatus('DOCX файлът е изтеглен успешно', 'success');
-      } catch (error) {
-        console.error('Грешка при генериране на DOCX:', error);
-        showStatus('Грешка при генериране на DOCX файла', 'error');
-      } finally {
-        setButtonLoading(downloadBtn, false);
-      }
-    });
-
-    // Изпращане към РИОСВ
-    sendBtn.addEventListener('click', async () => {
-      if (!validateForm()) return;
-
-      setButtonLoading(sendBtn, true);
-
-      try {
-        const d = collectData();
-        const text = buildLetterText(d);
-
-        // Генериране на DOCX в памет
-        const { Document, Packer, Paragraph, TextRun } = docx;
-        const paras = text.split("\n").map(line => 
-          new Paragraph({ children: [new TextRun(line)] })
-        );
-        const doc = new Document({ sections: [{ children: paras }] });
-        const blob = await Packer.toBlob(doc);
-
-        // Подготовка на форм данни
-        const fd = new FormData();
-        fd.append("to", "riosv@example.bg"); // Placeholder email
-        fd.append("subject", "Сигнал за замърсяване на въздуха – ТИ решаваш!");
-        fd.append("body", text);
-        fd.append("attachment", blob, "signal_riosv_vt.docx");
-        fd.append("replyTo", (d.email || ""));
-
-        // NOTE: This fetch call requires a backend endpoint at /api/send to function.
-        // If you are deploying to Vercel, you would need to create a serverless function
-        // (e.g., api/send.js) to handle email sending.
-        const res = await fetch("/api/send", { method: "POST", body: fd });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        
-        showStatus("Сигналът е изпратен към РИОСВ успешно!", 'success');
-      } catch (error) {
-        console.error('Грешка при изпращане:', error);
-        showStatus("Изпращането не бе завършено. Нужно е бекенд /api/send", 'error');
-      } finally {
-        setButtonLoading(sendBtn, false);
-      }
-    });
-
-    // Accordion functionality (only for remaining accordion items)
-    document.querySelectorAll('.accordion-item .accordion-header').forEach(header => {
-      header.addEventListener('click', () => {
-        const content = header.nextElementSibling; // The .accordion-content div
-        const isExpanded = header.getAttribute('aria-expanded') === 'true';
-
-        header.setAttribute('aria-expanded', !isExpanded);
-        if (!isExpanded) {
-          content.style.maxHeight = content.scrollHeight + 'px'; // Set to actual height
-          content.classList.add('open');
-        } else {
-          content.style.maxHeight = content.scrollHeight + 'px'; // Set to current height before collapsing
-          // Force reflow to ensure transition
-          content.offsetWidth; 
-          content.style.maxHeight = '0';
-          content.classList.remove('open');
-        }
-      });
-    });
-
-    // Open the first accordion item by default and set its max-height
-    const firstAccordionHeader = document.querySelector('.accordion-item:first-of-type .accordion-header');
-    if (firstAccordionHeader) {
-      const firstContent = firstAccordionHeader.nextElementSibling;
-      firstAccordionHeader.setAttribute('aria-expanded', 'true');
-      firstContent.classList.add('open');
-      // Set max-height after content is rendered to ensure scrollHeight is correct
-      setTimeout(() => {
-        firstContent.style.maxHeight = firstContent.scrollHeight + 'px';
-      }, 0);
-    }
-
-    // Recalculate max-height on window resize for open accordions
-    window.addEventListener('resize', () => {
-      document.querySelectorAll('.accordion-content.open').forEach(content => {
-        content.style.maxHeight = 'none'; // Temporarily remove max-height to get full scrollHeight
-        content.style.maxHeight = content.scrollHeight + 'px';
-      });
-    });
-
-    // Initial update of the preview
     updatePreview();
   </script>
 </body>
