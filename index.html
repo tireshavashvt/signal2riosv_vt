@@ -328,7 +328,7 @@
     <div class="logo-placeholder">ТИ</div>
     <div class="brand">
       <h1>ТИ решаваш! – Подай сигнал за замърсяване на въздуха</h1>
-      <p>Гражданско сдружение „За Велико Търново"</p>
+      <p>Гражданско сдружение „Ти Решаваш за Велико Търново"</p>
     </div>
   </header>
 
@@ -361,7 +361,7 @@
             <!-- НОВО: поле за "Друг източник" (показва се само при избор) -->
             <div class="form-group" id="customSourceGroup" style="display:none;">
               <label for="customSource"><i class="fas fa-industry"></i> Посочете източника *</label>
-              <input id="customSource" type="text" placeholder="Пример: Малка производствена база в кв. ...">
+              <input id="customSource" type="text" placeholder="Пример: Малка производствена база в кв. ..." required>
             </div>
             
             <div class="form-group">
@@ -595,7 +595,7 @@
     // Генериране на текста
     function buildLetterText(d){
       const {date, time} = formatDateTime(d.whenVal);
-      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ 1";
+      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ 2";
       const fromLine = `От: ${[d.name, d.phone, d.email].filter(Boolean).join(" / ")}`;
 
       let intro = "";
@@ -610,9 +610,14 @@
       }
 
       const bullets = d.checks.length ? d.checks.map(t => `• ${t}`).join("\n") : "• [изберете поне една опция]";
-      const violationLine = `Нарушението е установено на ${date} в ${time}`;
+      
+      let violationLine = `Нарушението е установено на ${date} в ${time} в кв. ${d.district || '[изберете квартал]'}.`;
+      if (d.address) {
+        violationLine += ` Адрес / Район: ${d.address}.`;
+      }
+
       const descLine = d.desc ? `Допълнително описание: ${d.desc}` : "";
-      const footer = `Моля за входящ номер, както и за отговор от Ваша страна в законоустановения срок.\n\nДата: ${todayBG()}    Подпис: ${d.name}`;
+      const footer = `Моля за входящ номер, както и за отговор от Ваша страна в законоустановения срок - на e-mail: ${d.email}.\n\nДата: ${todayBG()}    Подпис: ${d.name}`;
 
       return [header, fromLine, "", intro, bullets, violationLine, descLine, footer].filter(Boolean).join("\n\n");
     }
