@@ -356,12 +356,13 @@
                 <option>Завод „Мегапорт"</option>
                 <option>Друг източник</option>
               </select>
-            </div>
 
-            <!-- НОВО: поле за "Друг източник" (показва се само при избор) -->
-            <div class="form-group" id="customSourceGroup" style="display:none;">
-              <label for="customSource"><i class="fas fa-industry"></i> Посочете източника *</label>
-              <input id="customSource" type="text" placeholder="Пример: Малка производствена база в кв. ..." required>
+              <!-- НОВО: поле за "Друг източник" (показва се само при избор) -->
+              <!-- Moved inside the same form-group to prevent layout shift -->
+              <div id="customSourceGroup" style="display:none; margin-top: 16px;">
+                <label for="customSource"><i class="fas fa-industry"></i> Посочете източника *</label>
+                <input id="customSource" type="text" placeholder="Пример: Малка производствена база в кв. ..." required>
+              </div>
             </div>
             
             <div class="form-group">
@@ -595,8 +596,13 @@
     // Генериране на текста
     function buildLetterText(d){
       const {date, time} = formatDateTime(d.whenVal);
-      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ 2";
-      const fromLine = `От: ${[d.name, d.phone, d.email].filter(Boolean).join(" / ")}`;
+      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ 1";
+      
+      let fromParts = [d.name, d.email];
+      if (d.phone) {
+        fromParts.push(`Тел: ${d.phone}`);
+      }
+      const fromLine = `От: ${fromParts.filter(Boolean).join(" / ")}`;
 
       let intro = "";
       if (sourceAddresses[d.source]) {
