@@ -60,3 +60,4 @@ PLAN.md
 
 # Wrangler config (contains account-specific IDs and emails)
 wrangler.toml
+workers/wrangler.toml
