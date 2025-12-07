@@ -131,6 +131,51 @@ const CONFIRMATION_EMAIL_TEMPLATE = `<!DOCTYPE html>
 </body>
 </html>`;
 
+// Rate limiting constants
+const MAX_PENDING_PER_DAY = 3;    // Max unconfirmed requests per email per day
+const MAX_CONFIRMED_PER_DAY = 1;  // Max confirmed signals per email per day
+
+function getTodayKey() {
+  // Use UTC date to avoid timezone issues
+  return new Date().toISOString().split('T')[0];
+}
+
+async function checkRateLimit(env, email) {
+  const today = getTodayKey();
+  const emailNormalized = email.toLowerCase().trim();
+
+  // Check pending (unconfirmed) requests count
+  const pendingKey = `ratelimit:pending:${emailNormalized}:${today}`;
+  const pendingCountStr = await env.PENDING_SIGNALS.get(pendingKey);
+  const pendingCount = pendingCountStr ? parseInt(pendingCountStr, 10) : 0;
+
+  // Check confirmed signals count
+  const confirmedKey = `ratelimit:confirmed:${emailNormalized}:${today}`;
+  const confirmedCountStr = await env.PENDING_SIGNALS.get(confirmedKey);
+  const confirmedCount = confirmedCountStr ? parseInt(confirmedCountStr, 10) : 0;
+
+  return {
+    pendingCount,
+    confirmedCount,
+    canSubmitPending: pendingCount < MAX_PENDING_PER_DAY,
+    canSubmitConfirmed: confirmedCount < MAX_CONFIRMED_PER_DAY,
+  };
+}
+
+async function incrementPendingCount(env, email) {
+  const today = getTodayKey();
+  const emailNormalized = email.toLowerCase().trim();
+  const pendingKey = `ratelimit:pending:${emailNormalized}:${today}`;
+
+  const currentStr = await env.PENDING_SIGNALS.get(pendingKey);
+  const current = currentStr ? parseInt(currentStr, 10) : 0;
+
+  // TTL: 24 hours (86400 seconds) - auto cleanup
+  await env.PENDING_SIGNALS.put(pendingKey, String(current + 1), {
+    expirationTtl: 86400,
+  });
+}
+
 async function verifyTurnstile(token, ip, secretKey) {
   const formData = new URLSearchParams();
   formData.append('secret', secretKey);
@@ -230,6 +275,26 @@ export async function onRequestPost(context) {
       }, 400);
     }
 
+    // Check rate limits
+    const rateLimit = await checkRateLimit(env, signalData.email);
+    console.log('Rate limit check:', { email: signalData.email, ...rateLimit });
+
+    if (!rateLimit.canSubmitPending) {
+      return jsonResponse({
+        success: false,
+        error: `Достигнахте максималния брой заявки за деня (${MAX_PENDING_PER_DAY}). Моля опитайте отново утре.`,
+        rateLimited: true
+      }, 429);
+    }
+
+    if (!rateLimit.canSubmitConfirmed) {
+      return jsonResponse({
+        success: false,
+        error: `Вече имате потвърден сигнал за днес. Можете да изпратите нов сигнал утре.`,
+        rateLimited: true
+      }, 429);
+    }
+
     // Generate confirmation token
     const token = crypto.randomUUID();
     const baseUrl = new URL(request.url).origin;
@@ -281,6 +346,9 @@ export async function onRequestPost(context) {
     });
 
     console.log('Postal API response:', JSON.stringify(emailResult));
+
+    // Increment pending rate limit counter
+    await incrementPendingCount(env, signalData.email);
 
     // Track successful submission in stats
     const statsKey = 'stats:events';

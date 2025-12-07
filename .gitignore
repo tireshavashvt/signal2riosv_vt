@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+
+# Build & Cache
+.wrangler/
+.mf/
+dist/
+.cache/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Playwright MCP screenshots
+.playwright-mcp/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Debug & Test files
+debug.html
+debug*.html
+test*.html
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Random/temp images (keep icons/)
+*.jpg
+*.jpeg
+*.png
+!icons/*.png
+!icons/*.jpg
+
+# Plan files (keep in .claude/)
+PLAN.md
+
+# Local development
+.dev.vars

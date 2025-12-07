@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Документация - ТИ решаваш! Сигнал за замърсяване</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2e7d6b;
+      --primary-dark: #1e5c4d;
+      --primary-light: #e8f5f1;
+      --bg: #f8fafb;
+      --card: #ffffff;
+      --text: #1a1a2e;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --code-bg: #1e293b;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      --info: #3b82f6;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      z-index: 100;
+      padding: 24px 0;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .sidebar-logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    .sidebar-logo span {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--primary);
+    }
+
+    .sidebar-nav {
+      padding: 0 12px;
+    }
+
+    .nav-section {
+      margin-bottom: 24px;
+    }
+
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .nav-link.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .nav-link i {
+      width: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* Main Content */
+    .main {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin: 48px 0 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    h2:first-of-type {
+      margin-top: 32px;
+      border-top: none;
+      padding-top: 0;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 32px 0 12px;
+      color: var(--text);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .lead {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    /* Code Blocks */
+    pre {
+      background: var(--code-bg);
+      color: #e2e8f0;
+      padding: 20px 24px;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin: 20px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+    }
+
+    p code, li code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary-dark);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(46, 125, 107, 0.1);
+    }
+
+    .feature-card .icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .feature-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .alert i {
+      font-size: 18px;
+      margin-top: 2px;
+    }
+
+    .alert-info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+
+    .alert-warning {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .alert-danger {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .alert-success {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+
+    /* Steps */
+    .steps {
+      counter-reset: step;
+      margin: 24px 0;
+    }
+
+    .step {
+      position: relative;
+      padding-left: 60px;
+      padding-bottom: 32px;
+      border-left: 2px solid var(--border);
+      margin-left: 16px;
+    }
+
+    .step:last-child {
+      border-left-color: transparent;
+      padding-bottom: 0;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: -17px;
+      top: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .step h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    tr:hover {
+      background: var(--bg);
+    }
+
+    /* Lists */
+    ul, ol {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    /* Images */
+    .img-container {
+      margin: 24px 0;
+      text-align: center;
+    }
+
+    .img-container img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .img-caption {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* Diagram */
+    .diagram {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 24px 0;
+      overflow-x: auto;
+    }
+
+    .diagram svg {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    /* Architecture Diagram */
+    .arch-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    .arch-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .arch-box {
+      background: var(--primary-light);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 16px 24px;
+      text-align: center;
+      min-width: 140px;
+    }
+
+    .arch-box.secondary {
+      background: #fef3c7;
+      border-color: #f59e0b;
+    }
+
+    .arch-box.tertiary {
+      background: #dbeafe;
+      border-color: #3b82f6;
+    }
+
+    .arch-box i {
+      font-size: 24px;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--primary);
+    }
+
+    .arch-box.secondary i { color: #f59e0b; }
+    .arch-box.tertiary i { color: #3b82f6; }
+
+    .arch-box strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .arch-box small {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .arch-arrow {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 24px;
+    }
+
+    /* Tabs */
+    .tabs {
+      margin: 24px 0;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+      padding-top: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-primary {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-danger {
+      background: #fef2f2;
+      color: #991b1b;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 48px;
+      border-radius: 16px;
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .hero .lead {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.125rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-white {
+      background: white;
+      color: var(--primary);
+    }
+
+    .btn-white:hover {
+      background: #f0fdf4;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 2px solid rgba(255,255,255,0.5);
+    }
+
+    .btn-outline:hover {
+      border-color: white;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+
+    .toc h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .toc ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc li {
+      margin: 8px 0;
+    }
+
+    .toc a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toc a:hover {
+      color: var(--primary);
+    }
+
+    .toc a::before {
+      content: "→";
+      color: var(--text-muted);
+    }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .content {
+        padding: 24px 20px;
+      }
+
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+
+      .hero {
+        padding: 32px 24px;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 101;
+        cursor: pointer;
+      }
+    }
+
+    @media (min-width: 901px) {
+      .mobile-menu-btn {
+        display: none;
+      }
+    }
+
+    /* Flow Diagram CSS */
+    .flow-diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 20px;
+    }
+
+    .flow-box {
+      background: var(--primary-light);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      padding: 12px 24px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .flow-box.highlight {
+      background: var(--primary);
+      color: white;
+    }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      font-size: 20px;
+    }
+
+    /* Section anchor offset */
+    section[id] {
+      scroll-margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="#" class="sidebar-logo">
+        <img src="../icons/logo.jpg" alt="Logo">
+        <span>ТИ решаваш!</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Начало</div>
+        <a href="#intro" class="nav-link active"><i class="fas fa-home"></i> Въведение</a>
+        <a href="#features" class="nav-link"><i class="fas fa-star"></i> Възможности</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Потребителско ръководство</div>
+        <a href="#user-guide" class="nav-link"><i class="fas fa-book-open"></i> Как да подам сигнал</a>
+        <a href="#pwa-install" class="nav-link"><i class="fas fa-mobile-alt"></i> Инсталиране на PWA</a>
+        <a href="#faq" class="nav-link"><i class="fas fa-question-circle"></i> Често задавани въпроси</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Техническа документация</div>
+        <a href="#architecture" class="nav-link"><i class="fas fa-sitemap"></i> Архитектура</a>
+        <a href="#tech-stack" class="nav-link"><i class="fas fa-layer-group"></i> Технологии</a>
+        <a href="#security" class="nav-link"><i class="fas fa-shield-alt"></i> Сигурност</a>
+        <a href="#gdpr" class="nav-link"><i class="fas fa-user-shield"></i> GDPR</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Инсталация</div>
+        <a href="#requirements" class="nav-link"><i class="fas fa-clipboard-list"></i> Изисквания</a>
+        <a href="#installation" class="nav-link"><i class="fas fa-download"></i> Инсталация</a>
+        <a href="#configuration" class="nav-link"><i class="fas fa-cog"></i> Конфигурация</a>
+        <a href="#deployment" class="nav-link"><i class="fas fa-rocket"></i> Deployment</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">API Reference</div>
+        <a href="#api-submit" class="nav-link"><i class="fas fa-paper-plane"></i> POST /api/submit</a>
+        <a href="#api-confirm" class="nav-link"><i class="fas fa-check"></i> GET /api/confirm</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="content">
+
+      <!-- Hero Section -->
+      <section id="intro">
+        <div class="hero">
+          <h1>ТИ решаваш! - Документация</h1>
+          <p class="lead">
+            Пълно ръководство за използване и внедряване на платформата за подаване на сигнали за замърсяване на въздуха към РИОСВ.
+          </p>
+          <div class="hero-buttons">
+            <a href="#user-guide" class="btn btn-white">
+              <i class="fas fa-book-open"></i> Потребителско ръководство
+            </a>
+            <a href="#installation" class="btn btn-outline">
+              <i class="fas fa-code"></i> Техническа документация
+            </a>
+          </div>
+        </div>
+
+        <div class="toc">
+          <h4>Съдържание</h4>
+          <ul>
+            <li><a href="#user-guide">Потребителско ръководство</a></li>
+            <li><a href="#architecture">Архитектура на системата</a></li>
+            <li><a href="#security">Сигурност и защита</a></li>
+            <li><a href="#gdpr">GDPR съответствие</a></li>
+            <li><a href="#installation">Инсталация стъпка по стъпка</a></li>
+            <li><a href="#api-submit">API документация</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section id="features">
+        <h2>Възможности на платформата</h2>
+
+        <div class="card-grid">
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-mobile-alt"></i></div>
+            <h4>PWA приложение</h4>
+            <p>Инсталирайте на телефона си и използвайте офлайн</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-shield-alt"></i></div>
+            <h4>Double Opt-In</h4>
+            <p>Защита от спам чрез потвърждение по имейл</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-robot"></i></div>
+            <h4>Cloudflare Turnstile</h4>
+            <p>Невидима CAPTCHA без досадни пъзели</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-file-word"></i></div>
+            <h4>DOCX генериране</h4>
+            <p>Автоматично създаване на официален документ</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-tachometer-alt"></i></div>
+            <h4>Rate Limiting</h4>
+            <p>Ограничение до 1 сигнал на ден на имейл</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-globe"></i></div>
+            <h4>Serverless</h4>
+            <p>Работи на Cloudflare Pages без сървър</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- User Guide -->
+      <section id="user-guide">
+        <h2>Потребителско ръководство</h2>
+        <p class="lead">Научете как да подадете сигнал за замърсяване на въздуха в 4 лесни стъпки.</p>
+
+        <div class="steps">
+          <div class="step">
+            <h4>Попълнете формата</h4>
+            <p>Изберете източника на замърсяване, квартала, датата и часа на инцидента. Отбележете симптомите, които изпитвате (миризма, дразнене на очите и др.).</p>
+          </div>
+
+          <div class="step">
+            <h4>Въведете данните си</h4>
+            <p>Попълнете вашето име и имейл адрес. Телефонът е опционален, но помага за по-бърза обратна връзка от РИОСВ.</p>
+          </div>
+
+          <div class="step">
+            <h4>Потвърдете имейла си</h4>
+            <p>След изпращане ще получите имейл с линк за потвърждение. Кликнете на него, за да бъде изпратен сигналът към РИОСВ.</p>
+            <div class="alert alert-warning">
+              <i class="fas fa-exclamation-triangle"></i>
+              <div>
+                <strong>Важно:</strong> Проверете папка "Спам" или "Junk" ако не виждате имейла в рамките на няколко минути.
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <h4>Готово!</h4>
+            <p>След потвърждение, сигналът се изпраща автоматично към РИОСВ – Велико Търново. Ще получите отговор на имейла си.</p>
+          </div>
+        </div>
+
+        <h3>Защо е нужно потвърждение по имейл?</h3>
+        <p>Системата използва <strong>double opt-in</strong> механизъм за защита от злоупотреби:</p>
+        <ul>
+          <li>Предотвратява изпращане на сигнали от чужд имейл адрес</li>
+          <li>Осигурява, че РИОСВ може да се свърже с вас</li>
+          <li>Защитава системата от автоматизирани атаки</li>
+        </ul>
+      </section>
+
+      <!-- PWA Install -->
+      <section id="pwa-install">
+        <h2>Инсталиране като приложение</h2>
+        <p>Можете да инсталирате "ТИ решаваш!" като приложение на вашия телефон или компютър.</p>
+
+        <h3>На Android (Chrome)</h3>
+        <ol>
+          <li>Отворете <a href="https://signal.tireshavashzavt.org">signal.tireshavashzavt.org</a></li>
+          <li>Натиснете бутона <strong>"Инсталирай"</strong> в горната част на сайта</li>
+          <li>Или: меню (⋮) → "Добави към начален екран"</li>
+        </ol>
+
+        <h3>На iPhone (Safari)</h3>
+        <ol>
+          <li>Отворете сайта в Safari</li>
+          <li>Натиснете бутона за споделяне (□↑)</li>
+          <li>Изберете "Add to Home Screen"</li>
+        </ol>
+
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i>
+          <div>
+            <strong>Предимства:</strong> Приложението работи офлайн, зарежда се моментално и изглежда като нативно приложение.
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq">
+        <h2>Често задавани въпроси</h2>
+
+        <div class="card">
+          <h4>Колко сигнала мога да подам на ден?</h4>
+          <p>Можете да подадете максимум <strong>1 потвърден сигнал на ден</strong> от един имейл адрес. Това ограничение защитава системата от злоупотреби.</p>
+        </div>
+
+        <div class="card">
+          <h4>Не получих имейл за потвърждение. Какво да направя?</h4>
+          <p>Проверете папка "Спам" или "Junk". Ако имейлът не е там, изчакайте 5 минути и опитайте отново. При продължаващи проблеми, свържете се с нас.</p>
+        </div>
+
+        <div class="card">
+          <h4>Какво става с личните ми данни?</h4>
+          <p>Данните се съхраняват само временно (24 часа) до потвърждение. След изпращане към РИОСВ, данните се изтриват от нашата система. Вижте секция <a href="#gdpr">GDPR</a> за повече информация.</p>
+        </div>
+
+        <div class="card">
+          <h4>Мога ли да редактирам сигнала след изпращане?</h4>
+          <p>Не, след потвърждение сигналът се изпраща директно към РИОСВ. Ако искате да добавите информация, подайте нов сигнал на следващия ден.</p>
+        </div>
+      </section>
+
+      <!-- Architecture -->
+      <section id="architecture">
+        <h2>Архитектура на системата</h2>
+        <p class="lead">Системата е изградена на принципа "serverless" с използване на Cloudflare инфраструктура.</p>
+
+        <div class="diagram">
+          <div class="arch-diagram">
+            <div class="arch-row">
+              <div class="arch-box">
+                <i class="fas fa-mobile-alt"></i>
+                <strong>PWA Frontend</strong>
+                <small>index.html</small>
+              </div>
+            </div>
+
+            <div class="arch-arrow">↓</div>
+
+            <div class="arch-row">
+              <div class="arch-box secondary">
+                <i class="fas fa-shield-alt"></i>
+                <strong>Cloudflare Turnstile</strong>
+                <small>Anti-bot защита</small>
+              </div>
+            </div>
+
+            <div class="arch-arrow">↓</div>
+
+            <div class="arch-row">
+              <div class="arch-box tertiary">
+                <i class="fas fa-cloud"></i>
+                <strong>Cloudflare Workers</strong>
+                <small>/api/submit, /api/confirm</small>
+              </div>
+              <div class="arch-box">
+                <i class="fas fa-database"></i>
+                <strong>Cloudflare KV</strong>
+                <small>Временно съхранение</small>
+              </div>
+            </div>
+
+            <div class="arch-arrow">↓</div>
+
+            <div class="arch-row">
+              <div class="arch-box secondary">
+                <i class="fas fa-envelope"></i>
+                <strong>Postal Server</strong>
+                <small>SMTP изпращане</small>
+              </div>
+              <div class="arch-box">
+                <i class="fas fa-building"></i>
+                <strong>РИОСВ Email</strong>
+                <small>riosvt-vt@riosvt-vt.org</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Детайлна архитектурна диаграма</h3>
+        <div class="img-container">
+          <img src="images/architecture.svg" alt="Архитектура на системата" style="max-width: 800px;">
+          <p class="img-caption">Пълна архитектурна диаграма на системата</p>
+        </div>
+
+        <h3>Поток на данните (Double Opt-In)</h3>
+
+        <div class="img-container">
+          <img src="images/flow-diagram.svg" alt="Поток на данните" style="max-width: 700px;">
+          <p class="img-caption">Диаграма на потока от данни през системата</p>
+        </div>
+      </section>
+
+      <!-- Tech Stack -->
+      <section id="tech-stack">
+        <h2>Технологичен стек</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Компонент</th>
+              <th>Технология</th>
+              <th>Предназначение</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Frontend</strong></td>
+              <td>Vanilla HTML/CSS/JS</td>
+              <td>PWA приложение, без framework</td>
+            </tr>
+            <tr>
+              <td><strong>Backend</strong></td>
+              <td>Cloudflare Workers</td>
+              <td>Serverless API endpoints</td>
+            </tr>
+            <tr>
+              <td><strong>Database</strong></td>
+              <td>Cloudflare KV</td>
+              <td>Key-Value store за pending signals</td>
+            </tr>
+            <tr>
+              <td><strong>Hosting</strong></td>
+              <td>Cloudflare Pages</td>
+              <td>Static hosting + Functions</td>
+            </tr>
+            <tr>
+              <td><strong>Anti-bot</strong></td>
+              <td>Cloudflare Turnstile</td>
+              <td>CAPTCHA без пъзели</td>
+            </tr>
+            <tr>
+              <td><strong>Email</strong></td>
+              <td>Postal Server</td>
+              <td>Self-hosted SMTP</td>
+            </tr>
+            <tr>
+              <td><strong>DOCX</strong></td>
+              <td>docx.js</td>
+              <td>Генериране на Word документи</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Security -->
+      <section id="security">
+        <h2>Сигурност и защита</h2>
+
+        <h3>Защита от спам</h3>
+        <ul>
+          <li><strong>Cloudflare Turnstile</strong> - невидима CAPTCHA, блокира ботове</li>
+          <li><strong>Double opt-in</strong> - изисква потвърждение от реален имейл</li>
+          <li><strong>Rate limiting</strong> - максимум 3 заявки и 1 потвърден сигнал на ден</li>
+          <li><strong>Token expiration</strong> - линковете изтичат след 24 часа</li>
+        </ul>
+
+        <h3>Защита на данните</h3>
+        <ul>
+          <li><strong>HTTPS only</strong> - целият трафик е криптиран</li>
+          <li><strong>No cookies</strong> - не се използват бисквитки за проследяване</li>
+          <li><strong>Minimal data</strong> - съхраняваме само необходимото</li>
+          <li><strong>Auto-delete</strong> - данните се изтриват след 24 часа</li>
+        </ul>
+
+        <h3>Token Security</h3>
+        <div class="card">
+          <p>Confirmation токените се генерират с <code>crypto.randomUUID()</code>, което осигурява:</p>
+          <ul>
+            <li>122 бита ентропия</li>
+            <li>Криптографски сигурен random</li>
+            <li>Невъзможност за отгатване</li>
+          </ul>
+        </div>
+
+        <div class="alert alert-danger">
+          <i class="fas fa-exclamation-circle"></i>
+          <div>
+            <strong>Важно за production:</strong> Уверете се, че всички secrets (TURNSTILE_SECRET_KEY, POSTAL_API_KEY) са конфигурирани през Cloudflare Dashboard, а не в кода!
+          </div>
+        </div>
+      </section>
+
+      <!-- GDPR -->
+      <section id="gdpr">
+        <h2>GDPR съответствие</h2>
+
+        <div class="img-container">
+          <img src="images/gdpr-flow.svg" alt="GDPR жизнен цикъл на данните" style="max-width: 700px;">
+          <p class="img-caption">Жизнен цикъл на личните данни в системата</p>
+        </div>
+
+        <h3>Какви данни събираме</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Данни</th>
+              <th>Цел</th>
+              <th>Съхранение</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Име</td>
+              <td>Идентификация на подателя</td>
+              <td>24 часа в KV, след това към РИОСВ</td>
+            </tr>
+            <tr>
+              <td>Имейл</td>
+              <td>Потвърждение + обратна връзка</td>
+              <td>24 часа в KV</td>
+            </tr>
+            <tr>
+              <td>Телефон (опционално)</td>
+              <td>Допълнителен контакт</td>
+              <td>24 часа в KV</td>
+            </tr>
+            <tr>
+              <td>IP адрес</td>
+              <td>Turnstile верификация</td>
+              <td>Не се съхранява</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Правно основание</h3>
+        <p>Обработката на данни се извършва на основание:</p>
+        <ul>
+          <li><strong>Член 6(1)(a) GDPR</strong> - Съгласие (чрез изпращане на формата)</li>
+          <li><strong>Член 6(1)(e) GDPR</strong> - Обществен интерес (сигнали за замърсяване)</li>
+        </ul>
+
+        <h3>Права на субектите</h3>
+        <div class="card-grid">
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-eye"></i></div>
+            <h4>Право на достъп</h4>
+            <p>Можете да поискате копие на вашите данни</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-trash"></i></div>
+            <h4>Право на изтриване</h4>
+            <p>Данните се изтриват автоматично след 24 часа</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon"><i class="fas fa-ban"></i></div>
+            <h4>Право на възражение</h4>
+            <p>Не потвърждавайте имейла и данните ще бъдат изтрити</p>
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i>
+          <div>
+            <strong>Забележка:</strong> След потвърждение, данните се предават на РИОСВ и излизат от нашата система. За достъп до тези данни, обърнете се към РИОСВ.
+          </div>
+        </div>
+      </section>
+
+      <!-- Requirements -->
+      <section id="requirements">
+        <h2>Изисквания за инсталация</h2>
+
+        <h3>Необходими акаунти</h3>
+        <ul>
+          <li><strong>Cloudflare акаунт</strong> (безплатен) - за Pages, Workers, KV, Turnstile</li>
+          <li><strong>Postal Server</strong> - self-hosted или друг SMTP доставчик</li>
+          <li><strong>GitHub акаунт</strong> (опционално) - за автоматичен deploy</li>
+        </ul>
+
+        <h3>Локални инструменти</h3>
+        <pre>
+# Node.js 18+
+node --version
+
+# npm или yarn
+npm --version
+
+# Wrangler CLI
+npm install -g wrangler
+wrangler --version</pre>
+
+        <h3>Cloudflare услуги</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Услуга</th>
+              <th>План</th>
+              <th>Лимити (безплатен)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pages</td>
+              <td>Free</td>
+              <td>Unlimited sites, 500 builds/month</td>
+            </tr>
+            <tr>
+              <td>Workers</td>
+              <td>Free</td>
+              <td>100,000 requests/day</td>
+            </tr>
+            <tr>
+              <td>KV</td>
+              <td>Free</td>
+              <td>100,000 reads/day, 1,000 writes/day</td>
+            </tr>
+            <tr>
+              <td>Turnstile</td>
+              <td>Free</td>
+              <td>Unlimited</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Installation -->
+      <section id="installation">
+        <h2>Инсталация стъпка по стъпка</h2>
+
+        <div class="steps">
+          <div class="step">
+            <h4>Клонирайте репозиторито</h4>
+            <pre>git clone https://github.com/your-org/signal2riosv_vt.git
+cd signal2riosv_vt</pre>
+          </div>
+
+          <div class="step">
+            <h4>Инсталирайте зависимостите</h4>
+            <pre>npm install</pre>
+          </div>
+
+          <div class="step">
+            <h4>Влезте в Cloudflare</h4>
+            <pre>wrangler login</pre>
+            <p>Това ще отвори браузър за автентикация.</p>
+          </div>
+
+          <div class="step">
+            <h4>Създайте KV namespace</h4>
+            <pre># Създайте namespace
+wrangler kv:namespace create PENDING_SIGNALS
+
+# Копирайте ID-то и го добавете в wrangler.toml
+# [[kv_namespaces]]
+# binding = "PENDING_SIGNALS"
+# id = "your-namespace-id"</pre>
+          </div>
+
+          <div class="step">
+            <h4>Конфигурирайте Turnstile</h4>
+            <ol>
+              <li>Отидете на <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank">Cloudflare Turnstile Dashboard</a></li>
+              <li>Създайте нов site</li>
+              <li>Копирайте Site Key в <code>index.html</code></li>
+              <li>Запазете Secret Key за следващата стъпка</li>
+            </ol>
+          </div>
+
+          <div class="step">
+            <h4>Добавете secrets</h4>
+            <pre># Turnstile secret key
+wrangler pages secret put TURNSTILE_SECRET_KEY
+
+# Postal API key
+wrangler pages secret put POSTAL_API_KEY
+
+# Stats key (за /api/stats endpoint)
+wrangler pages secret put STATS_KEY</pre>
+          </div>
+
+          <div class="step">
+            <h4>Редактирайте wrangler.toml</h4>
+            <pre>name = "signal-riosv"
+pages_build_output_dir = "."
+
+[[kv_namespaces]]
+binding = "PENDING_SIGNALS"
+id = "your-namespace-id"
+
+[vars]
+RIOSV_EMAIL = "riosvt-vt@riosvt-vt.org"
+FROM_EMAIL = "noreply@yourdomain.com"
+FROM_NAME = "ТИ решаваш!"
+POSTAL_API_URL = "https://postal.yourdomain.com"</pre>
+          </div>
+
+          <div class="step">
+            <h4>Deploy!</h4>
+            <pre>wrangler pages deploy .</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Configuration -->
+      <section id="configuration">
+        <h2>Конфигурация</h2>
+
+        <h3>Променливи на средата</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Променлива</th>
+              <th>Тип</th>
+              <th>Описание</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>RIOSV_EMAIL</code></td>
+              <td>var</td>
+              <td>Имейл на РИОСВ за получаване на сигнали</td>
+            </tr>
+            <tr>
+              <td><code>FROM_EMAIL</code></td>
+              <td>var</td>
+              <td>Имейл адрес за изпращане</td>
+            </tr>
+            <tr>
+              <td><code>FROM_NAME</code></td>
+              <td>var</td>
+              <td>Име на изпращача</td>
+            </tr>
+            <tr>
+              <td><code>POSTAL_API_URL</code></td>
+              <td>var</td>
+              <td>URL на Postal API</td>
+            </tr>
+            <tr>
+              <td><code>TURNSTILE_SECRET_KEY</code></td>
+              <td>secret</td>
+              <td>Turnstile secret за верификация</td>
+            </tr>
+            <tr>
+              <td><code>POSTAL_API_KEY</code></td>
+              <td>secret</td>
+              <td>API ключ за Postal</td>
+            </tr>
+            <tr>
+              <td><code>STATS_KEY</code></td>
+              <td>secret</td>
+              <td>Ключ за достъп до статистики</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Rate Limiting</h3>
+        <p>Настройките за rate limiting се намират в <code>functions/api/submit.js</code>:</p>
+        <pre>// Rate limiting constants
+const MAX_PENDING_PER_DAY = 3;    // Непотвърдени заявки
+const MAX_CONFIRMED_PER_DAY = 1;  // Потвърдени сигнали</pre>
+
+        <h3>Turnstile Site Key</h3>
+        <p>Намерете в <code>index.html</code> и заменете:</p>
+        <pre>&lt;div class="cf-turnstile"
+     data-sitekey="YOUR_SITE_KEY"
+     data-callback="onTurnstileSuccess"&gt;
+&lt;/div&gt;</pre>
+      </section>
+
+      <!-- Deployment -->
+      <section id="deployment">
+        <h2>Deployment стратегии</h2>
+
+        <div class="tabs">
+          <div class="tab-buttons">
+            <button class="tab-btn active" onclick="showTab('manual')">Ръчен deploy</button>
+            <button class="tab-btn" onclick="showTab('github')">GitHub интеграция</button>
+          </div>
+
+          <div id="manual" class="tab-content active">
+            <h4>Ръчен deploy с Wrangler</h4>
+            <pre># Deploy към production
+wrangler pages deploy .
+
+# Preview deploy (за тестване)
+wrangler pages deploy . --branch=preview</pre>
+          </div>
+
+          <div id="github" class="tab-content">
+            <h4>Автоматичен deploy от GitHub</h4>
+            <ol>
+              <li>Свържете GitHub репозиторито с Cloudflare Pages</li>
+              <li>Настройте build settings:</li>
+            </ol>
+            <pre># Build command: (оставете празно)
+# Build output directory: /
+# Root directory: /</pre>
+            <p>Всеки push към <code>main</code> branch ще деплойне автоматично.</p>
+          </div>
+        </div>
+
+        <h3>Обновяване на версия</h3>
+        <ol>
+          <li>Променете версията в <code>index.html</code> (comment + footer)</li>
+          <li>Увеличете cache версията в <code>sw.js</code></li>
+          <li>Deploy</li>
+        </ol>
+        <pre># index.html
+&lt;!-- version 0.3.7 --&gt;
+
+# sw.js
+const CACHE_NAME = 'ti-reshavash-v14';</pre>
+      </section>
+
+      <!-- API Submit -->
+      <section id="api-submit">
+        <h2>POST /api/submit</h2>
+        <p>Изпраща сигнал и генерира confirmation имейл.</p>
+
+        <h3>Request</h3>
+        <pre>{
+  "turnstileToken": "string (required)",
+  "signalData": {
+    "source": "string",
+    "customSource": "string (optional)",
+    "district": "string",
+    "whenVal": "string (ISO date)",
+    "address": "string (optional)",
+    "subject": "string (optional)",
+    "name": "string (required)",
+    "email": "string (required)",
+    "phone": "string (optional)",
+    "desc": "string (optional)",
+    "checks": ["string array"]
+  },
+  "docxBase64": "string (base64 encoded DOCX)",
+  "letterText": "string (plain text of letter)"
+}</pre>
+
+        <h3>Response - Success (200)</h3>
+        <pre>{
+  "success": true,
+  "message": "Изпратихме имейл за потвърждение на user@example.com"
+}</pre>
+
+        <h3>Response - Rate Limited (429)</h3>
+        <pre>{
+  "success": false,
+  "error": "Достигнахте максималния брой заявки за деня (3).",
+  "rateLimited": true
+}</pre>
+
+        <h3>Response - Turnstile Failed (400)</h3>
+        <pre>{
+  "success": false,
+  "error": "Turnstile верификацията е неуспешна (timeout-or-duplicate)."
+}</pre>
+      </section>
+
+      <!-- API Confirm -->
+      <section id="api-confirm">
+        <h2>GET /api/confirm/:token</h2>
+        <p>Потвърждава сигнала и го изпраща към РИОСВ.</p>
+
+        <h3>Parameters</h3>
+        <table>
+          <tr>
+            <td><code>:token</code></td>
+            <td>UUID token от confirmation имейла</td>
+          </tr>
+        </table>
+
+        <h3>Response - Success (200)</h3>
+        <p>HTML страница с потвърждение:</p>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Сигналът е изпратен!&lt;/h1&gt;
+    &lt;p&gt;Ще получите отговор на: user@example.com&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+
+        <h3>Response - Token Expired (404)</h3>
+        <p>HTML страница с грешка и линк за нов сигнал.</p>
+
+        <h3>Response - Rate Limited (429)</h3>
+        <p>HTML страница: "Вече имате потвърден сигнал за днес."</p>
+      </section>
+
+      <!-- Footer -->
+      <footer style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted);">
+        <p>
+          <strong>ТИ решаваш!</strong> - Гражданско сдружение „Ти Решаваш за Велико Търново"
+        </p>
+        <p style="font-size: 14px; margin-top: 8px;">
+          <a href="https://signal.tireshavashzavt.org" style="color: var(--primary);">signal.tireshavashzavt.org</a>
+          &nbsp;•&nbsp;
+          <a href="mailto:info@tireshavashzavt.org" style="color: var(--primary);">info@tireshavashzavt.org</a>
+        </p>
+        <p style="font-size: 12px; margin-top: 16px;">
+          Документация версия 1.0 • Последна актуализация: Декември 2025
+        </p>
+      </footer>
+
+    </div>
+  </main>
+
+  <script>
+    // Tab switching
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Mobile sidebar toggle
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // Active nav link based on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= sectionTop - 100) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // Close sidebar on link click (mobile)
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+          document.getElementById('sidebar').classList.remove('open');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

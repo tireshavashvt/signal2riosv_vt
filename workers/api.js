@@ -320,6 +320,69 @@ async function handleSubmit(request, env) {
 }
 
 /**
+ * Handle POST /api/track - Simple event tracking
+ */
+async function handleTrack(request, env) {
+  try {
+    const body = await request.json();
+    const { event, data, timestamp } = body;
+
+    if (!event) {
+      return jsonResponse({ success: false, error: 'Missing event name' }, 400);
+    }
+
+    // Get current stats
+    const statsKey = 'stats:events';
+    const statsJson = await env.PENDING_SIGNALS.get(statsKey);
+    const stats = statsJson ? JSON.parse(statsJson) : {};
+
+    // Increment event counter
+    const eventKey = event;
+    if (!stats[eventKey]) {
+      stats[eventKey] = { count: 0, lastOccurred: null, byPlatform: {} };
+    }
+    stats[eventKey].count++;
+    stats[eventKey].lastOccurred = timestamp || Date.now();
+
+    // Track by platform if provided
+    if (data && data.platform) {
+      if (!stats[eventKey].byPlatform[data.platform]) {
+        stats[eventKey].byPlatform[data.platform] = 0;
+      }
+      stats[eventKey].byPlatform[data.platform]++;
+    }
+
+    // Save back to KV (no TTL - permanent stats)
+    await env.PENDING_SIGNALS.put(statsKey, JSON.stringify(stats));
+
+    return jsonResponse({ success: true });
+  } catch (error) {
+    console.error('Track error:', error);
+    return jsonResponse({ success: false }, 500);
+  }
+}
+
+/**
+ * Handle GET /api/stats - View statistics
+ */
+async function handleStats(url, env) {
+  // Auth check - only allow if STATS_KEY is set and matches
+  const authKey = url.searchParams.get('key');
+  if (!env.STATS_KEY || authKey !== env.STATS_KEY) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  const statsJson = await env.PENDING_SIGNALS.get('stats:events');
+  const stats = statsJson ? JSON.parse(statsJson) : {};
+
+  return jsonResponse({
+    success: true,
+    stats,
+    generatedAt: new Date().toISOString(),
+  });
+}
+
+/**
  * Handle GET /api/confirm/:token
  */
 async function handleConfirm(token, env) {
@@ -438,6 +501,16 @@ export default {
     const confirmMatch = path.match(/^\/api\/confirm\/([a-f0-9-]+)$/i);
     if (request.method === 'GET' && confirmMatch) {
       return handleConfirm(confirmMatch[1], env);
+    }
+
+    // Route: POST /api/track - Simple event tracking
+    if (request.method === 'POST' && path === '/api/track') {
+      return handleTrack(request, env);
+    }
+
+    // Route: GET /api/stats - View statistics (simple auth via query param)
+    if (request.method === 'GET' && path === '/api/stats') {
+      return handleStats(url, env);
     }
 
     // 404 for unknown routes

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Air pollution report form for Veliko Tarnovo",
   "scripts": {
-    "dev": "http-server -p 3000 -c-1 --cors -a localhost"
+    "dev": "http-server -p 3000 -c-1 --cors -a localhost",
+    "dev:https": "http-server -p 3000 -c-1 --cors -S -C cert.pem -K key.pem"
   },
   "dependencies": {
     "http-server": "^14.1.1",

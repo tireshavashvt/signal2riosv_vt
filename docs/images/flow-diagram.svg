@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="700" height="800" viewBox="0 0 700 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2e7d6b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="700" height="800" fill="#f8fafb"/>
+
+  <!-- Title -->
+  <text x="350" y="35" text-anchor="middle" font-family="Inter, sans-serif" font-size="18" font-weight="600" fill="#1a1a2e">
+    Поток на данните (Double Opt-In)
+  </text>
+
+  <!-- Step 1: User fills form -->
+  <g transform="translate(200, 60)">
+    <rect x="0" y="0" width="300" height="55" rx="10" fill="white" stroke="#2e7d6b" stroke-width="2" filter="url(#shadow)"/>
+    <circle cx="-20" cy="27" r="18" fill="#2e7d6b"/>
+    <text x="-20" y="32" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="white">1</text>
+    <text x="150" y="25" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#1a1a2e">
+      Потребител попълва формата
+    </text>
+    <text x="150" y="43" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b7280">
+      Избор на източник, квартал, симптоми, лични данни
+    </text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M350 120 L350 145" stroke="#2e7d6b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 2: Turnstile -->
+  <g transform="translate(200, 150)">
+    <rect x="0" y="0" width="300" height="55" rx="10" fill="#fff7ed" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+    <circle cx="-20" cy="27" r="18" fill="#f59e0b"/>
+    <text x="-20" y="32" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="white">2</text>
+    <text x="150" y="25" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#1a1a2e">
+      Cloudflare Turnstile
+    </text>
+    <text x="150" y="43" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b7280">
+      Невидима CAPTCHA верификация
+    </text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M350 210 L350 235" stroke="#2e7d6b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 3: POST /api/submit -->
+  <g transform="translate(200, 240)">
+    <rect x="0" y="0" width="300" height="55" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+    <circle cx="-20" cy="27" r="18" fill="#3b82f6"/>
+    <text x="-20" y="32" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="white">3</text>
+    <text x="150" y="25" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#1a1a2e">
+      POST /api/submit
+    </text>
+    <text x="150" y="43" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b7280">
+      Cloudflare Worker приема заявката
+    </text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M350 300 L350 325" stroke="#2e7d6b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 4: Store in KV + Send email -->
+  <g transform="translate(200, 330)">
+    <rect x="0" y="0" width="300" height="70" rx="10" fill="white" stroke="#2e7d6b" stroke-width="2" filter="url(#shadow)"/>
+    <circle cx="-20" cy="35" r="18" fill="#2e7d6b"/>
+    <text x="-20" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="white">4</text>
+    <text x="150" y="25" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#1a1a2e">
+      Запис в KV + Изпращане на имейл
+    </text>
+    <text x="150" y="43" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b7280">
+      Token генериран: crypto.randomUUID()
+    </text>
+    <text x="150" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b7280">
+      TTL: 24 часа
+    </text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M350 405 L350 430" stroke="#2e7d6b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 5: User receives email -->
+  <g transform="translate(200, 435)">
+    <rect x="0" y="0" width="300" height="70" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
+    <circle cx="-20" cy="35" r="18" fill="#10b981"/>
+    <text x="-20" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="white">5</text>
+    <text x="150" y="25" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#1a1a2e">
+      Потребител получава имейл
+    </text>
+    <text x="150" y="43" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b7280">
+      "Потвърдете сигнала си"
+    </text>
+    <text x="150" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#10b981" font-weight="500">
+      [КЛИКВА НА ЛИНКА]
+    </text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M350 510 L350 535" stroke="#2e7d6b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 6: GET /api/confirm -->
+  <g transform="translate(200, 540)">
+    <rect x="0" y="0" width="300" height="55" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+    <circle cx="-20" cy="27" r="18" fill="#3b82f6"/>
+    <text x="-20" y="32" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="white">6</text>
+    <text x="150" y="25" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#1a1a2e">
+      GET /api/confirm/:token
+    </text>
+    <text x="150" y="43" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b7280">
+      Worker валидира token от KV
+    </text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M350 600 L350 625" stroke="#2e7d6b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 7: Send to RIOSV -->
+  <g transform="translate(200, 630)">
+    <rect x="0" y="0" width="300" height="70" rx="10" fill="white" stroke="#2e7d6b" stroke-width="2" filter="url(#shadow)"/>
+    <circle cx="-20" cy="35" r="18" fill="#2e7d6b"/>
+    <text x="-20" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="white">7</text>
+    <text x="150" y="25" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#1a1a2e">
+      Изпращане към РИОСВ
+    </text>
+    <text x="150" y="43" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6b7280">
+      Email + DOCX прикачен файл
+    </text>
+    <text x="150" y="58" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#ef4444">
+      Изтриване от KV
+    </text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M350 705 L350 730" stroke="#2e7d6b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 8: Success -->
+  <g transform="translate(200, 735)">
+    <rect x="0" y="0" width="300" height="45" rx="10" fill="#2e7d6b" filter="url(#shadow)"/>
+    <text x="150" y="28" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="white">
+      Сигналът е изпратен успешно!
+    </text>
+  </g>
+
+  <!-- Side annotations -->
+  <g transform="translate(530, 200)">
+    <rect x="0" y="0" width="140" height="90" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+    <text x="70" y="20" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#991b1b">
+      Rate Limiting
+    </text>
+    <text x="70" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" fill="#6b7280">
+      Max 3 заявки/ден
+    </text>
+    <text x="70" y="52" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" fill="#6b7280">
+      Max 1 потвърден/ден
+    </text>
+    <text x="70" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" fill="#6b7280">
+      Per email address
+    </text>
+    <text x="70" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" fill="#6b7280">
+      Auto-reset в полунощ
+    </text>
+  </g>
+
+  <path d="M520 247 L530 247" stroke="#fecaca" stroke-width="1" stroke-dasharray="3"/>
+
+  <g transform="translate(530, 450)">
+    <rect x="0" y="0" width="140" height="60" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+    <text x="70" y="18" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#1e40af">
+      Token Security
+    </text>
+    <text x="70" y="36" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" fill="#6b7280">
+      UUID v4 (122 bits)
+    </text>
+    <text x="70" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" fill="#6b7280">
+      Crypto-secure random
+    </text>
+  </g>
+
+  <path d="M520 472 L530 472" stroke="#bfdbfe" stroke-width="1" stroke-dasharray="3"/>
+</svg>
