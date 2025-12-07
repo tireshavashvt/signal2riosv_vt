@@ -24,6 +24,7 @@ export async function onRequestGet(context) {
 
   const testEmail = url.searchParams.get('email') || 'debug-test@tireshavashzavt.org';
   const fromEmail = url.searchParams.get('from') || env.FROM_EMAIL || 'noreply@tireshavashzavt.org';
+  const ccEmail = url.searchParams.get('cc') || null;
 
   try {
     // Test 1: Check if POSTAL_API_URL is set
@@ -57,10 +58,16 @@ export async function onRequestGet(context) {
           <p>This is a test email from the debug console.</p>
           <p>Timestamp: ${new Date().toISOString()}</p>
           <p>POSTAL_API_URL: ${env.POSTAL_API_URL}</p>
+          <p>CC: ${ccEmail || 'none'}</p>
         </body>
         </html>
       `,
     };
+
+    // Add CC if provided
+    if (ccEmail) {
+      message.cc = [ccEmail];
+    }
 
     console.log('Test Postal - Sending to:', testEmail);
     console.log('Test Postal - API URL:', env.POSTAL_API_URL);
