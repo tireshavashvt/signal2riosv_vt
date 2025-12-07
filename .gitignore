@@ -57,3 +57,6 @@ PLAN.md
 
 # Local development
 .dev.vars
+
+# Wrangler config (contains account-specific IDs and emails)
+wrangler.toml
