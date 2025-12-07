@@ -17,12 +17,14 @@ No build step required - static files served directly.
 
 ## Cloudflare Pages Deployment
 
-1. Connect repository to Cloudflare Pages
-2. Build command: (leave empty)
-3. Build output directory: `/` (root)
-4. Deploy
+**ВАЖНО: DEPLOYMENT СЕ ПРАВИ С WRANGLER, НЕ ПРЕЗ GITHUB!**
 
-The site is static - no build configuration needed.
+```bash
+# Deploy to Cloudflare Pages
+npx wrangler pages deploy . --project-name=signal-tireshavashzavt-org
+```
+
+Git push към GitHub НЕ задейства автоматичен deployment!
 
 ## Architecture
 
