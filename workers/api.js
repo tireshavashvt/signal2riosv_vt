@@ -214,7 +214,7 @@ async function verifyTurnstile(token, ip, secretKey) {
 /**
  * Send email via Postal API
  */
-async function sendEmail(env, { to, subject, htmlBody, attachments = [], replyTo = null }) {
+async function sendEmail(env, { to, subject, htmlBody, attachments = [], replyTo = null, cc = null }) {
   const message = {
     to: [to],
     from: env.FROM_EMAIL,
@@ -225,6 +225,10 @@ async function sendEmail(env, { to, subject, htmlBody, attachments = [], replyTo
 
   if (replyTo) {
     message.reply_to = replyTo;
+  }
+
+  if (cc) {
+    message.cc = [cc];
   }
 
   if (attachments.length > 0) {
@@ -416,6 +420,7 @@ async function handleConfirm(token, env) {
       htmlBody: `<pre style="font-family: monospace; white-space: pre-wrap;">${escapeHtml(pending.letterText)}</pre>`,
       attachments,
       replyTo: pending.email,
+      cc: pending.email,
     });
 
     // Delete pending signal from KV
