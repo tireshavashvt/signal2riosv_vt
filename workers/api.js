@@ -228,12 +228,14 @@ async function sendEmail(env, { to, subject, htmlBody, attachments = [], replyTo
   }
 
   if (cc) {
-    message.cc = cc;
+    message.cc = [cc];
   }
 
   if (attachments.length > 0) {
     message.attachments = attachments;
   }
+
+  console.log('Sending email with message:', JSON.stringify(message, null, 2));
 
   const response = await fetch(`${env.POSTAL_API_URL}/api/v1/send/message`, {
     method: 'POST',
@@ -244,12 +246,14 @@ async function sendEmail(env, { to, subject, htmlBody, attachments = [], replyTo
     body: JSON.stringify(message),
   });
 
+  const responseText = await response.text();
+  console.log('Postal API response:', response.status, responseText);
+
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Postal API error: ${response.status} - ${errorText}`);
+    throw new Error(`Postal API error: ${response.status} - ${responseText}`);
   }
 
-  return await response.json();
+  return JSON.parse(responseText);
 }
 
 /**
