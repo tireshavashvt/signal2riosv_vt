@@ -13,6 +13,12 @@ const CONFIRMATION_EMAIL_TEXT = `Здравейте {{name}},
 
 ВАЖНО: Линкът е валиден 24 часа. След изтичането му ще трябва да подадете сигнала отново.
 
+--- ВАШИЯТ СИГНАЛ ---
+
+{{letterText}}
+
+--- КРАЙ НА СИГНАЛА ---
+
 Ако не сте подавали сигнал, просто игнорирайте този имейл.
 
 ---
@@ -58,6 +64,9 @@ const CONFIRMATION_EMAIL_TEMPLATE = `<!DOCTYPE html>
       font-size: 16px;
     }
     .warning { background-color: #fff3cd; color: #856404; padding: 14px 16px; border-radius: 6px; margin: 20px 0; font-size: 14px; }
+    .signal-preview { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 16px; margin: 24px 0 0; }
+    .signal-preview h3 { margin: 0 0 12px; font-size: 14px; color: #495057; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .signal-preview .signal-text { font-size: 13px; line-height: 1.6; color: #555555; white-space: pre-wrap; font-family: 'Courier New', monospace; background: #ffffff; padding: 12px; border-radius: 4px; border: 1px solid #dee2e6; max-height: 300px; overflow-y: auto; }
     .footer { padding: 24px; background-color: #f7f7f7; border-top: 1px solid #e0e0e0; }
     .footer p { margin: 0 0 8px; font-size: 12px; line-height: 1.5; color: #666666; }
     .footer a { color: #2e7d6b; text-decoration: none; }
@@ -95,6 +104,12 @@ const CONFIRMATION_EMAIL_TEMPLATE = `<!DOCTYPE html>
 
               <p style="font-size: 14px; color: #666;">Ако бутонът не работи, копирайте този линк в браузъра:<br>
               <a href="{{confirmUrl}}" style="color: #2e7d6b; word-break: break-all;">{{confirmUrl}}</a></p>
+
+              <!-- Signal Preview -->
+              <div class="signal-preview">
+                <h3>Вашият сигнал:</h3>
+                <div class="signal-text">{{letterText}}</div>
+              </div>
             </td>
           </tr>
           <!-- Footer -->
@@ -235,15 +250,24 @@ export async function onRequestPost(context) {
     });
 
     // Send confirmation email with both HTML and plain text versions
+    // Escape HTML special characters in letterText for HTML version
+    const letterTextHtml = (letterText || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>');
+
     const emailHtml = CONFIRMATION_EMAIL_TEMPLATE
       .replace(/{{name}}/g, signalData.name)
       .replace(/{{confirmUrl}}/g, confirmUrl)
-      .replace(/{{email}}/g, signalData.email);
+      .replace(/{{email}}/g, signalData.email)
+      .replace(/{{letterText}}/g, letterTextHtml);
 
     const emailText = CONFIRMATION_EMAIL_TEXT
       .replace(/{{name}}/g, signalData.name)
       .replace(/{{confirmUrl}}/g, confirmUrl)
-      .replace(/{{email}}/g, signalData.email);
+      .replace(/{{email}}/g, signalData.email)
+      .replace(/{{letterText}}/g, letterText || '');
 
     console.log('Sending confirmation email to:', signalData.email);
     console.log('Postal API URL:', env.POSTAL_API_URL);
