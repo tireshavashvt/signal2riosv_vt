@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- version 0.0.3 -->
+<!-- version 0.1.0 -->
 <html lang="bg">
 <head>
   <meta charset="utf-8" />
@@ -40,9 +40,10 @@
     
     /* Header improvements */
     header{
-      padding:16px 20px; display:flex; align-items:center; gap:16px; 
+      padding:16px 20px; display:flex; align-items:center; gap:16px;
       max-width:1200px; margin:0 auto; background:var(--card);
       box-shadow:var(--shadow); border-radius:var(--radius); margin-bottom:16px;
+      position: relative;
     }
     .logo-img{
       width:70px; height:70px; object-fit:contain; flex-shrink:0;
@@ -338,15 +339,456 @@
     .phone-link:hover, .phone-link:focus {
       text-decoration: underline; /* Add underline on hover/focus for accessibility */
     }
+
+    /* PWA Install Banner */
+    .pwa-install-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      z-index: 1000;
+      transform: translateY(100%);
+      transition: transform 0.4s ease-out;
+    }
+    .pwa-install-banner.show {
+      transform: translateY(0);
+    }
+    .pwa-install-banner .banner-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    .pwa-install-banner .banner-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pwa-install-banner .banner-icon img {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+    }
+    .pwa-install-banner .banner-text h4 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .pwa-install-banner .banner-text p {
+      margin: 2px 0 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .pwa-install-banner .banner-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .pwa-install-banner .btn-install {
+      background: white;
+      color: var(--accent);
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pwa-install-banner .btn-install:hover {
+      background: #f0f0f0;
+      transform: scale(1.02);
+    }
+    .pwa-install-banner .btn-close {
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.5);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .pwa-install-banner .btn-close:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: white;
+    }
+    @media (max-width: 640px) {
+      .pwa-install-banner {
+        flex-direction: column;
+        padding: 14px 16px;
+        gap: 12px;
+      }
+      .pwa-install-banner .banner-content {
+        width: 100%;
+      }
+      .pwa-install-banner .banner-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+      .pwa-install-banner .btn-install {
+        flex: 1;
+      }
+    }
+
+    /* iOS install instructions modal */
+    .ios-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ios-modal-overlay.show {
+      display: flex;
+    }
+    .ios-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      animation: modalSlideIn 0.3s ease-out;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .ios-modal h3 {
+      margin: 0 0 16px;
+      color: var(--accent);
+      font-size: 18px;
+    }
+    .ios-modal .ios-steps {
+      text-align: left;
+      margin: 16px 0;
+    }
+    .ios-modal .ios-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .ios-modal .ios-step:last-child {
+      border-bottom: none;
+    }
+    .ios-modal .ios-step .step-num {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .ios-modal .ios-step p {
+      margin: 0;
+      font-size: 14px;
+    }
+    .ios-modal .btn-got-it {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .ios-modal .btn-got-it:hover {
+      background: var(--accent-2);
+    }
+
+    /* Success Modal - Email Confirmation */
+    .success-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1002;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .success-modal-overlay.show {
+      display: flex;
+    }
+    .success-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      animation: modalSlideIn 0.3s ease-out;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .success-modal .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 40px;
+      color: white;
+    }
+    .success-modal h3 {
+      margin: 0 0 16px;
+      color: var(--accent);
+      font-size: 22px;
+    }
+    .success-modal p {
+      margin: 0 0 12px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #333;
+    }
+    .success-modal .email-highlight {
+      background: #e8f5e9;
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-block;
+      margin: 8px 0 16px;
+      word-break: break-all;
+    }
+    .success-modal .spam-warning {
+      background: #fff3cd;
+      color: #856404;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: 14px;
+      text-align: left;
+    }
+    .success-modal .spam-warning i {
+      margin-right: 8px;
+    }
+    .success-modal .btn-ok {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .success-modal .btn-ok:hover {
+      background: var(--accent-2);
+      transform: translateY(-1px);
+    }
+    .success-modal .steps-list {
+      text-align: left;
+      margin: 16px 0;
+      padding: 0;
+      list-style: none;
+    }
+    .success-modal .steps-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #555;
+    }
+    .success-modal .steps-list li .step-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Permanent Install Button in Header */
+    .install-btn-header {
+      display: none; /* Hidden by default, shown via JS */
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      margin-left: auto;
+    }
+    .install-btn-header:hover {
+      background: var(--accent-2);
+      transform: translateY(-1px);
+    }
+    .install-btn-header.show {
+      display: flex;
+    }
+    .install-btn-header i {
+      font-size: 16px;
+    }
+    @media (max-width: 640px) {
+      .install-btn-header {
+        padding: 10px 14px;
+        font-size: 14px;
+        min-width: 44px;
+        min-height: 44px;
+        justify-content: center;
+      }
+      .install-btn-header span {
+        display: none;
+      }
+      .install-btn-header i {
+        margin: 0;
+        font-size: 18px;
+      }
+    }
+    @media (max-width: 480px) {
+      header {
+        flex-wrap: wrap;
+      }
+      .install-btn-header {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        margin-left: 0;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- PWA Install Banner -->
+  <div id="pwaInstallBanner" class="pwa-install-banner">
+    <div class="banner-content">
+      <div class="banner-icon">
+        <img src="/icons/logo.jpg" alt="ТИ решаваш!">
+      </div>
+      <div class="banner-text">
+        <h4>Инсталирай приложението</h4>
+        <p>Получи бърз достъп и офлайн режим</p>
+      </div>
+    </div>
+    <div class="banner-actions">
+      <button class="btn-install" id="pwaInstallBtn">
+        <i class="fas fa-download"></i> Инсталирай
+      </button>
+      <button class="btn-close" id="pwaCloseBtn" aria-label="Затвори">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- iOS Install Instructions Modal -->
+  <div id="iosModal" class="ios-modal-overlay">
+    <div class="ios-modal">
+      <h3><i class="fas fa-mobile-alt"></i> Инсталиране на iPhone/iPad</h3>
+      <div class="ios-steps">
+        <div class="ios-step">
+          <span class="step-num">1</span>
+          <p>Натиснете <i class="fas fa-share-square"></i> (Share) в долната лента</p>
+        </div>
+        <div class="ios-step">
+          <span class="step-num">2</span>
+          <p>Превъртете надолу и изберете <strong>"Add to Home Screen"</strong></p>
+        </div>
+        <div class="ios-step">
+          <span class="step-num">3</span>
+          <p>Натиснете <strong>"Add"</strong> горе вдясно</p>
+        </div>
+      </div>
+      <button class="btn-got-it" id="iosModalClose">Разбрах</button>
+    </div>
+  </div>
+
+  <!-- Success Modal - Email Confirmation Sent -->
+  <div id="successModal" class="success-modal-overlay">
+    <div class="success-modal">
+      <div class="success-icon">
+        <i class="fas fa-envelope-open-text"></i>
+      </div>
+      <h3>Проверете имейла си!</h3>
+      <p>Изпратихме писмо за потвърждение на:</p>
+      <div class="email-highlight" id="successEmail">email@example.com</div>
+
+      <ul class="steps-list">
+        <li>
+          <span class="step-icon">1</span>
+          <span>Отворете пощата си</span>
+        </li>
+        <li>
+          <span class="step-icon">2</span>
+          <span>Намерете писмото от <strong>ТИ решаваш!</strong></span>
+        </li>
+        <li>
+          <span class="step-icon">3</span>
+          <span>Кликнете бутона <strong>"Потвърди и изпрати сигнала"</strong></span>
+        </li>
+      </ul>
+
+      <div class="spam-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Важно:</strong> Ако не виждате писмото, проверете папка <strong>Спам</strong> или <strong>Junk</strong>!
+      </div>
+
+      <button class="btn-ok" id="successModalClose">Разбрах, ще проверя</button>
+    </div>
+  </div>
+
   <header>
     <img src="/icons/logo.jpg" alt="ТИ решаваш!" class="logo-img">
     <div class="brand">
       <h1>ТИ решаваш! – Подай сигнал за замърсяване на въздуха</h1>
       <p>Гражданско сдружение „Ти Решаваш за Велико Търново"</p>
     </div>
+    <button id="headerInstallBtn" class="install-btn-header" title="Инсталирай приложението">
+      <i class="fas fa-download"></i>
+      <span>Инсталирай</span>
+    </button>
   </header>
 
   <main>
@@ -764,7 +1206,7 @@
         const docxBase64 = await blobToBase64(blob);
 
         // Send to API
-        const res = await fetch("https://signal-riosv-api.rosen-velikov.workers.dev/api/submit", {
+        const res = await fetch("/api/submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -777,12 +1219,26 @@
 
         const result = await res.json();
         if (result.success) {
-          showStatus(`Изпратихме имейл за потвърждение на ${d.email}. Моля проверете пощата си!`, 'success');
+          // Show success modal
+          const successModal = document.getElementById('successModal');
+          const successEmail = document.getElementById('successEmail');
+          successEmail.textContent = d.email;
+          successModal.classList.add('show');
+
+          // Keep button disabled after success
+          sendBtn.disabled = true;
+          sendBtn.classList.remove('loading');
+          sendBtn.querySelector('span').innerHTML = '<i class="fas fa-check"></i> Изпратено';
+          sendBtn.querySelector('span').style.visibility = 'visible';
+
           // Reset Turnstile widget
           if (typeof turnstile !== 'undefined') {
             turnstile.reset();
           }
           turnstileToken = null;
+
+          // Don't call setButtonLoading(false) - keep it disabled
+          return;
         } else {
           throw new Error(result.error || 'Неизвестна грешка');
         }
@@ -791,6 +1247,18 @@
         showStatus(error.message || "Грешка при изпращане. Моля опитайте отново.", 'error');
       } finally {
         setButtonLoading(sendBtn, false);
+      }
+    });
+
+    // Success Modal Close Handler
+    document.getElementById('successModalClose').addEventListener('click', () => {
+      document.getElementById('successModal').classList.remove('show');
+    });
+
+    // Close success modal on overlay click
+    document.getElementById('successModal').addEventListener('click', (e) => {
+      if (e.target.id === 'successModal') {
+        document.getElementById('successModal').classList.remove('show');
       }
     });
 
@@ -838,7 +1306,164 @@
         .then((reg) => console.log('SW registered:', reg.scope))
         .catch((err) => console.log('SW registration failed:', err));
     }
+
+    // PWA Install Prompt Logic
+    (function() {
+      const banner = document.getElementById('pwaInstallBanner');
+      const installBtn = document.getElementById('pwaInstallBtn');
+      const closeBtn = document.getElementById('pwaCloseBtn');
+      const headerInstallBtn = document.getElementById('headerInstallBtn');
+      const iosModal = document.getElementById('iosModal');
+      const iosModalClose = document.getElementById('iosModalClose');
+
+      let deferredPrompt = null;
+      const DISMISS_KEY = 'pwa-install-dismissed';
+      const DISMISS_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+      // Check if running as installed PWA
+      function isRunningAsPWA() {
+        // Check display-mode
+        if (window.matchMedia('(display-mode: standalone)').matches) return true;
+        if (window.matchMedia('(display-mode: fullscreen)').matches) return true;
+        // Check iOS standalone
+        if (window.navigator.standalone === true) return true;
+        // Check if launched from home screen (Android TWA)
+        if (document.referrer.includes('android-app://')) return true;
+        return false;
+      }
+
+      // Check if user dismissed recently
+      function wasDismissedRecently() {
+        const dismissed = localStorage.getItem(DISMISS_KEY);
+        if (!dismissed) return false;
+        const dismissedTime = parseInt(dismissed, 10);
+        return (Date.now() - dismissedTime) < DISMISS_DURATION;
+      }
+
+      // Detect iOS
+      function isIOS() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      }
+
+      // Show header install button (always visible when not in PWA mode)
+      function showHeaderButton() {
+        if (!isRunningAsPWA()) {
+          headerInstallBtn.classList.add('show');
+        }
+      }
+
+      // Hide header install button
+      function hideHeaderButton() {
+        headerInstallBtn.classList.remove('show');
+      }
+
+      // Show banner popup
+      function showBanner() {
+        if (isRunningAsPWA() || wasDismissedRecently()) return;
+
+        // Delay showing banner for better UX
+        setTimeout(() => {
+          banner.classList.add('show');
+        }, 2000);
+      }
+
+      // Hide banner
+      function hideBanner() {
+        banner.classList.remove('show');
+      }
+
+      // Handle install action (shared between buttons)
+      async function handleInstall() {
+        if (isIOS()) {
+          // Show iOS instructions modal
+          iosModal.classList.add('show');
+          hideBanner();
+        } else if (deferredPrompt) {
+          // Trigger native install prompt (Chrome, Edge, etc.)
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log('PWA install outcome:', outcome);
+          deferredPrompt = null;
+          hideBanner();
+          if (outcome === 'accepted') {
+            localStorage.setItem(DISMISS_KEY, Date.now().toString());
+            hideHeaderButton();
+          }
+        } else if (isIOS()) {
+          // iOS fallback
+          iosModal.classList.add('show');
+        }
+      }
+
+      // Handle close button
+      closeBtn.addEventListener('click', () => {
+        hideBanner();
+        localStorage.setItem(DISMISS_KEY, Date.now().toString());
+      });
+
+      // Handle banner install button click
+      installBtn.addEventListener('click', handleInstall);
+
+      // Handle header install button click
+      headerInstallBtn.addEventListener('click', handleInstall);
+
+      // Close iOS modal
+      iosModalClose.addEventListener('click', () => {
+        iosModal.classList.remove('show');
+        localStorage.setItem(DISMISS_KEY, Date.now().toString());
+      });
+
+      // Close modal on overlay click
+      iosModal.addEventListener('click', (e) => {
+        if (e.target === iosModal) {
+          iosModal.classList.remove('show');
+        }
+      });
+
+      // Listen for beforeinstallprompt event (Chrome, Edge, etc.)
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        showHeaderButton();
+        showBanner();
+      });
+
+      // For iOS - show header button and banner
+      if (isIOS() && !isRunningAsPWA()) {
+        showHeaderButton();
+        showBanner();
+      }
+
+      // Hide everything if app gets installed
+      window.addEventListener('appinstalled', () => {
+        console.log('PWA was installed');
+        hideBanner();
+        hideHeaderButton();
+        deferredPrompt = null;
+        // Track PWA installation
+        trackEvent('pwa_install', { platform: isIOS() ? 'ios' : 'android_chrome' });
+      });
+
+      // Simple event tracking function
+      function trackEvent(eventName, data = {}) {
+        try {
+          fetch('/api/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event: eventName, data, timestamp: Date.now() })
+          }).catch(() => {}); // Silent fail
+        } catch (e) { /* ignore */ }
+      }
+
+      // Show header button on page load if not in PWA mode (for browsers that support PWA)
+      if (!isRunningAsPWA() && (isIOS() || 'BeforeInstallPromptEvent' in window || /Chrome|Edge|Samsung/.test(navigator.userAgent))) {
+        showHeaderButton();
+      }
+    })();
   </script>
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "74ca1af10e4b400184698343533d6882"}'></script>
+  <!-- End Cloudflare Web Analytics -->
 </body>
 </html>
 
