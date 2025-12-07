@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ti-reshavash-v13';
+const CACHE_NAME = 'ti-reshavash-v14';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
