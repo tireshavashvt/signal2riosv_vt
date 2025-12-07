@@ -228,7 +228,7 @@ async function sendEmail(env, { to, subject, htmlBody, attachments = [], replyTo
   }
 
   if (cc) {
-    message.cc = [cc];
+    message.cc = cc;
   }
 
   if (attachments.length > 0) {
