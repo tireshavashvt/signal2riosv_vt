@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280">
+  <defs>
+    <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2e7d6b"/>
+      <stop offset="100%" style="stop-color:#3da38f"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="280" rx="16" fill="url(#heroGrad)"/>
+
+  <!-- Border -->
+  <rect x="2" y="2" width="596" height="276" rx="14" fill="none" stroke="#2e7d6b" stroke-width="2" opacity="0.5"/>
+
+  <!-- Title -->
+  <text x="300" y="45" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#fff" text-anchor="middle">
+    <tspan fill="#3da38f">ГЛАСЪТ НА ВЕЛИКО ТЪРНОВО</tspan>
+  </text>
+
+  <!-- Wind icon -->
+  <g transform="translate(45, 25)">
+    <path d="M0 10 Q10 5, 20 10 Q30 15, 40 10" stroke="#3da38f" stroke-width="2" fill="none"/>
+    <path d="M5 18 Q15 13, 25 18 Q35 23, 45 18" stroke="#3da38f" stroke-width="2" fill="none" opacity="0.7"/>
+  </g>
+
+  <!-- Main counter box -->
+  <rect x="200" y="70" width="200" height="90" rx="12" fill="#1e3a5f" stroke="#3da38f" stroke-width="2"/>
+
+  <!-- Counter number -->
+  <text x="300" y="125" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#fff" text-anchor="middle" filter="url(#glow)">847</text>
+
+  <!-- Counter label -->
+  <text x="300" y="150" font-family="Arial, sans-serif" font-size="14" fill="#aaa" text-anchor="middle">потвърдени сигнала</text>
+
+  <!-- Progress bar background -->
+  <rect x="100" y="185" width="400" height="12" rx="6" fill="#1e3a5f"/>
+
+  <!-- Progress bar fill -->
+  <rect x="100" y="185" width="300" height="12" rx="6" fill="url(#accentGrad)"/>
+
+  <!-- Progress bar segments -->
+  <g opacity="0.3">
+    <line x1="180" y1="185" x2="180" y2="197" stroke="#fff" stroke-width="1"/>
+    <line x1="260" y1="185" x2="260" y2="197" stroke="#fff" stroke-width="1"/>
+    <line x1="340" y1="185" x2="340" y2="197" stroke="#fff" stroke-width="1"/>
+    <line x1="420" y1="185" x2="420" y2="197" stroke="#fff" stroke-width="1"/>
+  </g>
+
+  <!-- From text -->
+  <text x="60" y="195" font-family="Arial, sans-serif" font-size="12" fill="#888">от</text>
+
+  <!-- Citizens count -->
+  <text x="520" y="195" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3da38f">312 граждани</text>
+
+  <!-- Motivational quote -->
+  <rect x="80" y="215" width="440" height="45" rx="8" fill="#1e3a5f" opacity="0.5"/>
+  <text x="300" y="243" font-family="Arial, sans-serif" font-size="15" fill="#ccc" text-anchor="middle" font-style="italic">
+    "Не си сам. 312 души като теб вече казаха СТИГА!"
+  </text>
+
+  <!-- Decorative dots -->
+  <circle cx="50" cy="250" r="3" fill="#3da38f" opacity="0.5"/>
+  <circle cx="550" cy="250" r="3" fill="#3da38f" opacity="0.5"/>
+  <circle cx="50" cy="30" r="3" fill="#3da38f" opacity="0.5"/>
+  <circle cx="550" cy="30" r="3" fill="#3da38f" opacity="0.5"/>
+</svg>

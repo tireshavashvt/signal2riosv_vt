@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- version 0.3.9 -->
+<!-- version 0.4.0 -->
 <html lang="bg">
 <head>
   <meta charset="utf-8" />
@@ -1224,7 +1224,8 @@
         <div class="grid">
           <div class="form-group">
             <label for="name"><i class="fas fa-user-alt"></i> Име и фамилия *</label>
-            <input id="name" type="text" placeholder="Вашите имена" autocomplete="name" required>
+            <input id="name" type="text" placeholder="Иван Петров" autocomplete="name" required>
+            <div class="hint">Моля, използвайте кирилица (български букви)</div>
           </div>
           
           <div class="form-group">
@@ -1266,6 +1267,22 @@
         </div>
       </fieldset>
 
+      <!-- Съгласие за статистика -->
+      <div class="form-group" style="margin-top: 20px;">
+        <label class="check" style="background: var(--primary-light); border: 1px solid var(--accent); padding: 14px 16px; border-radius: 8px;">
+          <input type="checkbox" id="allowStats" checked>
+          <span style="font-size: 14px; line-height: 1.6;">
+            Позволявам на <strong>ТИ решаваш! - Гражданско сдружение „Ти Решаваш за Велико Търново"</strong>
+            да използва данните от сигнала, <strong style="color: var(--accent);">без личните ми данни</strong>, за статистически изследвания.
+          </span>
+        </label>
+        <div class="hint" style="margin-top: 8px; font-size: 12px;">
+          <i class="fas fa-info-circle"></i>
+          Анонимизираните данни включват: дата, час, квартал, източник и симптоми.
+          <strong>Не се запазват:</strong> име, имейл, телефон, адрес.
+        </div>
+      </div>
+
       <div class="form-group" style="margin-top: 20px;">
         <div class="cf-turnstile" data-sitekey="0x4AAAAAACFNgXleCp3ZWKfA" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired"></div>
       </div>
@@ -1288,7 +1305,7 @@
   </main>
 
   <footer class="site-footer">
-    <span class="version">v0.3.9</span> | <a href="/docs/" style="color: var(--accent);">Документация</a>
+    <span class="version">v0.4.0</span> | <a href="/stats/" style="color: var(--accent);"><i class="fas fa-chart-line"></i> Статистика</a> | <a href="/docs/" style="color: var(--accent);">Документация</a> | <a href="/presentation/projector.html" style="color: var(--accent);"><i class="fas fa-desktop"></i> Презентация</a>
   </footer>
 
   <script>
@@ -1360,6 +1377,64 @@
       setTimeout(() => status.classList.remove('show'), 5000);
     }
 
+    // Валидация на име - само кирилица, интервали и тирета
+    function validateName(name) {
+      if (!name) return { valid: false, error: 'Моля въведете Вашето име и фамилия' };
+      name = name.trim();
+      if (name.length < 3) {
+        return { valid: false, error: 'Името трябва да е поне 3 символа' };
+      }
+      if (name.length > 100) {
+        return { valid: false, error: 'Името не може да е по-дълго от 100 символа' };
+      }
+      // Само кирилица (А-Яа-я), интервали и тирета
+      const cyrillicPattern = /^[А-Яа-яЁёЍѝ\s\-]+$/;
+      if (!cyrillicPattern.test(name)) {
+        return { valid: false, error: 'Моля, въведете името си на кирилица (български букви)' };
+      }
+      // Проверка за поне едно пълно име (поне 2 думи)
+      const words = name.split(/\s+/).filter(w => w.length > 0);
+      if (words.length < 2) {
+        return { valid: false, error: 'Моля, въведете име и фамилия' };
+      }
+      return { valid: true };
+    }
+
+    // Валидация на имейл - стриктна проверка
+    function validateEmail(email) {
+      if (!email) return { valid: false, error: 'Моля въведете имейл адрес' };
+      email = email.trim().toLowerCase();
+      // RFC 5322 опростен regex
+      const emailPattern = /^[a-z0-9](?:[a-z0-9._%+\-]{0,61}[a-z0-9])?@[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?(?:\.[a-z]{2,})+$/;
+      if (!emailPattern.test(email)) {
+        return { valid: false, error: 'Моля, въведете валиден имейл адрес' };
+      }
+      return { valid: true };
+    }
+
+    // Sanitize на входни данни - защита от injection
+    function sanitizeInput(input) {
+      if (typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')           // Премахва < и >
+        .replace(/javascript:/gi, '')    // Премахва javascript: URLs
+        .replace(/on\w+\s*=/gi, '')      // Премахва event handlers (onclick=, etc.)
+        .replace(/[\x00-\x1F]/g, '')     // Премахва control characters
+        .trim();
+    }
+
+    // Валидация на телефон - само цифри и интервали
+    function validatePhone(phone) {
+      if (!phone) return { valid: true }; // Не е задължително
+      phone = phone.trim();
+      // Позволява само цифри и интервали
+      const phonePattern = /^[0-9\s]+$/;
+      if (!phonePattern.test(phone)) {
+        return { valid: false, error: 'Телефонът може да съдържа само цифри' };
+      }
+      return { valid: true };
+    }
+
     // Валидация на формата
     function validateForm() {
       const source = document.getElementById('source').value;
@@ -1368,6 +1443,7 @@
       const checks = document.querySelectorAll('#checks input:checked');
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone') ? document.getElementById('phone').value : '';
 
       if (!source) { showStatus('Моля изберете предполагаем източник', 'error'); sourceSelect.focus(); return false; }
       if (source === 'Друг източник' && !customSourceInput.value.trim()) {
@@ -1376,8 +1452,31 @@
       if (!district) { showStatus('Моля изберете квартал', 'error'); document.getElementById('district').focus(); return false; }
       if (!when) { showStatus('Моля въведете дата и час', 'error'); document.getElementById('when').focus(); return false; }
       if (checks.length === 0) { showStatus('Моля изберете поне един начин на влошаване на качеството на живот', 'error'); checksWrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); return false; }
-      if (!name.trim()) { showStatus('Моля въведете Вашето име и фамилия', 'error'); document.getElementById('name').focus(); return false; }
-      if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showStatus('Моля въведете валиден имейл за обратна връзка', 'error'); document.getElementById('email').focus(); return false; }
+
+      // Валидация на име с новата функция
+      const nameValidation = validateName(name);
+      if (!nameValidation.valid) {
+        showStatus(nameValidation.error, 'error');
+        document.getElementById('name').focus();
+        return false;
+      }
+
+      // Валидация на имейл с новата функция
+      const emailValidation = validateEmail(email);
+      if (!emailValidation.valid) {
+        showStatus(emailValidation.error, 'error');
+        document.getElementById('email').focus();
+        return false;
+      }
+
+      // Валидация на телефон (ако е въведен)
+      const phoneValidation = validatePhone(phone);
+      if (!phoneValidation.valid) {
+        showStatus(phoneValidation.error, 'error');
+        document.getElementById('phone').focus();
+        return false;
+      }
+
       return true;
     }
 
@@ -1385,24 +1484,25 @@
     function collectData(){
       const sel = s => document.querySelector(s);
       const source = sel('#source').value || '';
-      const customSource = sel('#customSource') ? sel('#customSource').value || '' : '';
+      const customSource = sanitizeInput(sel('#customSource') ? sel('#customSource').value || '' : '');
       const district = sel('#district').value || '';
       const whenVal = sel('#when').value || '';
-      const address = sel('#address').value || '';
-      const subject = sel('#subject') ? sel('#subject').value || '' : '';
-      const name = sel('#name').value || '';
-      const email = sel('#email').value || '';
-      
-      let rawPhone = sel('#phone') ? sel('#phone').value.trim() : ''; // Get raw input value
+      const address = sanitizeInput(sel('#address').value || '');
+      const subject = sanitizeInput(sel('#subject') ? sel('#subject').value || '' : '');
+      const name = (sel('#name').value || '').trim();
+      const email = (sel('#email').value || '').trim().toLowerCase();
+
+      let rawPhone = sel('#phone') ? sel('#phone').value.trim().replace(/\s/g, '') : ''; // Get raw input, remove spaces
       let phone = '';
       if (rawPhone) { // If user entered any digits
         phone = `+359${rawPhone}`; // Prepend +359
       }
 
-      const desc = sel('#desc').value || '';
+      const desc = sanitizeInput(sel('#desc').value || '');
       const checks = Array.from(document.querySelectorAll('#checks input:checked')).map(c => c.value);
+      const allowStats = sel('#allowStats') ? sel('#allowStats').checked : false;
 
-      return {source, customSource, district, whenVal, address, subject, name, email, phone, desc, checks};
+      return {source, customSource, district, whenVal, address, subject, name, email, phone, desc, checks, allowStats};
     }
 
     // Речник с адреси на източници
@@ -1611,18 +1711,24 @@
           // Check if rate limited
           if (result.rateLimited || res.status === 429) {
             showRateLimitModal(result.error || 'Достигнахте лимита за деня. Можете да изпратите нов сигнал утре.');
-            // Reset Turnstile widget
-            if (typeof turnstile !== 'undefined') {
-              turnstile.reset();
-            }
-            turnstileToken = null;
           } else {
-            throw new Error(result.error || 'Неизвестна грешка');
+            // Показваме грешката от backend директно
+            showStatus(result.error || 'Възникна грешка при изпращане. Моля опитайте отново.', 'error');
           }
+          // Reset Turnstile widget при грешка
+          if (typeof turnstile !== 'undefined') {
+            turnstile.reset();
+          }
+          turnstileToken = null;
         }
       } catch (error) {
         console.error('Грешка при изпращане:', error);
         showStatus(error.message || "Грешка при изпращане. Моля опитайте отново.", 'error');
+        // Reset Turnstile widget при грешка
+        if (typeof turnstile !== 'undefined') {
+          turnstile.reset();
+        }
+        turnstileToken = null;
       } finally {
         setButtonLoading(sendBtn, false);
       }

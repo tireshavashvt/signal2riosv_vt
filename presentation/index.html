@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ТИ решаваш! – Презентация</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2e7d6b;
+      --primary-dark: #1a5a4a;
+      --accent: #f39c12;
+      --danger: #e74c3c;
+      --bg-dark: #1a1a2e;
+      --bg-darker: #16213e;
+      --text-light: #ffffff;
+      --text-muted: #a0a0a0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+    }
+
+    /* Slideshow container */
+    .slideshow {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 40px 120px 40px; /* Extra bottom padding for nav */
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(100px);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    .slide.prev {
+      transform: translateX(-100px);
+    }
+
+    /* Slide content */
+    .slide-content {
+      max-width: 1000px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .slide h1 {
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 900;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .slide h2 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--primary);
+    }
+
+    .slide p {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .slide .highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .slide .primary {
+      color: var(--primary);
+    }
+
+    /* Hero slide */
+    .slide-hero h1 {
+      font-size: clamp(3rem, 10vw, 6rem);
+      background: linear-gradient(135deg, var(--primary) 0%, #3da38f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .slide-hero .tagline {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      color: var(--text-muted);
+      margin-top: 20px;
+    }
+
+    .slide-hero .wind-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Problem slide */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .problem-item {
+      background: rgba(231, 76, 60, 0.1);
+      border: 2px solid var(--danger);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .problem-item i {
+      font-size: 3rem;
+      color: var(--danger);
+      margin-bottom: 15px;
+    }
+
+    .problem-item h3 {
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+
+    /* Stats display */
+    .stats-display {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 900;
+      color: var(--primary);
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    /* Steps */
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .step {
+      background: rgba(46, 125, 107, 0.1);
+      border: 2px solid var(--primary);
+      border-radius: 20px;
+      padding: 30px;
+      width: 250px;
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .step i {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin: 15px 0;
+    }
+
+    .step h3 {
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* Arrow between steps */
+    .step-arrow {
+      display: flex;
+      align-items: center;
+      color: var(--primary);
+      font-size: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .step-arrow {
+        display: none;
+      }
+    }
+
+    /* Privacy features */
+    .privacy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin: 40px 0;
+      text-align: left;
+    }
+
+    @media (max-width: 700px) {
+      .privacy-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .privacy-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 20px;
+      background: rgba(46, 125, 107, 0.1);
+      border-radius: 12px;
+    }
+
+    .privacy-item.danger {
+      background: rgba(231, 76, 60, 0.1);
+    }
+
+    .privacy-item i {
+      font-size: 1.5rem;
+      margin-top: 3px;
+    }
+
+    .privacy-item.safe i {
+      color: var(--primary);
+    }
+
+    .privacy-item.danger i {
+      color: var(--danger);
+    }
+
+    /* QR Code slide */
+    .qr-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .qr-code {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      width: 280px;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .qr-code svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Logo styles */
+    .slide-logo {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      width: 20vmin;
+      height: 20vmin;
+      min-width: 120px;
+      min-height: 120px;
+      opacity: 0.8;
+    }
+
+    .hero-logo {
+      width: 180px;
+      height: 180px;
+      margin-bottom: 30px;
+      filter: drop-shadow(0 10px 30px rgba(46, 125, 107, 0.4));
+    }
+
+    /* Screenshot styles */
+    .screenshot {
+      max-width: 95%;
+      max-height: 55vh;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .screenshots-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .screenshots-grid img {
+      max-height: 55vh;
+      max-width: 95%;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 50px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(46, 125, 107, 0.3);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(46, 125, 107, 0.4);
+    }
+
+    .url-display {
+      font-size: 1.5rem;
+      color: var(--accent);
+      font-weight: 700;
+      margin-top: 20px;
+    }
+
+    /* FAQ slide */
+    .faq-list {
+      text-align: left;
+      max-width: 700px;
+      margin: 30px auto;
+    }
+
+    .faq-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px 25px;
+      margin-bottom: 15px;
+    }
+
+    .faq-item strong {
+      color: var(--accent);
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .faq-item p {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    /* Credits slide */
+    .credits-logo {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .credits-org {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 30px;
+    }
+
+    /* Navigation */
+    .nav-controls {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px 25px;
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .slide-counter {
+      color: var(--text-muted);
+      font-size: 1rem;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+      z-index: 100;
+    }
+
+    /* Slide indicators */
+    .slide-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .slide-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .slide-dot.active {
+      background: var(--primary);
+      transform: scale(1.2);
+    }
+
+    /* Keyboard hint */
+    .keyboard-hint {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      opacity: 0.5;
+    }
+
+    .keyboard-hint kbd {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin: 0 3px;
+    }
+
+    /* Fullscreen button */
+    .fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: var(--text-muted);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .fullscreen-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Quote styling */
+    .quote {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-style: italic;
+      color: var(--text-muted);
+      border-left: 4px solid var(--primary);
+      padding-left: 20px;
+      margin: 30px auto;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    /* Symptom icons */
+    .symptom-icons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+
+    .symptom-icon {
+      text-align: center;
+    }
+
+    .symptom-icon i {
+      font-size: 2.5rem;
+      color: var(--danger);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    /* Animated counter */
+    .animated-counter {
+      display: inline-block;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+      .slide {
+        padding: 20px;
+      }
+
+      .nav-controls {
+        padding: 10px 15px;
+        gap: 10px;
+      }
+
+      .nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+
+      .keyboard-hint {
+        display: none;
+      }
+
+      .steps {
+        gap: 20px;
+      }
+
+      .step {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      .nav-controls, .fullscreen-btn, .keyboard-hint, .progress-bar {
+        display: none !important;
+      }
+
+      .slide {
+        position: relative !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        page-break-after: always;
+        height: auto;
+        min-height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Цял екран">
+    <i class="fas fa-expand"></i>
+  </button>
+
+  <div class="slideshow" id="slideshow">
+
+    <!-- Slide 1: Hero -->
+    <div class="slide slide-hero active" data-slide="0">
+      <div class="slide-content">
+        <img src="/icons/icon-512.png" alt="ТИ решаваш!" class="hero-logo">
+        <h1>ТИ решаваш!</h1>
+        <p class="tagline">Платформа за подаване на сигнали за замърсяване на въздуха</p>
+        <p style="margin-top: 40px; font-size: 1.1rem;">Велико Търново</p>
+      </div>
+    </div>
+
+    <!-- Slide 2: Problem -->
+    <div class="slide" data-slide="1">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Познато ли ви е?</h2>
+        <div class="problem-grid">
+          <div class="problem-item">
+            <i class="fas fa-smog"></i>
+            <h3>Задушлива миризма</h3>
+            <p>На лепило, дървесина, химикали</p>
+          </div>
+          <div class="problem-item">
+            <i class="fas fa-head-side-cough"></i>
+            <h3>Главоболие</h3>
+            <p>Особено вечер и сутрин</p>
+          </div>
+          <div class="problem-item">
+            <i class="fas fa-lungs"></i>
+            <h3>Затруднено дишане</h3>
+            <p>Дразнене на очи и гърло</p>
+          </div>
+          <div class="problem-item">
+            <i class="fas fa-window-close"></i>
+            <h3>Затворени прозорци</h3>
+            <p>Дори в хубаво време</p>
+          </div>
+        </div>
+        <p class="quote">"Вече не мога да отворя прозореца..."</p>
+      </div>
+    </div>
+
+    <!-- Slide 3: You're not alone -->
+    <div class="slide" data-slide="2">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Не си сам!</h2>
+        <div class="stats-display">
+          <div class="stat-item">
+            <span class="stat-number animated-counter" data-target="450">0</span>
+            <span class="stat-label">сигнала до РИОСВ през 2025</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number animated-counter" data-target="160">0</span>
+            <span class="stat-label">само за август</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number animated-counter" data-target="5">0</span>
+            <span class="stat-label">засегнати квартала</span>
+          </div>
+        </div>
+        <p>Стотици хора от Велико Търново <span class="highlight">вече казаха СТИГА!</span></p>
+        <p style="font-size: 1rem;">Чолаковци • Бузлуджа • Зона Б • Колю Фичето • Картала</p>
+      </div>
+    </div>
+
+    <!-- Slide 4: Why it matters -->
+    <div class="slide" data-slide="3">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Защо е важно?</h2>
+        <div class="problem-grid" style="margin-top: 30px;">
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-file-alt" style="color: var(--primary);"></i>
+            <h3>Официален сигнал</h3>
+            <p>Изпраща се директно до РИОСВ – Велико Търново</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-balance-scale" style="color: var(--primary);"></i>
+            <h3>Задължителен отговор</h3>
+            <p>По закон РИОСВ трябва да отговори на всеки сигнал</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-users" style="color: var(--primary);"></i>
+            <h3>Масов натиск</h3>
+            <p>Много сигнали = невъзможно да бъдат игнорирани</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-chart-line" style="color: var(--primary);"></i>
+            <h3>Статистика</h3>
+            <p>Данните се събират за бъдещи действия</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: How it works -->
+    <div class="slide" data-slide="4">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Как работи?</h2>
+        <p>3 лесни стъпки – отнема под 2 минути</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <i class="fas fa-edit"></i>
+            <h3>Попълни формата</h3>
+            <p>Избери квартал, симптоми и дата</p>
+          </div>
+          <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <i class="fas fa-envelope"></i>
+            <h3>Потвърди имейла</h3>
+            <p>Ще получиш линк за потвърждение</p>
+          </div>
+          <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <i class="fas fa-paper-plane"></i>
+            <h3>Сигналът е изпратен!</h3>
+            <p>Автоматично до РИОСВ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Demo - Form Header -->
+    <div class="slide" data-slide="5">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Стъпка 1: Попълни формата</h2>
+        <p>Избери източник, квартал и кога е станало</p>
+        <div class="screenshots-grid" style="margin-top: 20px;">
+          <img src="images/form-header.png" alt="Форма - начало" class="screenshot">
+        </div>
+        <div style="display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap; font-size: 0.95rem;">
+          <span><i class="fas fa-mobile-alt" style="color: var(--primary);"></i> Работи на телефон и компютър</span>
+          <span><i class="fas fa-download" style="color: var(--primary);"></i> Инсталирай като приложение</span>
+          <span><i class="fas fa-qrcode" style="color: var(--primary);"></i> Сподели с QR код</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: Demo - Symptoms -->
+    <div class="slide" data-slide="6">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Стъпка 2: Избери симптоми</h2>
+        <p>Маркирай какво изпитваш и попълни данните си</p>
+        <div class="screenshots-grid" style="margin-top: 20px;">
+          <img src="images/form-step1.png" alt="Избор на симптоми" class="screenshot">
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8: Demo - Preview -->
+    <div class="slide" data-slide="7">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Стъпка 3: Прегледай и изпрати</h2>
+        <p>Виж генерирания текст и натисни "Изпрати към РИОСВ"</p>
+        <div class="screenshots-grid" style="margin-top: 20px;">
+          <img src="images/form-preview.png" alt="Преглед и изпращане" class="screenshot">
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9: Privacy -->
+    <div class="slide" data-slide="8">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2><i class="fas fa-shield-alt" style="color: var(--primary);"></i> Твоите данни са защитени</h2>
+        <div class="privacy-grid">
+          <div class="privacy-item safe">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <strong>Изпраща се до РИОСВ</strong>
+              <p>Име, имейл, симптоми – за да получиш отговор</p>
+            </div>
+          </div>
+          <div class="privacy-item safe">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <strong>Криптирана връзка</strong>
+              <p>HTTPS защита на всички данни</p>
+            </div>
+          </div>
+          <div class="privacy-item danger">
+            <i class="fas fa-times-circle"></i>
+            <div>
+              <strong>НЕ се пазят</strong>
+              <p>Лични данни след изпращане на сигнала</p>
+            </div>
+          </div>
+          <div class="privacy-item safe">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <strong>Анонимна статистика</strong>
+              <p>Само ако изрично разрешиш (без лични данни)</p>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top: 20px; font-size: 0.95rem;"><i class="fas fa-info-circle" style="color: var(--accent);"></i> Пълна GDPR съвместимост</p>
+      </div>
+    </div>
+
+    <!-- Slide 10: Statistics -->
+    <div class="slide" data-slide="9">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Виж резултата от действията си</h2>
+        <p>Публична статистика в реално време</p>
+        <div style="background: linear-gradient(135deg, #1e3a5f 0%, #16213e 100%); padding: 30px; border-radius: 16px; margin: 30px auto; max-width: 600px;">
+          <div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 20px;">
+            <div>
+              <i class="fas fa-chart-line" style="font-size: 2.2rem; color: var(--primary);"></i>
+              <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Брой сигнали</div>
+            </div>
+            <div>
+              <i class="fas fa-map-marker-alt" style="font-size: 2.2rem; color: var(--accent);"></i>
+              <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">По квартали</div>
+            </div>
+            <div>
+              <i class="fas fa-calendar-alt" style="font-size: 2.2rem; color: var(--primary);"></i>
+              <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">По дати</div>
+            </div>
+          </div>
+          <p style="margin-top: 15px; font-size: 1rem; color: var(--text-light);">Всички данни са публични и достъпни за всеки</p>
+        </div>
+        <p><a href="/stats/" target="_blank" style="color: var(--accent);">signal.tireshavashzavt.org/stats/</a></p>
+      </div>
+    </div>
+
+    <!-- Slide 11: Open Source -->
+    <div class="slide" data-slide="10">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2><i class="fas fa-code-branch" style="color: var(--primary);"></i> Отворена и прозрачна система</h2>
+        <p>Както трябва да бъде всяко нещо в една общност</p>
+        <div class="problem-grid" style="margin-top: 30px;">
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-eye" style="color: var(--primary);"></i>
+            <h3>100% прозрачност</h3>
+            <p>Целият код е публичен и достъпен за проверка</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-book-open" style="color: var(--primary);"></i>
+            <h3>Пълна документация</h3>
+            <p>Всичко е описано – как работи, какво се случва с данните</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-users-cog" style="color: var(--primary);"></i>
+            <h3>Обществен контрол</h3>
+            <p>Всеки може да провери и предложи подобрения</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-lock-open" style="color: var(--primary);"></i>
+            <h3>Без скрити интереси</h3>
+            <p>Създадено от граждани, за граждани</p>
+          </div>
+        </div>
+        <p style="margin-top: 30px;"><a href="/docs/" target="_blank" style="color: var(--accent);"><i class="fas fa-external-link-alt"></i> Виж документацията</a></p>
+      </div>
+    </div>
+
+    <!-- Slide 12: FAQ -->
+    <div class="slide" data-slide="11">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2>Често задавани въпроси</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <strong><i class="fas fa-question-circle"></i> Трябва ли да съм експерт?</strong>
+            <p>Не! Просто опиши какво усещаш – миризма, симптоми, кога се случва.</p>
+          </div>
+          <div class="faq-item">
+            <strong><i class="fas fa-question-circle"></i> Ще има ли последствия за мен?</strong>
+            <p>Подаването на сигнал е законово право. Ти търсиш отговорност от институциите.</p>
+          </div>
+          <div class="faq-item">
+            <strong><i class="fas fa-question-circle"></i> Колко време отнема?</strong>
+            <p>Под 2 минути. Формата е опростена максимално.</p>
+          </div>
+          <div class="faq-item">
+            <strong><i class="fas fa-question-circle"></i> Какво става след това?</strong>
+            <p>РИОСВ е длъжна да разгледа сигнала и да ти отговори по имейл.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 13: Call to Action -->
+    <div class="slide" data-slide="12">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2 style="color: var(--accent);">Готов ли си?</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 40px;">Твоят глас има значение. Подай сигнал сега!</p>
+
+        <div class="qr-container">
+          <div class="qr-code" id="qrcode"></div>
+          <div>
+            <a href="/" class="cta-button" target="_blank">
+              <i class="fas fa-paper-plane"></i>
+              Подай сигнал
+            </a>
+            <div class="url-display">signal.tireshavashzavt.org</div>
+          </div>
+        </div>
+
+        <p style="margin-top: 40px; color: var(--text-muted);">
+          <i class="fas fa-share-alt" style="color: var(--primary);"></i>
+          Сподели с приятели и съседи!
+        </p>
+      </div>
+    </div>
+
+    <!-- Slide 14: For Media -->
+    <div class="slide" data-slide="13">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <h2><i class="fas fa-newspaper" style="color: var(--primary);"></i> За медии и журналисти</h2>
+        <p>Пълен press kit с материали за публикации</p>
+
+        <div class="problem-grid" style="margin-top: 30px;">
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-file-alt" style="color: var(--primary);"></i>
+            <h3>Готови текстове</h3>
+            <p>Кратки описания за copy-paste</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-images" style="color: var(--primary);"></i>
+            <h3>Лого и материали</h3>
+            <p>PNG, SVG в различни размери</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-chart-bar" style="color: var(--primary);"></i>
+            <h3>Статистика</h3>
+            <p>Актуални данни и факти</p>
+          </div>
+          <div class="problem-item" style="background: rgba(46, 125, 107, 0.1); border-color: var(--primary);">
+            <i class="fas fa-comments" style="color: var(--primary);"></i>
+            <h3>Контакт</h3>
+            <p>За интервюта и въпроси</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+          <a href="/press/" class="cta-button" target="_blank">
+            <i class="fas fa-download"></i>
+            Press Kit
+          </a>
+          <a href="https://www.facebook.com/tireshavash.vt" class="cta-button" target="_blank" style="background: #1877f2;">
+            <i class="fab fa-facebook"></i>
+            Facebook
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 15: Credits -->
+    <div class="slide" data-slide="14">
+      <img src="/icons/icon-192.png" alt="" class="slide-logo">
+      <div class="slide-content">
+        <div class="credits-logo">🌿</div>
+        <h2>Благодарим ти!</h2>
+        <p class="credits-org">Гражданско сдружение<br><strong>„Ти Решаваш за Велико Търново"</strong></p>
+
+        <div style="display: flex; justify-content: center; gap: 30px; margin: 40px 0; flex-wrap: wrap;">
+          <a href="/" style="color: var(--text-light); text-decoration: none;">
+            <i class="fas fa-globe" style="color: var(--primary); margin-right: 8px;"></i>
+            signal.tireshavashzavt.org
+          </a>
+          <a href="/stats/" style="color: var(--text-light); text-decoration: none;">
+            <i class="fas fa-chart-line" style="color: var(--accent); margin-right: 8px;"></i>
+            Статистика
+          </a>
+          <a href="/docs/" style="color: var(--text-light); text-decoration: none;">
+            <i class="fas fa-book" style="color: var(--primary); margin-right: 8px;"></i>
+            Документация
+          </a>
+        </div>
+
+        <p style="font-style: italic; color: var(--text-muted);">
+          "Заедно за чист въздух във Велико Търново"
+        </p>
+
+        <div style="margin-top: 50px;">
+          <a href="/" class="cta-button" target="_blank">
+            <i class="fas fa-arrow-right"></i>
+            Към платформата
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()" title="Предишен">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <div class="slide-dots" id="slideDots"></div>
+
+    <span class="slide-counter" id="slideCounter">1 / 11</span>
+
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()" title="Следващ">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <div class="keyboard-hint">
+    Използвай <kbd>←</kbd> <kbd>→</kbd> или <kbd>Space</kbd> за навигация
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script>
+    // Generate QR Code
+    (function() {
+      const qr = qrcode(0, 'M');
+      qr.addData('https://signal.tireshavashzavt.org');
+      qr.make();
+      document.getElementById('qrcode').innerHTML = qr.createSvgTag({ scalable: true });
+    })();
+
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const progressBar = document.getElementById('progressBar');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideDots = document.getElementById('slideDots');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Create dots
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goToSlide(i);
+      slideDots.appendChild(dot);
+    }
+
+    function updateSlide() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active', 'prev');
+        if (index === currentSlide) {
+          slide.classList.add('active');
+        } else if (index < currentSlide) {
+          slide.classList.add('prev');
+        }
+      });
+
+      // Update progress
+      const progress = ((currentSlide + 1) / totalSlides) * 100;
+      progressBar.style.width = progress + '%';
+
+      // Update counter
+      slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+
+      // Update dots
+      document.querySelectorAll('.slide-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+
+      // Update buttons
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === totalSlides - 1;
+
+      // Animate counters on slide 3
+      if (currentSlide === 2) {
+        animateCounters();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateSlide();
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'Home') {
+        goToSlide(0);
+      } else if (e.key === 'End') {
+        goToSlide(totalSlides - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+    }
+
+    // Fullscreen
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Animate counters
+    function animateCounters() {
+      const counters = document.querySelectorAll('.animated-counter');
+      counters.forEach(counter => {
+        const target = parseInt(counter.dataset.target);
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+
+        const updateCounter = () => {
+          current += step;
+          if (current < target) {
+            counter.textContent = Math.floor(current);
+            requestAnimationFrame(updateCounter);
+          } else {
+            counter.textContent = target;
+          }
+        };
+
+        counter.textContent = '0';
+        requestAnimationFrame(updateCounter);
+      });
+    }
+
+    // Initialize
+    updateSlide();
+
+    // Auto-hide keyboard hint after 5 seconds
+    setTimeout(() => {
+      document.querySelector('.keyboard-hint').style.opacity = '0';
+    }, 5000);
+  </script>
+</body>
+</html>

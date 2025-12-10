@@ -135,6 +135,118 @@ const CONFIRMATION_EMAIL_TEMPLATE = `<!DOCTYPE html>
 const MAX_PENDING_PER_DAY = 3;    // Max unconfirmed requests per email per day
 const MAX_CONFIRMED_PER_DAY = 1;  // Max confirmed signals per email per day
 
+// ============ VALIDATION FUNCTIONS ============
+
+// Валидация на име - само кирилица, интервали и тирета
+function validateName(name) {
+  if (!name) return { valid: false, error: 'Моля въведете Вашето име и фамилия' };
+  name = name.trim();
+  if (name.length < 3) {
+    return { valid: false, error: 'Името трябва да е поне 3 символа' };
+  }
+  if (name.length > 100) {
+    return { valid: false, error: 'Името не може да е по-дълго от 100 символа' };
+  }
+  // Само кирилица (А-Яа-я), интервали и тирета
+  const cyrillicPattern = /^[А-Яа-яЁёЍѝ\s\-]+$/;
+  if (!cyrillicPattern.test(name)) {
+    return { valid: false, error: 'Моля, въведете името си на кирилица (български букви)' };
+  }
+  // Проверка за поне две думи (име и фамилия)
+  const words = name.split(/\s+/).filter(w => w.length > 0);
+  if (words.length < 2) {
+    return { valid: false, error: 'Моля, въведете име и фамилия' };
+  }
+  return { valid: true };
+}
+
+// Валидация на имейл - стриктна проверка
+function validateEmail(email) {
+  if (!email) return { valid: false, error: 'Моля въведете имейл адрес' };
+  email = email.trim().toLowerCase();
+  // RFC 5322 опростен regex
+  const emailPattern = /^[a-z0-9](?:[a-z0-9._%+\-]{0,61}[a-z0-9])?@[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?(?:\.[a-z]{2,})+$/;
+  if (!emailPattern.test(email)) {
+    return { valid: false, error: 'Моля, въведете валиден имейл адрес' };
+  }
+  return { valid: true };
+}
+
+// Валидация на телефон - само цифри
+function validatePhone(phone) {
+  if (!phone) return { valid: true }; // Не е задължително
+  phone = phone.trim().replace(/^\+359/, ''); // Премахни +359 prefix ако има
+  // Позволява само цифри
+  const phonePattern = /^[0-9]+$/;
+  if (!phonePattern.test(phone)) {
+    return { valid: false, error: 'Телефонът може да съдържа само цифри' };
+  }
+  return { valid: true };
+}
+
+// Sanitize на входни данни - защита от injection
+function sanitizeInput(input) {
+  if (typeof input !== 'string') return '';
+  return input
+    .replace(/[<>]/g, '')           // Премахва < и >
+    .replace(/javascript:/gi, '')    // Премахва javascript: URLs
+    .replace(/on\w+\s*=/gi, '')      // Премахва event handlers (onclick=, etc.)
+    .replace(/[\x00-\x1F]/g, '')     // Премахва control characters
+    .trim();
+}
+
+// Валидация на всички данни от сигнала
+function validateSignalData(signalData) {
+  // Валидация на име
+  const nameValidation = validateName(signalData.name);
+  if (!nameValidation.valid) {
+    return nameValidation;
+  }
+
+  // Валидация на имейл
+  const emailValidation = validateEmail(signalData.email);
+  if (!emailValidation.valid) {
+    return emailValidation;
+  }
+
+  // Валидация на телефон (ако е подаден)
+  if (signalData.phone) {
+    const phoneValidation = validatePhone(signalData.phone);
+    if (!phoneValidation.valid) {
+      return phoneValidation;
+    }
+  }
+
+  // Проверка за задължителни полета
+  if (!signalData.source) {
+    return { valid: false, error: 'Моля изберете предполагаем източник' };
+  }
+  if (!signalData.district) {
+    return { valid: false, error: 'Моля изберете квартал' };
+  }
+  if (!signalData.whenVal) {
+    return { valid: false, error: 'Моля въведете дата и час' };
+  }
+  if (!signalData.checks || signalData.checks.length === 0) {
+    return { valid: false, error: 'Моля изберете поне един начин на влошаване на качеството на живот' };
+  }
+
+  return { valid: true };
+}
+
+// Sanitize на целия обект с данни
+function sanitizeSignalData(signalData) {
+  return {
+    ...signalData,
+    name: signalData.name ? signalData.name.trim() : '',
+    email: signalData.email ? signalData.email.trim().toLowerCase() : '',
+    customSource: sanitizeInput(signalData.customSource || ''),
+    address: sanitizeInput(signalData.address || ''),
+    subject: sanitizeInput(signalData.subject || ''),
+    desc: sanitizeInput(signalData.desc || ''),
+  };
+}
+
 function getTodayKey() {
   // Use UTC date to avoid timezone issues
   return new Date().toISOString().split('T')[0];
@@ -262,6 +374,16 @@ export async function onRequestPost(context) {
       return jsonResponse({ success: false, error: 'Липсват задължителни данни' }, 400);
     }
 
+    // Валидация на данните от сигнала
+    const validation = validateSignalData(signalData);
+    if (!validation.valid) {
+      console.log('Validation failed:', validation.error);
+      return jsonResponse({ success: false, error: validation.error }, 400);
+    }
+
+    // Sanitize данните
+    const sanitizedSignalData = sanitizeSignalData(signalData);
+
     // Verify Turnstile
     const clientIP = request.headers.get('CF-Connecting-IP') || '0.0.0.0';
     const turnstileResult = await verifyTurnstile(turnstileToken, clientIP, env.TURNSTILE_SECRET_KEY);
@@ -276,8 +398,8 @@ export async function onRequestPost(context) {
     }
 
     // Check rate limits
-    const rateLimit = await checkRateLimit(env, signalData.email);
-    console.log('Rate limit check:', { email: signalData.email, ...rateLimit });
+    const rateLimit = await checkRateLimit(env, sanitizedSignalData.email);
+    console.log('Rate limit check:', { email: sanitizedSignalData.email, ...rateLimit });
 
     if (!rateLimit.canSubmitPending) {
       return jsonResponse({
@@ -302,11 +424,11 @@ export async function onRequestPost(context) {
 
     // Store pending signal in KV (TTL: 24 hours = 86400 seconds)
     const pendingData = {
-      signalData,
+      signalData: sanitizedSignalData,
       docxBase64,
       letterText,
-      email: signalData.email,
-      name: signalData.name,
+      email: sanitizedSignalData.email,
+      name: sanitizedSignalData.name,
       createdAt: Date.now(),
     };
 
@@ -323,23 +445,23 @@ export async function onRequestPost(context) {
       .replace(/\n/g, '<br>');
 
     const emailHtml = CONFIRMATION_EMAIL_TEMPLATE
-      .replace(/{{name}}/g, signalData.name)
+      .replace(/{{name}}/g, sanitizedSignalData.name)
       .replace(/{{confirmUrl}}/g, confirmUrl)
-      .replace(/{{email}}/g, signalData.email)
+      .replace(/{{email}}/g, sanitizedSignalData.email)
       .replace(/{{letterText}}/g, letterTextHtml);
 
     const emailText = CONFIRMATION_EMAIL_TEXT
-      .replace(/{{name}}/g, signalData.name)
+      .replace(/{{name}}/g, sanitizedSignalData.name)
       .replace(/{{confirmUrl}}/g, confirmUrl)
-      .replace(/{{email}}/g, signalData.email)
+      .replace(/{{email}}/g, sanitizedSignalData.email)
       .replace(/{{letterText}}/g, letterText || '');
 
-    console.log('Sending confirmation email to:', signalData.email);
+    console.log('Sending confirmation email to:', sanitizedSignalData.email);
     console.log('Postal API URL:', env.POSTAL_API_URL);
     console.log('From email:', env.FROM_EMAIL);
 
     const emailResult = await sendEmail(env, {
-      to: signalData.email,
+      to: sanitizedSignalData.email,
       subject: 'Потвърдете сигнала си към РИОСВ – ТИ решаваш!',
       htmlBody: emailHtml,
       plainBody: emailText,
@@ -348,7 +470,7 @@ export async function onRequestPost(context) {
     console.log('Postal API response:', JSON.stringify(emailResult));
 
     // Increment pending rate limit counter
-    await incrementPendingCount(env, signalData.email);
+    await incrementPendingCount(env, sanitizedSignalData.email);
 
     // Track successful submission in stats
     const statsKey = 'stats:events';
@@ -360,13 +482,13 @@ export async function onRequestPost(context) {
     }
     stats['signal_submitted'].count++;
     stats['signal_submitted'].lastOccurred = Date.now();
-    stats['signal_submitted'].emails.push(signalData.email);
+    stats['signal_submitted'].emails.push(sanitizedSignalData.email);
 
     await env.PENDING_SIGNALS.put(statsKey, JSON.stringify(stats));
 
     return jsonResponse({
       success: true,
-      message: `Изпратихме имейл за потвърждение на ${signalData.email}`,
+      message: `Изпратихме имейл за потвърждение на ${sanitizedSignalData.email}`,
     });
 
   } catch (error) {

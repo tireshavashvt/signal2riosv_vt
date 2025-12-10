@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PWA (Progressive Web App) for citizens of Veliko Tarnovo, Bulgaria to submit air pollution reports to RIOSV (Regional Inspectorate of Environment and Water). Works offline after first visit.
 
+**Live site:** https://signal.tireshavashzavt.org/
+
+**Facebook:** https://www.facebook.com/tireshavash.vt
+
 ## Development Commands
 
 ```bash

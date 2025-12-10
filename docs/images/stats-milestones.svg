@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320">
+  <defs>
+    <linearGradient id="milestoneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f39c12"/>
+      <stop offset="100%" style="stop-color:#f1c40f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="320" rx="16" fill="url(#milestoneGrad)"/>
+  <rect x="2" y="2" width="596" height="316" rx="14" fill="none" stroke="#f39c12" stroke-width="2" opacity="0.5"/>
+
+  <!-- Title -->
+  <text x="50" y="40" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fff">
+    <tspan fill="#f1c40f" font-size="20">&#x1F3C6;</tspan>
+    <tspan dx="10" fill="#f39c12">ОБЩНОСТТА РАСТЕ</tspan>
+  </text>
+
+  <!-- Next goal section -->
+  <g transform="translate(50, 60)">
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="14" fill="#888">
+      <tspan fill="#e74c3c" font-size="16">&#x1F3AF;</tspan>
+      <tspan dx="5">Следваща цел:</tspan>
+      <tspan fill="#f1c40f" font-weight="bold" dx="5">1000 сигнала</tspan>
+    </text>
+
+    <!-- Progress bar background -->
+    <rect x="0" y="35" width="500" height="25" rx="6" fill="#1e3a5f"/>
+
+    <!-- Progress bar fill 84.7% -->
+    <rect x="0" y="35" width="423" height="25" rx="6" fill="url(#progressGrad)"/>
+
+    <!-- Progress segments -->
+    <g opacity="0.3">
+      <line x1="100" y1="35" x2="100" y2="60" stroke="#fff" stroke-width="1"/>
+      <line x1="200" y1="35" x2="200" y2="60" stroke="#fff" stroke-width="1"/>
+      <line x1="300" y1="35" x2="300" y2="60" stroke="#fff" stroke-width="1"/>
+      <line x1="400" y1="35" x2="400" y2="60" stroke="#fff" stroke-width="1"/>
+    </g>
+
+    <!-- Progress text -->
+    <text x="250" y="53" font-family="Arial, sans-serif" font-size="12" fill="#1a1a2e" text-anchor="middle" font-weight="bold">847 / 1000</text>
+
+    <!-- Remaining signals -->
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="13" fill="#888" font-style="italic">
+      "Още 153 сигнала до следващото ниво!"
+    </text>
+  </g>
+
+  <!-- Achievements section -->
+  <g transform="translate(50, 150)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" fill="#fff" font-weight="bold">Постижения отключени:</text>
+
+    <!-- Achievement 1 - Completed -->
+    <g transform="translate(0, 20)">
+      <rect x="0" y="0" width="240" height="35" rx="6" fill="#1e5f4f"/>
+      <text x="15" y="23" font-family="Arial, sans-serif" font-size="13" fill="#2ecc71">&#x2705;</text>
+      <text x="40" y="23" font-family="Arial, sans-serif" font-size="13" fill="#fff">100 -</text>
+      <text x="80" y="23" font-family="Arial, sans-serif" font-size="13" fill="#f39c12" font-style="italic">"Първата искра"</text>
+      <text x="210" y="23" font-family="Arial, sans-serif" font-size="16">&#x1F525;</text>
+    </g>
+
+    <!-- Achievement 2 - Completed -->
+    <g transform="translate(260, 20)">
+      <rect x="0" y="0" width="240" height="35" rx="6" fill="#1e5f4f"/>
+      <text x="15" y="23" font-family="Arial, sans-serif" font-size="13" fill="#2ecc71">&#x2705;</text>
+      <text x="40" y="23" font-family="Arial, sans-serif" font-size="13" fill="#fff">500 -</text>
+      <text x="80" y="23" font-family="Arial, sans-serif" font-size="13" fill="#f39c12" font-style="italic">"Гласът се чува"</text>
+      <text x="210" y="23" font-family="Arial, sans-serif" font-size="16">&#x1F4E2;</text>
+    </g>
+
+    <!-- Achievement 3 - Completed -->
+    <g transform="translate(0, 65)">
+      <rect x="0" y="0" width="240" height="35" rx="6" fill="#1e5f4f"/>
+      <text x="15" y="23" font-family="Arial, sans-serif" font-size="13" fill="#2ecc71">&#x2705;</text>
+      <text x="40" y="23" font-family="Arial, sans-serif" font-size="13" fill="#fff">750 -</text>
+      <text x="80" y="23" font-family="Arial, sans-serif" font-size="13" fill="#f39c12" font-style="italic">"Вълна на промяната"</text>
+      <text x="210" y="23" font-family="Arial, sans-serif" font-size="16">&#x1F30A;</text>
+    </g>
+
+    <!-- Achievement 4 - Locked -->
+    <g transform="translate(260, 65)">
+      <rect x="0" y="0" width="240" height="35" rx="6" fill="#1e3a5f" stroke="#444" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="15" y="23" font-family="Arial, sans-serif" font-size="13" fill="#666">&#x2B1C;</text>
+      <text x="40" y="23" font-family="Arial, sans-serif" font-size="13" fill="#666">1000 -</text>
+      <text x="87" y="23" font-family="Arial, sans-serif" font-size="12" fill="#666" font-style="italic">"Не може да ни игнорират"</text>
+    </g>
+  </g>
+
+  <!-- Motivational footer -->
+  <rect x="50" y="270" width="500" height="35" rx="8" fill="#1e3a5f"/>
+  <text x="300" y="293" font-family="Arial, sans-serif" font-size="14" fill="#f1c40f" text-anchor="middle" font-weight="bold">
+    &#x1F4AA; Всеки сигнал ни приближава до целта!
+  </text>
+</svg>

@@ -139,6 +139,50 @@ const ERROR_PAGE_TEMPLATE = `<!DOCTYPE html>
 // Rate limiting constants (must match submit.js)
 const MAX_CONFIRMED_PER_DAY = 1;
 
+// Generate SHA-256 hash of email for anonymous tracking
+async function hashEmail(email) {
+  const normalizedEmail = email.toLowerCase().trim();
+  const encoder = new TextEncoder();
+  const data = encoder.encode(normalizedEmail);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Save anonymized signal data to D1 for statistics
+async function saveAnonymizedStats(env, signalData, email) {
+  if (!env.SIGNAL_STATS) {
+    console.log('D1 SIGNAL_STATS not available, skipping stats save');
+    return;
+  }
+
+  try {
+    const id = crypto.randomUUID();
+    const timestamp = new Date().toISOString();
+    const symptoms = JSON.stringify(signalData.checks || []);
+    const emailHash = await hashEmail(email);
+
+    await env.SIGNAL_STATS.prepare(
+      `INSERT INTO anonymous_signals (id, timestamp, source, custom_source, district, symptoms, email_hash, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(
+      id,
+      timestamp,
+      signalData.source || '',
+      signalData.customSource || null,
+      signalData.district || '',
+      symptoms,
+      emailHash,
+      Date.now()
+    ).run();
+
+    console.log('Anonymized stats saved:', { id, source: signalData.source, district: signalData.district, emailHash: emailHash.substring(0, 8) + '...' });
+  } catch (error) {
+    // Don't fail the confirmation if stats save fails
+    console.error('Failed to save anonymized stats:', error);
+  }
+}
+
 function getTodayKey() {
   return new Date().toISOString().split('T')[0];
 }
@@ -287,6 +331,11 @@ export async function onRequestGet(context) {
 
     // Increment confirmed rate limit counter
     await incrementConfirmedCount(env, pending.email);
+
+    // Save anonymized statistics if user allowed it
+    if (pending.signalData && pending.signalData.allowStats) {
+      await saveAnonymizedStats(env, pending.signalData, pending.email);
+    }
 
     // Delete pending signal from KV
     await env.PENDING_SIGNALS.delete(`pending:${token}`);
