@@ -273,11 +273,11 @@
     .checks{display:grid; gap:0; margin-top:8px}
     .check{
       display:flex; gap:10px; align-items:flex-start;
-      padding:8px 14px; /* Намалено вертикално padding за по-компактен вид */
+      padding:8px 14px; /* Reduced vertical padding for more compact appearance */
       border-radius:8px;
       border:1px solid transparent; transition:all .2s ease;
       cursor:pointer; font-size:14px;
-      min-height: 44px; /* Минимална височина за добър touch target (Apple HIG препоръка) */
+      min-height: 44px; /* Minimum height for good touch target (Apple HIG recommendation) */
     }
     .check:nth-child(odd) { background: var(--checkbox-bg-odd); }
     .check:nth-child(even) { background: var(--checkbox-bg-even); }
@@ -292,25 +292,28 @@
     .check:has(input:checked){background:#d4edda; border-color:var(--accent)}
     
     /* Button improvements */
-    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:20px}
+    .row{display:flex; gap:12px; flex-wrap:wrap; margin-top:20px}
     .btn{
-      appearance:none; border:none; border-radius:10px; padding:12px 20px; 
+      appearance:none; border:none; border-radius:10px; padding:14px 22px;
       font-weight:600; cursor:pointer; font-size:14px; font-family:inherit;
-      background:var(--accent); color:#fff; 
+      background:var(--accent); color:#fff;
       box-shadow:0 4px 16px rgba(46,125,107,.25);
       transition:all .2s ease; position:relative; overflow:hidden;
+      min-height:44px;
     }
     .btn:hover{
       background:var(--accent-2); transform:translateY(-1px);
       box-shadow:0 6px 20px rgba(46,125,107,.3);
     }
     .btn:active{transform:translateY(0)}
-    .btn.secondary{
-      background:#fff; color:var(--accent); 
+    .btn:disabled{opacity:.6; cursor:not-allowed; transform:none}
+    .btn-secondary{
+      background:#fff; color:var(--accent);
       box-shadow:0 2px 12px rgba(0,0,0,.1); border:2px solid var(--accent);
     }
-    .btn.secondary:hover{background:#f8fbfa; transform:translateY(-1px)}
-    .btn:disabled{opacity:.6; cursor:not-allowed; transform:none}
+    .btn-secondary:hover{
+      background:#f8fbfa; border-color:var(--accent-2);
+    }
     
     /* Enhanced hint and preview */
     .hint{color:var(--muted); font-size:13px; margin-top:4px; line-height:1.3}
@@ -365,10 +368,12 @@
     @media (max-width:640px){
       .row{flex-direction:column; align-items:stretch; gap:10px}
       .btn{width:100%; justify-content:center; padding:14px 20px}
+      .btn.primary{padding:16px 28px; font-size:16px} /* Larger on mobile */
+      .btn-separator{display:none} /* Hide separator on mobile */
       .preview{max-height:250px; font-size:12px; padding:12px}\
       .checks{gap:2px}
-      .check{padding:10px 12px; font-size:13px} /* Оптимизирано за мобилни, но все още с добър touch target */
-      .check input[type="checkbox"]{width:18px; height:18px} /* По-голям checkbox за мобилни */
+      .check{padding:10px 12px; font-size:13px} /* Optimized for mobile, still with good touch target */
+      .check input[type="checkbox"]{width:18px; height:18px} /* Larger checkbox for mobile */
       fieldset.standalone-fieldset {padding: 16px; margin-bottom: 12px;}
       fieldset.standalone-fieldset > legend {font-size: 16px; padding-bottom: 10px; margin-bottom: 12px;}
     }
@@ -1262,12 +1267,6 @@
             <input id="address" type="text" placeholder="ул., №, ориентир..." aria-describedby="address-hint">
             <div class="hint" id="address-hint">Опционално - помага за по-точна локализация</div>
           </div>
-
-          <div class="form-group">
-            <label for="visitTimeOnly"><i class="fas fa-clock"></i> Препоръчителен час за проверка</label>
-            <input id="visitTimeOnly" type="time" aria-describedby="visit-time-hint">
-            <div class="hint" id="visit-time-hint">Опционално - предложете час, в който нарушението е най-видимо или Вие сте на място</div>
-          </div>
         </div>
       </section>
 
@@ -1332,7 +1331,7 @@
         <label class="check" style="background: var(--primary-light); border: 1px solid var(--accent); padding: 14px 16px; border-radius: 8px;">
           <input type="checkbox" id="allowStats" checked>
           <span style="font-size: 14px; line-height: 1.6;">
-            Позволявам на <strong>ТИ решаваш! - Гражданско сдружение „Ти Решаваш за Велико Търново"</strong>
+            Позволявам на Гражданско сдружение <strong>"Ти Решаваш", клон "Ти Решаваш за Велико Търново"</strong>
             да използва данните от сигнала, <strong style="color: var(--accent);">без личните ми данни</strong>, за статистически изследвания.
           </span>
         </label>
@@ -1348,12 +1347,8 @@
       </div>
 
       <div class="row">
-        <button type="button" class="btn" id="downloadDocx">
-          <span><i class="fas fa-file-word"></i> Свали DOCX</span>
-        </button>
-        <button type="button" class="btn secondary" id="sendToRiosv">
-          <span><i class="fas fa-paper-plane"></i> Изпрати към РИОСВ</span>
-        </button>
+        <button type="button" class="btn" id="sendToRiosv">Изпрати към РИОСВ</button>
+        <button type="button" class="btn btn-secondary" id="downloadDocx">Свали DOCX</button>
       </div>
     </form>
 
@@ -1369,7 +1364,7 @@
   </footer>
 
   <script>
-    // Чекбоксове от бланката
+    // Checkbox items from the form
     const checkboxItems = [
     "Наличие на остра, задушлива миризма на лепило.",
     "Наличие на остра, задушлива миризма на дървесина.",
@@ -1384,7 +1379,7 @@
     "Чува се силен шум, тътен."
     ];
 
-    // DOM елементи
+    // DOM elements
     const form = document.getElementById('signalForm');
     const preview = document.getElementById('preview');
     const checksWrap = document.getElementById('checks');
@@ -1398,7 +1393,7 @@
     const customSourceInput = document.getElementById('customSource');
     // Removed violationContent reference as it's no longer an accordion
 
-    // Рендер на чекбоксовете
+    // Render checkboxes
     checkboxItems.forEach((txt, i) => {
       const id = "chk_" + i;
       const el = document.createElement('label');
@@ -1407,7 +1402,7 @@
       checksWrap.appendChild(el);
     });
 
-    // Автопопълване на дата/час с BG време
+    // Auto-fill date/time with Bulgarian time
     function setCurrentBulgarianDateTime() {
       const now = new Date();
       const bgTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Sofia"}));
@@ -1418,13 +1413,13 @@
     }
     setCurrentBulgarianDateTime();
 
-    // Показване/скриване на полето за "Друг източник" (no accordion height recalculation needed here)
+    // Show/hide "Other source" field (no accordion height recalculation needed here)
     sourceSelect.addEventListener('change', () => {
       const show = sourceSelect.value === 'Друг източник';
       customSourceGroup.style.display = show ? 'block' : 'none';
     });
 
-    // Показване на статус съобщение
+    // Show status message
     function showStatus(message, type = 'info') {
       let icon = '';
       if (type === 'success') icon = '<i class="fas fa-check-circle"></i>';
@@ -1436,14 +1431,14 @@
       setTimeout(() => status.classList.remove('show'), 5000);
     }
 
-    // Vibration функция за тактилен feedback
+    // Vibration function for tactile feedback
     function vibrate(pattern) {
       if ('vibrate' in navigator) {
         navigator.vibrate(pattern);
       }
     }
 
-    // Помощни функции за показване на грешки в полета
+    // Helper functions for displaying field errors
     function clearAllFieldErrors() {
       document.querySelectorAll('.form-group.has-error, #checks.has-error').forEach(el => {
         el.classList.remove('has-error');
@@ -1453,7 +1448,7 @@
     }
 
     function showFieldError(fieldElement, message) {
-      // Намираме родителския form-group или създаваме един, ако е специален случай
+      // Find parent form-group or create one if special case
       let formGroup;
 
       if (fieldElement.id === 'checks') {
@@ -1470,30 +1465,30 @@
         }
       }
 
-      // Добавяме has-error класа
+      // Add has-error class
       formGroup.classList.add('has-error');
 
-      // Търсим или създаваме error message елемент
+      // Find or create error message element
       let errorMsgEl = formGroup.querySelector('.field-error-message');
       if (!errorMsgEl) {
         errorMsgEl = document.createElement('div');
         errorMsgEl.className = 'field-error-message';
 
-        // За checkboxes слагаме след checksWrap
+        // For checkboxes place after checksWrap
         if (fieldElement.id === 'checks') {
           formGroup.appendChild(errorMsgEl);
         } else {
-          // За обикновени полета слагаме след input/select/textarea
+          // For regular fields place after input/select/textarea
           fieldElement.parentNode.insertBefore(errorMsgEl, fieldElement.nextSibling);
         }
       }
 
       errorMsgEl.textContent = message;
 
-      // Scroll до полето с грешка
+      // Scroll to field with error
       formGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // Focus на полето след малко забавяне (след scroll)
+      // Focus field after short delay (after scroll)
       setTimeout(() => {
         if (fieldElement.id !== 'checks') {
           fieldElement.focus();
@@ -1501,7 +1496,7 @@
       }, 300);
     }
 
-    // Валидация на име - само кирилица, интервали и тирета
+    // Name validation - Cyrillic only, spaces and dashes
     function validateName(name) {
       if (!name) return { valid: false, error: 'Моля въведете Вашето име и фамилия' };
       name = name.trim();
@@ -1511,12 +1506,12 @@
       if (name.length > 100) {
         return { valid: false, error: 'Името не може да е по-дълго от 100 символа' };
       }
-      // Само кирилица (А-Яа-я), интервали и тирета
+      // Only Cyrillic (А-Яа-я), spaces and dashes
       const cyrillicPattern = /^[А-Яа-яЁёЍѝ\s\-]+$/;
       if (!cyrillicPattern.test(name)) {
         return { valid: false, error: 'Моля, въведете името си на кирилица (български букви)' };
       }
-      // Проверка за поне едно пълно име (поне 2 думи)
+      // Check for at least one full name (at least 2 words)
       const words = name.split(/\s+/).filter(w => w.length > 0);
       if (words.length < 2) {
         return { valid: false, error: 'Моля, въведете име и фамилия' };
@@ -1524,11 +1519,11 @@
       return { valid: true };
     }
 
-    // Валидация на имейл - стриктна проверка
+    // Email validation - strict check
     function validateEmail(email) {
       if (!email) return { valid: false, error: 'Моля въведете имейл адрес' };
       email = email.trim().toLowerCase();
-      // RFC 5322 опростен regex
+      // RFC 5322 simplified regex
       const emailPattern = /^[a-z0-9](?:[a-z0-9._%+\-]{0,61}[a-z0-9])?@[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?(?:\.[a-z]{2,})+$/;
       if (!emailPattern.test(email)) {
         return { valid: false, error: 'Моля, въведете валиден имейл адрес' };
@@ -1536,22 +1531,22 @@
       return { valid: true };
     }
 
-    // Sanitize на входни данни - защита от injection
+    // Sanitize input data - injection protection
     function sanitizeInput(input) {
       if (typeof input !== 'string') return '';
       return input
-        .replace(/[<>]/g, '')           // Премахва < и >
-        .replace(/javascript:/gi, '')    // Премахва javascript: URLs
-        .replace(/on\w+\s*=/gi, '')      // Премахва event handlers (onclick=, etc.)
-        .replace(/[\x00-\x1F]/g, '')     // Премахва control characters
+        .replace(/[<>]/g, '')           // Remove < and >
+        .replace(/javascript:/gi, '')    // Remove javascript: URLs
+        .replace(/on\w+\s*=/gi, '')      // Remove event handlers (onclick=, etc.)
+        .replace(/[\x00-\x1F]/g, '')     // Remove control characters
         .trim();
     }
 
-    // Валидация на телефон - само цифри и интервали
+    // Phone validation - digits and spaces only
     function validatePhone(phone) {
-      if (!phone) return { valid: true }; // Не е задължително
+      if (!phone) return { valid: true }; // Not required
       phone = phone.trim();
-      // Позволява само цифри и интервали
+      // Allow only digits and spaces
       const phonePattern = /^[0-9\s]+$/;
       if (!phonePattern.test(phone)) {
         return { valid: false, error: 'Телефонът може да съдържа само цифри' };
@@ -1559,9 +1554,9 @@
       return { valid: true };
     }
 
-    // Валидация на формата
+    // Form validation
     function validateForm() {
-      // Изчистваме всички предишни грешки
+      // Clear all previous errors
       clearAllFieldErrors();
 
       const source = document.getElementById('source').value;
@@ -1572,52 +1567,52 @@
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone') ? document.getElementById('phone').value : '';
 
-      // Валидация на източник
+      // Source validation
       if (!source) {
         showFieldError(sourceSelect, 'Моля изберете предполагаем източник');
-        vibrate([100, 50, 100]); // Кратка вибрация за грешка
+        vibrate([100, 50, 100]); // Short vibration for error
         return false;
       }
 
-      // Валидация на custom source
+      // Custom source validation
       if (source === 'Друг източник' && !customSourceInput.value.trim()) {
         showFieldError(customSourceInput, 'Моля посочете конкретен източник');
         return false;
       }
 
-      // Валидация на квартал
+      // District validation
       if (!district) {
         showFieldError(document.getElementById('district'), 'Моля изберете квартал');
         return false;
       }
 
-      // Валидация на дата и час
+      // Date and time validation
       if (!when) {
         showFieldError(document.getElementById('when'), 'Моля въведете дата и час');
         return false;
       }
 
-      // Валидация на checkboxes
+      // Checkboxes validation
       if (checks.length === 0) {
         showFieldError(checksWrap, 'Моля изберете поне един начин на влошаване на качеството на живот');
         return false;
       }
 
-      // Валидация на име с новата функция
+      // Name validation with new function
       const nameValidation = validateName(name);
       if (!nameValidation.valid) {
         showFieldError(document.getElementById('name'), nameValidation.error);
         return false;
       }
 
-      // Валидация на имейл с новата функция
+      // Email validation with new function
       const emailValidation = validateEmail(email);
       if (!emailValidation.valid) {
         showFieldError(document.getElementById('email'), emailValidation.error);
         return false;
       }
 
-      // Валидация на телефон (ако е въведен)
+      // Phone validation (if entered)
       const phoneValidation = validatePhone(phone);
       if (!phoneValidation.valid) {
         showFieldError(document.getElementById('phone'), phoneValidation.error);
@@ -1627,17 +1622,13 @@
       return true;
     }
 
-    // Събиране на данни от формата
+    // Collect data from form
     function collectData(){
       const sel = s => document.querySelector(s);
       const source = sel('#source').value || '';
       const customSource = sanitizeInput(sel('#customSource') ? sel('#customSource').value || '' : '');
       const district = sel('#district').value || '';
       const whenVal = sel('#when').value || '';
-
-      // Само час за предложено време за проверка
-      const visitTimeOnly = sel('#visitTimeOnly').value || '';
-
       const address = sanitizeInput(sel('#address').value || '');
       const subject = sanitizeInput(sel('#subject') ? sel('#subject').value || '' : '');
       const name = (sel('#name').value || '').trim();
@@ -1653,10 +1644,10 @@
       const checks = Array.from(document.querySelectorAll('#checks input:checked')).map(c => c.value);
       const allowStats = sel('#allowStats') ? sel('#allowStats').checked : false;
 
-      return {source, customSource, district, whenVal, visitTimeOnly, address, subject, name, email, phone, desc, checks, allowStats};
+      return {source, customSource, district, whenVal, address, subject, name, email, phone, desc, checks, allowStats};
     }
 
-    // Речник с адреси на източници
+    // Dictionary with source addresses
     const sourceAddresses = {
       "„Топлофикация\"": "гр. Велико Търново, бул. Никола Габровски 71А",
       "Завод „Кроношпан\"": "гр. Велико Търново, кв. Чолаковци, улица Дълга Лъка",
@@ -1714,11 +1705,6 @@
         violationLine += ` Адрес / Район: ${d.address}.`;
       }
 
-      let visitTimeLine = "";
-      if (d.visitTimeOnly) {
-        visitTimeLine = `Настоявам проверката да бъде извършена в ${d.visitTimeOnly} ч.`;
-      }
-
       const descLine = d.desc ? `Допълнително описание: ${d.desc}` : "";
 
       let conditionalTexts = [];
@@ -1737,7 +1723,7 @@
 
       const footer = `Моля за входящ номер, както и за отговор от Ваша страна в законоустановения срок - на e-mail: ${d.email}.\n\nДата: ${todayBG()}    Подпис: ${d.name}`;
 
-      return [header, fromLine, "", intro, bullets, violationLine, visitTimeLine, descLine, ...conditionalTexts, footer].filter(Boolean).join("\n\n");
+      return [header, fromLine, "", intro, bullets, violationLine, descLine, ...conditionalTexts, footer].filter(Boolean).join("\n\n");
     }
 
     // Преглед
@@ -1767,11 +1753,13 @@
       if (loading) {
         button.classList.add('loading');
         button.disabled = true;
-        button.querySelector('span').style.visibility = 'hidden';
+        // Hide all children during loading (icon and text)
+        Array.from(button.children).forEach(child => child.style.visibility = 'hidden');
       } else {
         button.classList.remove('loading');
         button.disabled = false;
-        button.querySelector('span').style.visibility = 'visible';
+        // Show all children after loading
+        Array.from(button.children).forEach(child => child.style.visibility = 'visible');
       }
     }
 
@@ -1824,7 +1812,7 @@
 
     setupFieldErrorClearance();
 
-    // Генериране на DOCX
+    // Generate DOCX
     downloadBtn.addEventListener('click', async () => {
       if (!validateForm()) return;
       setButtonLoading(downloadBtn, true);
@@ -1845,7 +1833,7 @@
         a.download = "signal_riosv_vt.docx";
         a.click();
         URL.revokeObjectURL(a.href);
-        vibrate(200); // Успешно изтегляне
+        vibrate(200); // Successful download
         showStatus('DOCX файлът е изтеглен успешно', 'success');
       } catch (error) {
         console.error('Грешка при генериране на DOCX:', error);
@@ -1922,8 +1910,7 @@
           // Keep button disabled after success
           sendBtn.disabled = true;
           sendBtn.classList.remove('loading');
-          sendBtn.querySelector('span').innerHTML = '<i class="fas fa-check"></i> Изпратено';
-          sendBtn.querySelector('span').style.visibility = 'visible';
+          sendBtn.innerHTML = '<i class="fas fa-check"></i><span>Изпратено</span>';
 
           // Reset Turnstile widget
           if (typeof turnstile !== 'undefined') {
