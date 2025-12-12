@@ -349,16 +349,7 @@
       margin-top: 16px;
     }
 
-    /* На мобилни preview е скрит по подразбиране */
-    @media (max-width:600px){
-      .preview-wrapper {
-        max-height: 0;
-        opacity: 0;
-      }
-      .preview-toggle .toggle-icon {
-        transform: rotate(-90deg);
-      }
-    }
+    /* Preview е винаги видим на всички устройства */
     .footer-note{color:var(--muted); font-size:12px; margin-top:12px}
     
     /* Loading states */
@@ -1290,7 +1281,7 @@
           
           <div class="form-group">
             <label for="when"><i class="fas fa-calendar-alt"></i> Кога е извършено нарушението? *</label>
-            <input id="when" type="datetime-local" required aria-describedby="when-hint">
+            <input id="when" type="datetime-local" required aria-describedby="when-hint" title="Формат: 24-часов">
             <div class="hint" id="when-hint"></div>
           </div>
           
@@ -1450,7 +1441,7 @@
       const pad = n => String(n).padStart(2,'0');
       const s = `${bgTime.getFullYear()}-${pad(bgTime.getMonth()+1)}-${pad(bgTime.getDate())}T${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())}`;
       document.getElementById('when').value = s;
-      document.getElementById('when-hint').textContent = `Автоматично: ${pad(bgTime.getDate())}.${pad(bgTime.getMonth()+1)}.${bgTime.getFullYear()} ${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())} (Europe/Sofia)`;
+      document.getElementById('when-hint').textContent = `Автоматично: ${pad(bgTime.getDate())}.${pad(bgTime.getMonth()+1)}.${bgTime.getFullYear()}, ${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())} ч. (24-часов формат)`;
     }
     setCurrentBulgarianDateTime();
 
@@ -1855,12 +1846,7 @@
     const previewToggle = document.getElementById('previewToggle');
     const previewWrapper = document.getElementById('previewWrapper');
 
-    // На мобилни устройства preview е скрит по подразбиране
-    if (window.innerWidth <= 600) {
-      previewWrapper.classList.add('collapsed');
-      previewToggle.classList.add('collapsed');
-    }
-
+    // Preview toggle функционалност
     previewToggle.addEventListener('click', () => {
       previewWrapper.classList.toggle('collapsed');
       previewToggle.classList.toggle('collapsed');
