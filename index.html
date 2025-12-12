@@ -1,16 +1,26 @@
 <!doctype html>
-<!-- version 0.0.2 -->
+<!-- version 0.4.0 -->
 <html lang="bg">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#2e7d6b" />
+  <meta name="description" content="Подай сигнал за замърсяване на въздуха във Велико Търново" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="ТИ решаваш!" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" href="/icons/icon-512.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
   <title>ТИ решаваш! – Подай сигнал за замърсяване на въздуха</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <style>
     :root{
       --bg:#f7faf9; --card:#ffffff; 
@@ -31,15 +41,14 @@
     
     /* Header improvements */
     header{
-      padding:16px 20px; display:flex; align-items:center; gap:16px; 
+      padding:16px 20px; display:flex; align-items:center; gap:16px;
       max-width:1200px; margin:0 auto; background:var(--card);
       box-shadow:var(--shadow); border-radius:var(--radius); margin-bottom:16px;
+      position: relative;
     }
-    .logo-placeholder{
-      width:60px; height:60px; background:var(--accent); 
-      border-radius:10px; display:flex; align-items:center; justify-content:center;
-      color:white; font-weight:700; font-size:20px; flex-shrink:0;
-      font-family: 'Montserrat', sans-serif;
+    .logo-img{
+      width:70px; height:70px; object-fit:contain; flex-shrink:0;
+      border-radius:8px;
     }
     header .brand h1{
       margin:0; font-size:20px; font-weight:700; color:var(--accent);
@@ -142,16 +151,66 @@
     }
     
     /* Enhanced form controls */
-    .form-group{margin-bottom:16px; position:relative;}
+    .form-group{margin-bottom:12px; position:relative;}
     label{
       display:block; font-weight:600; margin-bottom:6px; color:var(--text);
       font-size:14px;
       display:flex; align-items:center; gap:8px; /* For icons */
     }
-    input[type="text"], input[type="email"], input[type="tel"], select, textarea, input[type="datetime-local"]{
-      width:100%; padding:10px 14px; border:2px solid var(--border); 
-      border-radius:8px; background:#fff; outline:none; 
+    input[type="text"], input[type="email"], input[type="tel"], input[type="time"], input[type="date"], select, textarea, input[type="datetime-local"]{
+      width:100%; padding:10px 14px; border:2px solid var(--border);
+      border-radius:8px; background:#fff; outline:none;
       transition:all .2s ease; font-size:14px; font-family:inherit;
+    }
+
+    /* Error styling for form fields */
+    .form-group.has-error input,
+    .form-group.has-error select,
+    .form-group.has-error textarea {
+      border-color: #dc3545;
+      background-color: #fff5f5;
+    }
+
+    .form-group.has-error input:focus,
+    .form-group.has-error select:focus,
+    .form-group.has-error textarea:focus {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    }
+
+    .field-error-message {
+      display: none;
+      color: #dc3545;
+      font-size: 13px;
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: #fff5f5;
+      border-left: 3px solid #dc3545;
+      border-radius: 4px;
+      animation: slideDown 0.2s ease;
+    }
+
+    .form-group.has-error .field-error-message {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Error styling for checkboxes wrapper */
+    #checks.has-error {
+      padding: 12px;
+      border: 2px solid #dc3545;
+      border-radius: 8px;
+      background-color: #fff5f5;
     }
     textarea{min-height:100px; resize:vertical; line-height:1.4}
     input:focus, select:focus, textarea:focus{
@@ -211,17 +270,20 @@
     textarea:focus + .clear-textarea { opacity: 1; }
     
     /* Compact checkbox styling with alternating colors */
-    .checks{display:grid; gap:2px; margin-top:8px}
+    .checks{display:grid; gap:0; margin-top:8px}
     .check{
-      display:flex; gap:10px; align-items:flex-start; 
-      padding:6px 10px; 
+      display:flex; gap:10px; align-items:flex-start;
+      padding:8px 14px; /* Reduced vertical padding for more compact appearance */
       border-radius:8px;
       border:1px solid transparent; transition:all .2s ease;
       cursor:pointer; font-size:14px;
+      min-height: 44px; /* Minimum height for good touch target (Apple HIG recommendation) */
     }
     .check:nth-child(odd) { background: var(--checkbox-bg-odd); }
     .check:nth-child(even) { background: var(--checkbox-bg-even); }
-    .check:hover{background:#e9f2f0; border-color:var(--accent-2)}
+    @media (hover: hover) {
+      .check:hover{background:#e9f2f0; border-color:var(--accent-2)}
+    }
     .check input[type="checkbox"]{
       width:18px; height:18px; margin:0; cursor:pointer; flex-shrink:0;
       accent-color:var(--accent); margin-top:1px;
@@ -230,30 +292,35 @@
     .check:has(input:checked){background:#d4edda; border-color:var(--accent)}
     
     /* Button improvements */
-    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:20px}
+    .row{display:flex; gap:12px; flex-wrap:wrap; margin-top:20px}
     .btn{
-      appearance:none; border:none; border-radius:10px; padding:12px 20px; 
+      appearance:none; border:none; border-radius:10px; padding:14px 22px;
       font-weight:600; cursor:pointer; font-size:14px; font-family:inherit;
-      background:var(--accent); color:#fff; 
+      background:var(--accent); color:#fff;
       box-shadow:0 4px 16px rgba(46,125,107,.25);
       transition:all .2s ease; position:relative; overflow:hidden;
+      min-height:44px;
     }
     .btn:hover{
       background:var(--accent-2); transform:translateY(-1px);
       box-shadow:0 6px 20px rgba(46,125,107,.3);
     }
     .btn:active{transform:translateY(0)}
-    .btn.secondary{
-      background:#fff; color:var(--accent); 
+    .btn:disabled{opacity:.6; cursor:not-allowed; transform:none}
+    .btn-secondary{
+      background:#fff; color:var(--accent);
       box-shadow:0 2px 12px rgba(0,0,0,.1); border:2px solid var(--accent);
     }
-    .btn.secondary:hover{background:#f8fbfa; transform:translateY(-1px)}
-    .btn:disabled{opacity:.6; cursor:not-allowed; transform:none}
+    .btn-secondary:hover{
+      background:#f8fbfa; border-color:var(--accent-2);
+    }
     
     /* Enhanced hint and preview */
     .hint{color:var(--muted); font-size:13px; margin-top:4px; line-height:1.3}
+
+    /* Preview styling - always visible */
     .preview{
-      white-space:pre-wrap; background:#fcfdfc; 
+      white-space:pre-wrap; background:#fcfdfc;
       border:2px dashed #cfe2de; padding:16px; border-radius:10px;
       font-family:monospace; font-size:13px; line-height:1.4;
       max-height:300px; overflow-y:auto;
@@ -301,10 +368,12 @@
     @media (max-width:640px){
       .row{flex-direction:column; align-items:stretch; gap:10px}
       .btn{width:100%; justify-content:center; padding:14px 20px}
+      .btn.primary{padding:16px 28px; font-size:16px} /* Larger on mobile */
+      .btn-separator{display:none} /* Hide separator on mobile */
       .preview{max-height:250px; font-size:12px; padding:12px}\
       .checks{gap:2px}
-      .check{padding:6px 8px; font-size:13px}
-      .check input[type="checkbox"]{width:16px; height:16px}
+      .check{padding:10px 12px; font-size:13px} /* Optimized for mobile, still with good touch target */
+      .check input[type="checkbox"]{width:18px; height:18px} /* Larger checkbox for mobile */
       fieldset.standalone-fieldset {padding: 16px; margin-bottom: 12px;}
       fieldset.standalone-fieldset > legend {font-size: 16px; padding-bottom: 10px; margin-bottom: 12px;}
     }
@@ -331,22 +400,825 @@
     .phone-link:hover, .phone-link:focus {
       text-decoration: underline; /* Add underline on hover/focus for accessibility */
     }
+
+    /* PWA Install Banner */
+    .pwa-install-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      z-index: 1000;
+      transform: translateY(100%);
+      transition: transform 0.4s ease-out;
+    }
+    .pwa-install-banner.show {
+      transform: translateY(0);
+    }
+    .pwa-install-banner .banner-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    .pwa-install-banner .banner-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pwa-install-banner .banner-icon img {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+    }
+    .pwa-install-banner .banner-text h4 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .pwa-install-banner .banner-text p {
+      margin: 2px 0 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .pwa-install-banner .banner-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .pwa-install-banner .btn-install {
+      background: white;
+      color: var(--accent);
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pwa-install-banner .btn-install:hover {
+      background: #f0f0f0;
+      transform: scale(1.02);
+    }
+    .pwa-install-banner .btn-close {
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.5);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .pwa-install-banner .btn-close:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: white;
+    }
+    @media (max-width: 640px) {
+      .pwa-install-banner {
+        flex-direction: column;
+        padding: 14px 16px;
+        gap: 12px;
+      }
+      .pwa-install-banner .banner-content {
+        width: 100%;
+      }
+      .pwa-install-banner .banner-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+      .pwa-install-banner .btn-install {
+        flex: 1;
+      }
+    }
+
+    /* iOS install instructions modal */
+    .ios-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ios-modal-overlay.show {
+      display: flex;
+    }
+    .ios-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      animation: modalSlideIn 0.3s ease-out;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .ios-modal h3 {
+      margin: 0 0 16px;
+      color: var(--accent);
+      font-size: 18px;
+    }
+    .ios-modal .ios-steps {
+      text-align: left;
+      margin: 16px 0;
+    }
+    .ios-modal .ios-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .ios-modal .ios-step:last-child {
+      border-bottom: none;
+    }
+    .ios-modal .ios-step .step-num {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .ios-modal .ios-step p {
+      margin: 0;
+      font-size: 14px;
+    }
+    .ios-modal .btn-got-it {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .ios-modal .btn-got-it:hover {
+      background: var(--accent-2);
+    }
+
+    /* Success Modal - Email Confirmation */
+    .success-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1002;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .success-modal-overlay.show {
+      display: flex;
+    }
+    .success-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      animation: modalSlideIn 0.3s ease-out;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .success-modal .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 40px;
+      color: white;
+    }
+    .success-modal h3 {
+      margin: 0 0 16px;
+      color: var(--accent);
+      font-size: 22px;
+    }
+    .success-modal p {
+      margin: 0 0 12px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #333;
+    }
+    .success-modal .email-highlight {
+      background: #e8f5e9;
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-block;
+      margin: 8px 0 16px;
+      word-break: break-all;
+    }
+    .success-modal .spam-warning {
+      background: #fff3cd;
+      color: #856404;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: 14px;
+      text-align: left;
+    }
+    .success-modal .spam-warning i {
+      margin-right: 8px;
+    }
+    .success-modal .btn-ok {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .success-modal .btn-ok:hover {
+      background: var(--accent-2);
+      transform: translateY(-1px);
+    }
+    .success-modal .steps-list {
+      text-align: left;
+      margin: 16px 0;
+      padding: 0;
+      list-style: none;
+    }
+    .success-modal .steps-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #555;
+    }
+    .success-modal .steps-list li .step-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Hide install button by default, show via JS when installable */
+    #headerInstallBtn {
+      display: none;
+    }
+    #headerInstallBtn.show {
+      display: flex;
+    }
+
+    /* Rate Limit Modal */
+    .ratelimit-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1002;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ratelimit-modal-overlay.show {
+      display: flex;
+    }
+    .ratelimit-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      animation: modalSlideIn 0.3s ease-out;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .ratelimit-modal .ratelimit-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #f0ad4e 0%, #ec971f 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 40px;
+      color: white;
+    }
+    .ratelimit-modal h3 {
+      margin: 0 0 16px;
+      color: #856404;
+      font-size: 22px;
+    }
+    .ratelimit-modal p {
+      margin: 0 0 12px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #333;
+    }
+    .ratelimit-modal .limit-info {
+      background: #fff3cd;
+      color: #856404;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: 14px;
+      text-align: left;
+      border: 1px solid #ffeeba;
+    }
+    .ratelimit-modal .limit-info i {
+      margin-right: 8px;
+    }
+    .ratelimit-modal .limit-info ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+    .ratelimit-modal .limit-info li {
+      margin: 6px 0;
+    }
+    .ratelimit-modal .btn-ok {
+      background: #856404;
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .ratelimit-modal .btn-ok:hover {
+      background: #6d5303;
+      transform: translateY(-1px);
+    }
+
+    /* Site Footer */
+    .site-footer {
+      max-width: 1200px;
+      margin: 24px auto 16px;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+    }
+    .site-footer .version {
+      font-family: monospace;
+      background: #f0f0f0;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #666;
+    }
+
+    /* Header Action Buttons (Install + Share) */
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .header-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .header-action-btn:hover {
+      background: var(--accent-2);
+      transform: translateY(-1px);
+    }
+    .header-action-btn.secondary {
+      background: white;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+    }
+    .header-action-btn.secondary:hover {
+      background: #f8fbfa;
+    }
+    .header-action-btn i {
+      font-size: 16px;
+    }
+    @media (max-width: 640px) {
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+      .header-action-btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 120px;
+      }
+    }
+
+    /* QR Code Modal */
+    .qr-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1002;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .qr-modal-overlay.show {
+      display: flex;
+    }
+    .qr-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      animation: modalSlideIn 0.3s ease-out;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .qr-modal h3 {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 20px;
+    }
+    .qr-modal p {
+      margin: 0 0 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    .qr-modal .qr-container {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .qr-modal .qr-container canvas {
+      display: block;
+    }
+    .qr-modal .url-copy-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .qr-modal .url-display {
+      flex: 1;
+      background: var(--light-gray);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      word-break: break-all;
+    }
+    .qr-modal .btn-copy {
+      background: var(--accent);
+      color: white;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .qr-modal .btn-copy:hover {
+      background: var(--accent-2);
+      transform: scale(1.05);
+    }
+    .qr-modal .btn-copy:active {
+      transform: scale(0.95);
+    }
+    .qr-modal .copy-success {
+      display: none;
+      color: #28a745;
+      font-size: 13px;
+      margin: 0 0 12px;
+      animation: fadeIn 0.3s ease;
+    }
+    .qr-modal .copy-success.show {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .qr-modal .btn-close-qr {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .qr-modal .btn-close-qr:hover {
+      background: var(--accent-2);
+    }
+
+    /* Update Available Banner */
+    .update-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+      color: white;
+      padding: 12px 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1003;
+      animation: slideDown 0.4s ease-out;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    .update-banner.show {
+      display: flex;
+    }
+    .update-banner .update-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .update-banner .update-text i {
+      font-size: 18px;
+    }
+    .update-banner .btn-update {
+      background: white;
+      color: #1976D2;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .update-banner .btn-update:hover {
+      background: #f0f0f0;
+      transform: scale(1.02);
+    }
+    .update-banner .btn-dismiss {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .update-banner .btn-dismiss:hover {
+      opacity: 1;
+    }
+    @media (max-width: 640px) {
+      .update-banner {
+        flex-wrap: wrap;
+        padding: 10px 16px;
+        gap: 10px;
+      }
+      .update-banner .update-text {
+        flex: 1;
+        font-size: 13px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Update Available Banner -->
+  <div id="updateBanner" class="update-banner">
+    <div class="update-text">
+      <i class="fas fa-sync-alt"></i>
+      <span>Налична е нова версия на приложението!</span>
+    </div>
+    <button class="btn-update" id="updateBtn">Обнови сега</button>
+    <button class="btn-dismiss" id="updateDismiss" aria-label="Затвори">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div id="pwaInstallBanner" class="pwa-install-banner">
+    <div class="banner-content">
+      <div class="banner-icon">
+        <img src="/icons/logo.jpg" alt="ТИ решаваш!">
+      </div>
+      <div class="banner-text">
+        <h4>Инсталирай приложението</h4>
+        <p>Получи бърз достъп и офлайн режим</p>
+      </div>
+    </div>
+    <div class="banner-actions">
+      <button class="btn-install" id="pwaInstallBtn">
+        <i class="fas fa-download"></i> Инсталирай
+      </button>
+      <button class="btn-close" id="pwaCloseBtn" aria-label="Затвори">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- iOS Install Instructions Modal -->
+  <div id="iosModal" class="ios-modal-overlay">
+    <div class="ios-modal">
+      <h3><i class="fas fa-mobile-alt"></i> Инсталиране на iPhone/iPad</h3>
+      <div class="ios-steps">
+        <div class="ios-step">
+          <span class="step-num">1</span>
+          <p>Натиснете <i class="fas fa-share-square"></i> (Share) в долната лента</p>
+        </div>
+        <div class="ios-step">
+          <span class="step-num">2</span>
+          <p>Превъртете надолу и изберете <strong>"Add to Home Screen"</strong></p>
+        </div>
+        <div class="ios-step">
+          <span class="step-num">3</span>
+          <p>Натиснете <strong>"Add"</strong> горе вдясно</p>
+        </div>
+      </div>
+      <button class="btn-got-it" id="iosModalClose">Разбрах</button>
+    </div>
+  </div>
+
+  <!-- Success Modal - Email Confirmation Sent -->
+  <div id="successModal" class="success-modal-overlay">
+    <div class="success-modal">
+      <div class="success-icon">
+        <i class="fas fa-envelope-open-text"></i>
+      </div>
+      <h3>Проверете имейла си!</h3>
+      <p>Изпратихме писмо за потвърждение на:</p>
+      <div class="email-highlight" id="successEmail">email@example.com</div>
+
+      <ul class="steps-list">
+        <li>
+          <span class="step-icon">1</span>
+          <span>Отворете пощата си</span>
+        </li>
+        <li>
+          <span class="step-icon">2</span>
+          <span>Намерете писмото от <strong>ТИ решаваш!</strong></span>
+        </li>
+        <li>
+          <span class="step-icon">3</span>
+          <span>Кликнете бутона <strong>"Потвърди и изпрати сигнала"</strong></span>
+        </li>
+      </ul>
+
+      <div class="spam-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Важно:</strong> Ако не виждате писмото, проверете папка <strong>Спам</strong> или <strong>Junk</strong>!
+      </div>
+
+      <button class="btn-ok" id="successModalClose">Разбрах, ще проверя</button>
+    </div>
+  </div>
+
+  <!-- Rate Limit Modal -->
+  <div id="rateLimitModal" class="ratelimit-modal-overlay">
+    <div class="ratelimit-modal">
+      <div class="ratelimit-icon">
+        <i class="fas fa-hourglass-half"></i>
+      </div>
+      <h3>Достигнахте лимита за деня</h3>
+      <p id="rateLimitMessage">Можете да изпратите нов сигнал утре.</p>
+
+      <div class="limit-info">
+        <i class="fas fa-info-circle"></i>
+        <strong>Защо има лимит?</strong>
+        <ul>
+          <li>Защита от злоупотреби и спам</li>
+          <li>Осигуряване на качествена обработка на сигналите</li>
+          <li>Лимитът се нулира всеки ден в полунощ</li>
+        </ul>
+      </div>
+
+      <p style="font-size: 14px; color: #666;">
+        При спешни случаи, звънете на <strong>Зелен телефон</strong>:<br>
+        <a href="tel:+35962620358" style="color: var(--accent); font-weight: 600;">062/620 358</a> или
+        <a href="tel:+359885322969" style="color: var(--accent); font-weight: 600;">0885 322 969</a>
+      </p>
+
+      <button class="btn-ok" id="rateLimitModalClose">Разбрах</button>
+    </div>
+  </div>
+
+  <!-- QR Code Share Modal -->
+  <div id="qrModal" class="qr-modal-overlay">
+    <div class="qr-modal">
+      <h3><i class="fa-solid fa-square-share-nodes"></i> Сподели приложението</h3>
+      <p>Сканирайте QR кода или копирайте линка</p>
+      <div class="qr-container">
+        <div id="qrCodeDiv"></div>
+      </div>
+      <div class="url-copy-row">
+        <span class="url-display">signal.tireshavashzavt.org</span>
+        <button id="copyUrlBtn" class="btn-copy" title="Копирай линка">
+          <i class="fa-regular fa-copy"></i>
+        </button>
+      </div>
+      <p id="copySuccess" class="copy-success"><i class="fas fa-check"></i> Линкът е копиран!</p>
+      <button class="btn-close-qr" id="qrModalClose">Затвори</button>
+    </div>
+  </div>
+
   <header>
-    <div class="logo-placeholder">ТИ</div>
+    <img src="/icons/logo.jpg" alt="ТИ решаваш!" class="logo-img">
     <div class="brand">
       <h1>ТИ решаваш! – Подай сигнал за замърсяване на въздуха</h1>
       <p>Гражданско сдружение „Ти Решаваш за Велико Търново"</p>
+      <div class="header-actions">
+        <button id="headerInstallBtn" class="header-action-btn" title="Инсталирай приложението">
+          <i class="fas fa-download"></i>
+          <span>Инсталирай</span>
+        </button>
+        <button id="shareBtn" class="header-action-btn secondary" title="Сподели приложението">
+          <i class="fa-solid fa-square-share-nodes"></i>
+          <span>Сподели</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <main>
     <div style="background:#fff3cd; color:#856404; padding:12px 20px; font-size:15px; text-align:center; border-bottom:1px solid #ffeeba; border-radius: var(--radius); margin-bottom: 16px;">
-      ⚠️ Важно: В извънработно време сигналите по имейл не се следят.  
-      Моля, звънете на <strong>Зеления телефон</strong>:  
-      <strong><a href="tel:+35962620358" class="phone-link">062/620 358</a></strong>, <strong><a href="tel:+359885322969" class="phone-link">0885 322 969</a></strong>.
+      ⚠️ Важно: В извънработно време сигналите по имейл не се следят от РИОСВ и се обработват в първия работен ден. Моля, при спешност звънете на  <strong>Зеления телефон</strong>:  
+      <strong><a href="tel:+35962620358" class="phone-link">062/620 358</a></strong>, <strong><a href="tel:+359885322969" class="phone-link">0885 322 969</a></strong>. Препоръчваме да подадете сигнал и чрез приложението, за да сте сигурни, че ще бъде входиран.
     </div>
     <form id="signalForm" class="card" autocomplete="on">
       <h2>Форма за сигнал</h2>
@@ -389,7 +1261,7 @@
             <input id="when" type="datetime-local" required aria-describedby="when-hint">
             <div class="hint" id="when-hint"></div>
           </div>
-          
+
           <div class="form-group">
             <label for="address"><i class="fas fa-map-marker-alt"></i> Адрес / район</label>
             <input id="address" type="text" placeholder="ул., №, ориентир..." aria-describedby="address-hint">
@@ -411,7 +1283,8 @@
         <div class="grid">
           <div class="form-group">
             <label for="name"><i class="fas fa-user-alt"></i> Име и фамилия *</label>
-            <input id="name" type="text" placeholder="Вашите имена" autocomplete="name" required>
+            <input id="name" type="text" placeholder="Иван Петров" autocomplete="name" required>
+            <div class="hint">Моля, използвайте кирилица (български букви)</div>
           </div>
           
           <div class="form-group">
@@ -438,7 +1311,7 @@
               <label for="phone"><i class="fas fa-phone"></i> Телефон</label>
               <div class="input-with-prefix">
                 <span class="prefix">+359</span>
-                <input id="phone" type="tel" placeholder="888 123 456" autocomplete="tel">
+                <input id="phone" type="tel" placeholder="888 123 456" autocomplete="tel" inputmode="numeric" pattern="[0-9]*">
               </div>
             </div>
           </div>
@@ -453,41 +1326,60 @@
         </div>
       </fieldset>
 
+      <!-- Съгласие за статистика -->
+      <div class="form-group" style="margin-top: 20px;">
+        <label class="check" style="background: var(--primary-light); border: 1px solid var(--accent); padding: 14px 16px; border-radius: 8px;">
+          <input type="checkbox" id="allowStats" checked>
+          <span style="font-size: 14px; line-height: 1.6;">
+            Позволявам на Гражданско сдружение <strong>"Ти Решаваш", клон "Ти Решаваш за Велико Търново"</strong>
+            да използва данните от сигнала, <strong style="color: var(--accent);">без личните ми данни</strong>, за статистически изследвания.
+          </span>
+        </label>
+        <div class="hint" style="margin-top: 8px; font-size: 12px;">
+          <i class="fas fa-info-circle"></i>
+          Анонимизираните данни включват: дата, час, квартал, източник и симптоми.
+          <strong>Не се запазват:</strong> име, имейл, телефон, адрес.
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 20px;">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAACFNgXleCp3ZWKfA" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired"></div>
+      </div>
+
       <div class="row">
-        <button type="button" class="btn" id="downloadDocx">
-          <span><i class="fas fa-file-word"></i> Свали DOCX</span>
-        </button>
-        <button type="button" class="btn secondary" id="sendToRiosv">
-          <span><i class="fas fa-paper-plane"></i> Изпрати към РИОСВ</span>
-        </button>
+        <button type="button" class="btn" id="sendToRiosv">Изпрати към РИОСВ</button>
+        <button type="button" class="btn btn-secondary" id="downloadDocx">Свали DOCX</button>
       </div>
     </form>
 
-    <section class="card">
+    <section class="card preview-section">
       <h3><i class="fas fa-eye"></i> Преглед на текста</h3>
       <div id="preview" class="preview" role="region" aria-label="Преглед на генерирания текст"></div>
       <p class="footer-note">Текстът се генерира автоматично въз основа на Вашия избор</p>
     </section>
   </main>
 
+  <footer class="site-footer">
+    <span class="version">v0.4.0</span> | <a href="/stats/" style="color: var(--accent);"><i class="fas fa-chart-line"></i> Статистика</a> | <a href="/docs/" style="color: var(--accent);">Документация</a> | <a href="/presentation/projector.html" style="color: var(--accent);"><i class="fas fa-desktop"></i> Презентация</a>
+  </footer>
+
   <script>
-    // Чекбоксове от бланката
+    // Checkbox items from the form
     const checkboxItems = [
-      "Наличие на остра, задушлива миризма на лепило.",
-      "Наличие на остра, задушлива миризма на дървесина.",
-      "Наличие на остра, задушлива миризма на лепило и дървесина.",
-      "Наличие на остра, задушлива миризма на химикали.",
-      "Наличие на остра, задушлива миризма, от която имам физическо неразположение – люти на очите.",
-      "Наличие на остра, задушлива миризма, от която имам физическо неразположение – люти на носа.",
-      "Наличие на остра, задушлива миризма, от която имам физическо неразположение – люти на гърлото.",
-      "Наличие на остра, задушлива миризма, от която имам физическо неразположение – получавам задух.",
-      "Наблюдава се обгазяване, задимяване, наличие на синкава мъгла.",
-      "Наблюдава се силно запрашаване на въздуха.",
-      "Наличие на дървени стърготини по колите.",
-      "Чува се силен шум, тътен."
+    "Наличие на остра, задушлива миризма на лепило.",
+    "Наличие на остра, задушлива миризма на дървесина.",
+    "Наличие на остра, задушлива миризма на химикали.",
+    "Наличие на остра, задушлива миризма, от която имам физическо неразположение – люти на носоглътката.",
+    "Наличие на остра, задушлива миризма, от която имам физическо неразположение – получавам задух.",
+    "Наличие на остра, задушлива миризма.",
+    "Наблюдава се обгазяване, задимяване, наличие на синкава мъгла.",
+    "Задимяване, обгазяване.",
+    "Наблюдава се силно запрашаване на въздуха.",
+    "Наличие на дървени стърготини по колите и терасите.",
+    "Чува се силен шум, тътен."
     ];
 
-    // DOM елементи
+    // DOM elements
     const form = document.getElementById('signalForm');
     const preview = document.getElementById('preview');
     const checksWrap = document.getElementById('checks');
@@ -501,7 +1393,7 @@
     const customSourceInput = document.getElementById('customSource');
     // Removed violationContent reference as it's no longer an accordion
 
-    // Рендер на чекбоксовете
+    // Render checkboxes
     checkboxItems.forEach((txt, i) => {
       const id = "chk_" + i;
       const el = document.createElement('label');
@@ -510,24 +1402,24 @@
       checksWrap.appendChild(el);
     });
 
-    // Автопопълване на дата/час с BG време
+    // Auto-fill date/time with Bulgarian time
     function setCurrentBulgarianDateTime() {
       const now = new Date();
       const bgTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Sofia"}));
       const pad = n => String(n).padStart(2,'0');
       const s = `${bgTime.getFullYear()}-${pad(bgTime.getMonth()+1)}-${pad(bgTime.getDate())}T${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())}`;
       document.getElementById('when').value = s;
-      document.getElementById('when-hint').textContent = `Автоматично: ${pad(bgTime.getDate())}.${pad(bgTime.getMonth()+1)}.${bgTime.getFullYear()} ${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())} (Europe/Sofia)`;
+      document.getElementById('when-hint').textContent = `Автоматично: ${pad(bgTime.getDate())}.${pad(bgTime.getMonth()+1)}.${bgTime.getFullYear()}, ${pad(bgTime.getHours())}:${pad(bgTime.getMinutes())} ч.`;
     }
     setCurrentBulgarianDateTime();
 
-    // Показване/скриване на полето за "Друг източник" (no accordion height recalculation needed here)
+    // Show/hide "Other source" field (no accordion height recalculation needed here)
     sourceSelect.addEventListener('change', () => {
       const show = sourceSelect.value === 'Друг източник';
       customSourceGroup.style.display = show ? 'block' : 'none';
     });
 
-    // Показване на статус съобщение
+    // Show status message
     function showStatus(message, type = 'info') {
       let icon = '';
       if (type === 'success') icon = '<i class="fas fa-check-circle"></i>';
@@ -539,52 +1431,223 @@
       setTimeout(() => status.classList.remove('show'), 5000);
     }
 
-    // Валидация на формата
+    // Vibration function for tactile feedback
+    function vibrate(pattern) {
+      if ('vibrate' in navigator) {
+        navigator.vibrate(pattern);
+      }
+    }
+
+    // Helper functions for displaying field errors
+    function clearAllFieldErrors() {
+      document.querySelectorAll('.form-group.has-error, #checks.has-error').forEach(el => {
+        el.classList.remove('has-error');
+        const errorMsg = el.querySelector('.field-error-message');
+        if (errorMsg) errorMsg.textContent = '';
+      });
+    }
+
+    function showFieldError(fieldElement, message) {
+      // Find parent form-group or create one if special case
+      let formGroup;
+
+      if (fieldElement.id === 'checks') {
+        formGroup = fieldElement;
+      } else if (fieldElement.id === 'customSource') {
+        formGroup = document.getElementById('customSourceGroup');
+        if (!formGroup) {
+          formGroup = fieldElement.closest('.form-group') || fieldElement.parentElement;
+        }
+      } else {
+        formGroup = fieldElement.closest('.form-group');
+        if (!formGroup) {
+          formGroup = fieldElement.parentElement;
+        }
+      }
+
+      // Add has-error class
+      formGroup.classList.add('has-error');
+
+      // Find or create error message element
+      let errorMsgEl = formGroup.querySelector('.field-error-message');
+      if (!errorMsgEl) {
+        errorMsgEl = document.createElement('div');
+        errorMsgEl.className = 'field-error-message';
+
+        // For checkboxes place after checksWrap
+        if (fieldElement.id === 'checks') {
+          formGroup.appendChild(errorMsgEl);
+        } else {
+          // For regular fields place after input/select/textarea
+          fieldElement.parentNode.insertBefore(errorMsgEl, fieldElement.nextSibling);
+        }
+      }
+
+      errorMsgEl.textContent = message;
+
+      // Scroll to field with error
+      formGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Focus field after short delay (after scroll)
+      setTimeout(() => {
+        if (fieldElement.id !== 'checks') {
+          fieldElement.focus();
+        }
+      }, 300);
+    }
+
+    // Name validation - Cyrillic only, spaces and dashes
+    function validateName(name) {
+      if (!name) return { valid: false, error: 'Моля въведете Вашето име и фамилия' };
+      name = name.trim();
+      if (name.length < 3) {
+        return { valid: false, error: 'Името трябва да е поне 3 символа' };
+      }
+      if (name.length > 100) {
+        return { valid: false, error: 'Името не може да е по-дълго от 100 символа' };
+      }
+      // Only Cyrillic (А-Яа-я), spaces and dashes
+      const cyrillicPattern = /^[А-Яа-яЁёЍѝ\s\-]+$/;
+      if (!cyrillicPattern.test(name)) {
+        return { valid: false, error: 'Моля, въведете името си на кирилица (български букви)' };
+      }
+      // Check for at least one full name (at least 2 words)
+      const words = name.split(/\s+/).filter(w => w.length > 0);
+      if (words.length < 2) {
+        return { valid: false, error: 'Моля, въведете име и фамилия' };
+      }
+      return { valid: true };
+    }
+
+    // Email validation - strict check
+    function validateEmail(email) {
+      if (!email) return { valid: false, error: 'Моля въведете имейл адрес' };
+      email = email.trim().toLowerCase();
+      // RFC 5322 simplified regex
+      const emailPattern = /^[a-z0-9](?:[a-z0-9._%+\-]{0,61}[a-z0-9])?@[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?(?:\.[a-z]{2,})+$/;
+      if (!emailPattern.test(email)) {
+        return { valid: false, error: 'Моля, въведете валиден имейл адрес' };
+      }
+      return { valid: true };
+    }
+
+    // Sanitize input data - injection protection
+    function sanitizeInput(input) {
+      if (typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')           // Remove < and >
+        .replace(/javascript:/gi, '')    // Remove javascript: URLs
+        .replace(/on\w+\s*=/gi, '')      // Remove event handlers (onclick=, etc.)
+        .replace(/[\x00-\x1F]/g, '')     // Remove control characters
+        .trim();
+    }
+
+    // Phone validation - digits and spaces only
+    function validatePhone(phone) {
+      if (!phone) return { valid: true }; // Not required
+      phone = phone.trim();
+      // Allow only digits and spaces
+      const phonePattern = /^[0-9\s]+$/;
+      if (!phonePattern.test(phone)) {
+        return { valid: false, error: 'Телефонът може да съдържа само цифри' };
+      }
+      return { valid: true };
+    }
+
+    // Form validation
     function validateForm() {
+      // Clear all previous errors
+      clearAllFieldErrors();
+
       const source = document.getElementById('source').value;
       const district = document.getElementById('district').value;
       const when = document.getElementById('when').value;
       const checks = document.querySelectorAll('#checks input:checked');
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone') ? document.getElementById('phone').value : '';
 
-      if (!source) { showStatus('Моля изберете предполагаем източник', 'error'); sourceSelect.focus(); return false; }
-      if (source === 'Друг източник' && !customSourceInput.value.trim()) {
-        showStatus('Моля посочете конкретен източник', 'error'); customSourceInput.focus(); return false;
+      // Source validation
+      if (!source) {
+        showFieldError(sourceSelect, 'Моля изберете предполагаем източник');
+        vibrate([100, 50, 100]); // Short vibration for error
+        return false;
       }
-      if (!district) { showStatus('Моля изберете квартал', 'error'); document.getElementById('district').focus(); return false; }
-      if (!when) { showStatus('Моля въведете дата и час', 'error'); document.getElementById('when').focus(); return false; }
-      if (checks.length === 0) { showStatus('Моля изберете поне един начин на влошаване на качеството на живот', 'error'); checksWrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); return false; }
-      if (!name.trim()) { showStatus('Моля въведете Вашето име и фамилия', 'error'); document.getElementById('name').focus(); return false; }
-      if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showStatus('Моля въведете валиден имейл за обратна връзка', 'error'); document.getElementById('email').focus(); return false; }
+
+      // Custom source validation
+      if (source === 'Друг източник' && !customSourceInput.value.trim()) {
+        showFieldError(customSourceInput, 'Моля посочете конкретен източник');
+        return false;
+      }
+
+      // District validation
+      if (!district) {
+        showFieldError(document.getElementById('district'), 'Моля изберете квартал');
+        return false;
+      }
+
+      // Date and time validation
+      if (!when) {
+        showFieldError(document.getElementById('when'), 'Моля въведете дата и час');
+        return false;
+      }
+
+      // Checkboxes validation
+      if (checks.length === 0) {
+        showFieldError(checksWrap, 'Моля изберете поне един начин на влошаване на качеството на живот');
+        return false;
+      }
+
+      // Name validation with new function
+      const nameValidation = validateName(name);
+      if (!nameValidation.valid) {
+        showFieldError(document.getElementById('name'), nameValidation.error);
+        return false;
+      }
+
+      // Email validation with new function
+      const emailValidation = validateEmail(email);
+      if (!emailValidation.valid) {
+        showFieldError(document.getElementById('email'), emailValidation.error);
+        return false;
+      }
+
+      // Phone validation (if entered)
+      const phoneValidation = validatePhone(phone);
+      if (!phoneValidation.valid) {
+        showFieldError(document.getElementById('phone'), phoneValidation.error);
+        return false;
+      }
+
       return true;
     }
 
-    // Събиране на данни от формата
+    // Collect data from form
     function collectData(){
       const sel = s => document.querySelector(s);
       const source = sel('#source').value || '';
-      const customSource = sel('#customSource') ? sel('#customSource').value || '' : '';
+      const customSource = sanitizeInput(sel('#customSource') ? sel('#customSource').value || '' : '');
       const district = sel('#district').value || '';
       const whenVal = sel('#when').value || '';
-      const address = sel('#address').value || '';
-      const subject = sel('#subject') ? sel('#subject').value || '' : '';
-      const name = sel('#name').value || '';
-      const email = sel('#email').value || '';
-      
-      let rawPhone = sel('#phone') ? sel('#phone').value.trim() : ''; // Get raw input value
+      const address = sanitizeInput(sel('#address').value || '');
+      const subject = sanitizeInput(sel('#subject') ? sel('#subject').value || '' : '');
+      const name = (sel('#name').value || '').trim();
+      const email = (sel('#email').value || '').trim().toLowerCase();
+
+      let rawPhone = sel('#phone') ? sel('#phone').value.trim().replace(/\s/g, '') : ''; // Get raw input, remove spaces
       let phone = '';
       if (rawPhone) { // If user entered any digits
         phone = `+359${rawPhone}`; // Prepend +359
       }
 
-      const desc = sel('#desc').value || '';
+      const desc = sanitizeInput(sel('#desc').value || '');
       const checks = Array.from(document.querySelectorAll('#checks input:checked')).map(c => c.value);
+      const allowStats = sel('#allowStats') ? sel('#allowStats').checked : false;
 
-      return {source, customSource, district, whenVal, address, subject, name, email, phone, desc, checks};
+      return {source, customSource, district, whenVal, address, subject, name, email, phone, desc, checks, allowStats};
     }
 
-    // Речник с адреси на източници
+    // Dictionary with source addresses
     const sourceAddresses = {
       "„Топлофикация\"": "гр. Велико Търново, бул. Никола Габровски 71А",
       "Завод „Кроношпан\"": "гр. Велико Търново, кв. Чолаковци, улица Дълга Лъка",
@@ -611,8 +1674,13 @@
     // Генериране на текста
     function buildLetterText(d){
       const {date, time} = formatDateTime(d.whenVal);
-      const header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ 1";
-      
+      let header = "ДО\nДИРЕКТОРА НА РИОСВ – ВЕЛИКО ТЪРНОВО\n\nСИГНАЛ";
+
+      // Добавяме "Относно:" ако е попълнено
+      if (d.subject) {
+        header += `\nОтносно: ${d.subject}`;
+      }
+
       let fromParts = [d.name, d.email];
       if (d.phone) {
         fromParts.push(`Тел: ${d.phone}`);
@@ -643,7 +1711,8 @@
 
       // Condition 1: Kronospan + Noise
       if (d.source === "Завод „Кроношпан\"" && d.checks.includes("Чува се силен шум, тътен.")) {
-        conditionalTexts.push("Mоля да бъде извършено извънредно контролно измерване в часовите диапазони 22-24ч. и 6-8ч.), на основание : Чл. 17, ал. 3, т. 2. (Контролни измервания извън предвидените с годишните графици по ал. 1 могат да се извършват по искане на засегната общественост по смисъла на ЗООС.)");
+        conditionalTexts.push("Mоля да бъде извършено извънредно контролно измерване на шума в часовите диапазони 22-24ч. и 6-8ч. на основание чл. 17, ал. 3, т. 2 от Наредба №54/13.12.2010г., както и чл. 16, т. 1 от Закон за защита от шума в околната среда.\
+\nМоля да се има предвид, че това е в нарушение на условие 12.1.1. от Комплексно разрешително № 570-Н0/2018г., а именно „Дейностите, извършвани на производствената площадка, да се осъществяват по начин, недопускащ предизвикване на шум в околната среда над граничните стойности на еквивалентно ниво на шума.");
       }
 
       // Condition 2: Kronospan + Odor OR Obgazyavane
@@ -663,25 +1732,87 @@
       preview.textContent = buildLetterText(data);
     }
 
+    // Debounce функция за по-добра производителност на мобилни устройства
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Debounced версия на updatePreview за input events
+    const debouncedUpdatePreview = debounce(updatePreview, 300);
+
     // Настройване на бутон в loading състояние
     function setButtonLoading(button, loading) {
       if (loading) {
         button.classList.add('loading');
         button.disabled = true;
-        button.querySelector('span').style.visibility = 'hidden';
+        // Hide all children during loading (icon and text)
+        Array.from(button.children).forEach(child => child.style.visibility = 'hidden');
       } else {
         button.classList.remove('loading');
         button.disabled = false;
-        button.querySelector('span').style.visibility = 'visible';
+        // Show all children after loading
+        Array.from(button.children).forEach(child => child.style.visibility = 'visible');
       }
     }
 
     // Events
-    form.addEventListener('input', updatePreview);
-    form.addEventListener('change', updatePreview);
+    form.addEventListener('input', debouncedUpdatePreview); // Debounced за по-добра производителност
+    form.addEventListener('change', updatePreview); // Незабавно за select/checkbox
     clearDescBtn.addEventListener('click', () => { descTextarea.value = ''; updatePreview(); });
 
-    // Генериране на DOCX
+    // Автоматично премахване на грешки при коригиране
+    function setupFieldErrorClearance() {
+      // За text/email/tel/datetime inputs
+      ['source', 'district', 'when', 'name', 'email', 'phone', 'customSource'].forEach(id => {
+        const field = document.getElementById(id);
+        if (field) {
+          field.addEventListener('input', () => {
+            const formGroup = field.closest('.form-group') || field.parentElement.closest('.form-group');
+            if (formGroup && formGroup.classList.contains('has-error')) {
+              formGroup.classList.remove('has-error');
+              const errorMsg = formGroup.querySelector('.field-error-message');
+              if (errorMsg) errorMsg.textContent = '';
+            }
+          });
+
+          // За select елементи също при change
+          if (field.tagName === 'SELECT') {
+            field.addEventListener('change', () => {
+              const formGroup = field.closest('.form-group');
+              if (formGroup && formGroup.classList.contains('has-error')) {
+                formGroup.classList.remove('has-error');
+                const errorMsg = formGroup.querySelector('.field-error-message');
+                if (errorMsg) errorMsg.textContent = '';
+              }
+            });
+          }
+        }
+      });
+
+      // За checkboxes
+      checksWrap.addEventListener('change', () => {
+        if (checksWrap.classList.contains('has-error')) {
+          const checked = document.querySelectorAll('#checks input:checked');
+          if (checked.length > 0) {
+            checksWrap.classList.remove('has-error');
+            const errorMsg = checksWrap.querySelector('.field-error-message');
+            if (errorMsg) errorMsg.textContent = '';
+          }
+        }
+      });
+    }
+
+    setupFieldErrorClearance();
+
+    // Generate DOCX
     downloadBtn.addEventListener('click', async () => {
       if (!validateForm()) return;
       setButtonLoading(downloadBtn, true);
@@ -702,6 +1833,7 @@
         a.download = "signal_riosv_vt.docx";
         a.click();
         URL.revokeObjectURL(a.href);
+        vibrate(200); // Successful download
         showStatus('DOCX файлът е изтеглен успешно', 'success');
       } catch (error) {
         console.error('Грешка при генериране на DOCX:', error);
@@ -711,35 +1843,275 @@
       }
     });
 
-    // Изпращане към РИОСВ (оставено както беше)
+    // Turnstile callback functions
+    let turnstileToken = null;
+    window.onTurnstileSuccess = function(token) {
+      turnstileToken = token;
+    };
+    window.onTurnstileExpired = function() {
+      turnstileToken = null;
+    };
+
+    // Helper: Convert blob to base64
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    // Изпращане към РИОСВ с double opt-in
     sendBtn.addEventListener('click', async () => {
       if (!validateForm()) return;
+
+      // Check Turnstile verification
+      if (!turnstileToken) {
+        showStatus('Моля потвърдете, че не сте робот (Turnstile)', 'error');
+        return;
+      }
+
       setButtonLoading(sendBtn, true);
       try {
         const d = collectData();
         const text = buildLetterText(d);
+
+        // Generate DOCX
         const { Document, Packer, Paragraph, TextRun } = docx;
         const paras = text.split("\n").map(line => new Paragraph({ children: [new TextRun(line)] }));
         const doc = new Document({ sections: [{ children: paras }] });
         const blob = await Packer.toBlob(doc);
+        const docxBase64 = await blobToBase64(blob);
 
-        const fd = new FormData();
-        fd.append("to", "riosv@example.bg"); // смени с реалния имейл
-        fd.append("subject", "Сигнал за замърсяване на въздуха – ТИ решаваш!");
-        fd.append("body", text);
-        fd.append("attachment", blob, "signal_riosv_vt.docx");
-        fd.append("replyTo", (d.email || ""));
+        // Send to API
+        const res = await fetch("/api/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            turnstileToken,
+            signalData: d,
+            docxBase64,
+            letterText: text
+          })
+        });
 
-        const res = await fetch("/api/send", { method: "POST", body: fd });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        showStatus("Сигналът е изпратен към РИОСВ успешно!", 'success');
+        const result = await res.json();
+        if (result.success) {
+          // Vibration за успех (по-дълга приятна вибрация)
+          vibrate([200, 100, 200]);
+
+          // Show success modal
+          const successModal = document.getElementById('successModal');
+          const successEmail = document.getElementById('successEmail');
+          successEmail.textContent = d.email;
+          successModal.classList.add('show');
+
+          // Keep button disabled after success
+          sendBtn.disabled = true;
+          sendBtn.classList.remove('loading');
+          sendBtn.innerHTML = '<i class="fas fa-check"></i><span>Изпратено</span>';
+
+          // Reset Turnstile widget
+          if (typeof turnstile !== 'undefined') {
+            turnstile.reset();
+          }
+          turnstileToken = null;
+
+          // Don't call setButtonLoading(false) - keep it disabled
+          return;
+        } else {
+          // Check if rate limited
+          if (result.rateLimited || res.status === 429) {
+            showRateLimitModal(result.error || 'Достигнахте лимита за деня. Можете да изпратите нов сигнал утре.');
+          } else {
+            // Показваме грешката от backend директно
+            showStatus(result.error || 'Възникна грешка при изпращане. Моля опитайте отново.', 'error');
+          }
+          // Reset Turnstile widget при грешка
+          if (typeof turnstile !== 'undefined') {
+            turnstile.reset();
+          }
+          turnstileToken = null;
+        }
       } catch (error) {
         console.error('Грешка при изпращане:', error);
-        showStatus("Изпращането не бе завършено. Нужно е бекенд /api/send", 'error');
+        showStatus(error.message || "Грешка при изпращане. Моля опитайте отново.", 'error');
+        // Reset Turnstile widget при грешка
+        if (typeof turnstile !== 'undefined') {
+          turnstile.reset();
+        }
+        turnstileToken = null;
       } finally {
         setButtonLoading(sendBtn, false);
       }
     });
+
+    // Success Modal Close Handler
+    document.getElementById('successModalClose').addEventListener('click', () => {
+      document.getElementById('successModal').classList.remove('show');
+    });
+
+    // Close success modal on overlay click
+    document.getElementById('successModal').addEventListener('click', (e) => {
+      if (e.target.id === 'successModal') {
+        document.getElementById('successModal').classList.remove('show');
+      }
+    });
+
+    // Rate Limit Modal Handler
+    function showRateLimitModal(message) {
+      const modal = document.getElementById('rateLimitModal');
+      const messageEl = document.getElementById('rateLimitMessage');
+      messageEl.textContent = message;
+      modal.classList.add('show');
+    }
+
+    document.getElementById('rateLimitModalClose').addEventListener('click', () => {
+      document.getElementById('rateLimitModal').classList.remove('show');
+    });
+
+    // Close rate limit modal on overlay click
+    document.getElementById('rateLimitModal').addEventListener('click', (e) => {
+      if (e.target.id === 'rateLimitModal') {
+        document.getElementById('rateLimitModal').classList.remove('show');
+      }
+    });
+
+    // QR Code Share Modal
+    const shareBtn = document.getElementById('shareBtn');
+    const qrModal = document.getElementById('qrModal');
+    const qrModalClose = document.getElementById('qrModalClose');
+    const qrCodeDiv = document.getElementById('qrCodeDiv');
+    const copyUrlBtn = document.getElementById('copyUrlBtn');
+    const copySuccess = document.getElementById('copySuccess');
+    const shareUrl = 'https://signal.tireshavashzavt.org';
+    let qrGenerated = false;
+
+    shareBtn.addEventListener('click', () => {
+      qrModal.classList.add('show');
+      // Generate QR code only once using qrcode-generator library
+      if (!qrGenerated && typeof qrcode !== 'undefined') {
+        try {
+          const qr = qrcode(0, 'M'); // Type 0 = auto, Error correction M
+          qr.addData(shareUrl);
+          qr.make();
+          qrCodeDiv.innerHTML = qr.createSvgTag(5, 0); // Cell size 5, margin 0
+          // Style the SVG
+          const svg = qrCodeDiv.querySelector('svg');
+          if (svg) {
+            svg.style.width = '180px';
+            svg.style.height = '180px';
+            // Color the QR code
+            const paths = svg.querySelectorAll('path, rect');
+            paths.forEach(p => {
+              if (p.getAttribute('fill') === '#000000' || p.getAttribute('fill') === 'black') {
+                p.setAttribute('fill', '#2e7d6b');
+              }
+            });
+          }
+          qrGenerated = true;
+        } catch (err) {
+          console.error('QR Code error:', err);
+          qrCodeDiv.innerHTML = '<p style="color:#666;">QR кодът не може да бъде генериран</p>';
+        }
+      }
+    });
+
+    // Copy URL to clipboard
+    copyUrlBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        copySuccess.classList.add('show');
+        // Change icon temporarily
+        copyUrlBtn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => {
+          copySuccess.classList.remove('show');
+          copyUrlBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+        }, 2000);
+      } catch (err) {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        copySuccess.classList.add('show');
+        copyUrlBtn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => {
+          copySuccess.classList.remove('show');
+          copyUrlBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+        }, 2000);
+      }
+    });
+
+    qrModalClose.addEventListener('click', () => {
+      qrModal.classList.remove('show');
+    });
+
+    // Close QR modal on overlay click
+    qrModal.addEventListener('click', (e) => {
+      if (e.target.id === 'qrModal') {
+        qrModal.classList.remove('show');
+      }
+    });
+
+    // Swipe-to-dismiss функционалност за модали (за мобилни устройства)
+    function addSwipeToDismiss(modalOverlay) {
+      let startY = 0;
+      let currentY = 0;
+      let isDragging = false;
+      const modalContent = modalOverlay.querySelector('.success-modal, .ratelimit-modal, .qr-modal');
+
+      if (!modalContent) return;
+
+      modalContent.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        modalContent.style.transition = 'none';
+      }, { passive: true });
+
+      modalContent.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+
+        // Позволяваме само swipe надолу
+        if (diff > 0) {
+          modalContent.style.transform = `translateY(${diff}px)`;
+        }
+      }, { passive: true });
+
+      modalContent.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        const diff = currentY - startY;
+
+        modalContent.style.transition = 'transform 0.3s ease';
+
+        // Ако swipe е по-дълъг от 100px, затваряме модала
+        if (diff > 100) {
+          modalContent.style.transform = 'translateY(100vh)';
+          setTimeout(() => {
+            modalOverlay.classList.remove('show');
+            modalContent.style.transform = '';
+            modalContent.style.transition = '';
+          }, 300);
+        } else {
+          // Връщаме модала на място
+          modalContent.style.transform = '';
+          setTimeout(() => {
+            modalContent.style.transition = '';
+          }, 300);
+        }
+      });
+    }
+
+    // Добавяме swipe-to-dismiss за всички модали
+    addSwipeToDismiss(document.getElementById('successModal'));
+    addSwipeToDismiss(document.getElementById('rateLimitModal'));
+    addSwipeToDismiss(document.getElementById('qrModal'));
 
     // Accordion logic for other accordion items (optional info)
     document.querySelectorAll('.accordion-item .accordion-header').forEach(header => {
@@ -778,7 +2150,272 @@
 
     // Initial preview
     updatePreview();
+
+    // Pull-to-refresh предупреждение (предотвратява загуба на данни)
+    let touchStartY = 0;
+    let formHasData = false;
+
+    // Проверка дали формата има попълнени данни
+    function checkFormData() {
+      const data = collectData();
+      formHasData = data.source || data.district || data.name || data.email ||
+                    data.desc || data.checks.length > 0;
+    }
+
+    form.addEventListener('input', () => {
+      checkFormData();
+    });
+
+    form.addEventListener('change', () => {
+      checkFormData();
+    });
+
+    // Превенция на pull-to-refresh когато има данни
+    document.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      const touchY = e.touches[0].clientY;
+      const touchDiff = touchY - touchStartY;
+
+      // Ако потребителят се опитва да свали (pull-to-refresh) и има данни в формата
+      if (touchDiff > 0 && window.scrollY === 0 && formHasData) {
+        e.preventDefault(); // Предотвратява pull-to-refresh
+      }
+    }, { passive: false });
+
+    // Предупреждение при опит за напускане на страницата с незапазени данни
+    window.addEventListener('beforeunload', (e) => {
+      checkFormData();
+      if (formHasData) {
+        e.preventDefault();
+        e.returnValue = ''; // За съвместимост с различни браузъри
+        return ''; // За по-стари браузъри
+      }
+    });
+
+    // Register Service Worker with Update Detection
+    if ('serviceWorker' in navigator) {
+      let refreshing = false;
+      let newWorker = null;
+
+      // Listen for controller change (new SW activated)
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
+
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => {
+          console.log('SW registered:', reg.scope);
+
+          // Check for updates immediately and every 60 seconds
+          reg.update();
+          setInterval(() => reg.update(), 60000);
+
+          // Listen for new SW installing
+          reg.addEventListener('updatefound', () => {
+            newWorker = reg.installing;
+            console.log('New SW found, state:', newWorker.state);
+
+            newWorker.addEventListener('statechange', () => {
+              console.log('SW state changed:', newWorker.state);
+
+              // When new SW is installed and waiting
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('New version available!');
+                showUpdateBanner(newWorker);
+              }
+            });
+          });
+
+          // Check if there's already a waiting SW
+          if (reg.waiting) {
+            console.log('SW already waiting');
+            showUpdateBanner(reg.waiting);
+          }
+        })
+        .catch((err) => console.log('SW registration failed:', err));
+
+      // Show update banner
+      function showUpdateBanner(worker) {
+        const banner = document.getElementById('updateBanner');
+        const updateBtn = document.getElementById('updateBtn');
+        const dismissBtn = document.getElementById('updateDismiss');
+
+        banner.classList.add('show');
+
+        updateBtn.addEventListener('click', () => {
+          // Tell waiting SW to skip waiting and activate
+          worker.postMessage({ type: 'SKIP_WAITING' });
+          banner.classList.remove('show');
+        });
+
+        dismissBtn.addEventListener('click', () => {
+          banner.classList.remove('show');
+        });
+      }
+    }
+
+    // PWA Install Prompt Logic
+    (function() {
+      const banner = document.getElementById('pwaInstallBanner');
+      const installBtn = document.getElementById('pwaInstallBtn');
+      const closeBtn = document.getElementById('pwaCloseBtn');
+      const headerInstallBtn = document.getElementById('headerInstallBtn');
+      const iosModal = document.getElementById('iosModal');
+      const iosModalClose = document.getElementById('iosModalClose');
+
+      let deferredPrompt = null;
+      const DISMISS_KEY = 'pwa-install-dismissed';
+      const DISMISS_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+      // Check if running as installed PWA
+      function isRunningAsPWA() {
+        // Check display-mode
+        if (window.matchMedia('(display-mode: standalone)').matches) return true;
+        if (window.matchMedia('(display-mode: fullscreen)').matches) return true;
+        // Check iOS standalone
+        if (window.navigator.standalone === true) return true;
+        // Check if launched from home screen (Android TWA)
+        if (document.referrer.includes('android-app://')) return true;
+        return false;
+      }
+
+      // Check if user dismissed recently
+      function wasDismissedRecently() {
+        const dismissed = localStorage.getItem(DISMISS_KEY);
+        if (!dismissed) return false;
+        const dismissedTime = parseInt(dismissed, 10);
+        return (Date.now() - dismissedTime) < DISMISS_DURATION;
+      }
+
+      // Detect iOS
+      function isIOS() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      }
+
+      // Show header install button (always visible when not in PWA mode)
+      function showHeaderButton() {
+        if (!isRunningAsPWA()) {
+          headerInstallBtn.classList.add('show');
+        }
+      }
+
+      // Hide header install button
+      function hideHeaderButton() {
+        headerInstallBtn.classList.remove('show');
+      }
+
+      // Show banner popup
+      function showBanner() {
+        if (isRunningAsPWA() || wasDismissedRecently()) return;
+
+        // Delay showing banner for better UX
+        setTimeout(() => {
+          banner.classList.add('show');
+        }, 2000);
+      }
+
+      // Hide banner
+      function hideBanner() {
+        banner.classList.remove('show');
+      }
+
+      // Handle install action (shared between buttons)
+      async function handleInstall() {
+        if (isIOS()) {
+          // Show iOS instructions modal
+          iosModal.classList.add('show');
+          hideBanner();
+        } else if (deferredPrompt) {
+          // Trigger native install prompt (Chrome, Edge, etc.)
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log('PWA install outcome:', outcome);
+          deferredPrompt = null;
+          hideBanner();
+          if (outcome === 'accepted') {
+            localStorage.setItem(DISMISS_KEY, Date.now().toString());
+            hideHeaderButton();
+          }
+        } else if (isIOS()) {
+          // iOS fallback
+          iosModal.classList.add('show');
+        }
+      }
+
+      // Handle close button
+      closeBtn.addEventListener('click', () => {
+        hideBanner();
+        localStorage.setItem(DISMISS_KEY, Date.now().toString());
+      });
+
+      // Handle banner install button click
+      installBtn.addEventListener('click', handleInstall);
+
+      // Handle header install button click
+      headerInstallBtn.addEventListener('click', handleInstall);
+
+      // Close iOS modal
+      iosModalClose.addEventListener('click', () => {
+        iosModal.classList.remove('show');
+        localStorage.setItem(DISMISS_KEY, Date.now().toString());
+      });
+
+      // Close modal on overlay click
+      iosModal.addEventListener('click', (e) => {
+        if (e.target === iosModal) {
+          iosModal.classList.remove('show');
+        }
+      });
+
+      // Listen for beforeinstallprompt event (Chrome, Edge, etc.)
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        showHeaderButton();
+        showBanner();
+      });
+
+      // For iOS - show header button and banner
+      if (isIOS() && !isRunningAsPWA()) {
+        showHeaderButton();
+        showBanner();
+      }
+
+      // Hide everything if app gets installed
+      window.addEventListener('appinstalled', () => {
+        console.log('PWA was installed');
+        hideBanner();
+        hideHeaderButton();
+        deferredPrompt = null;
+        // Track PWA installation
+        trackEvent('pwa_install', { platform: isIOS() ? 'ios' : 'android_chrome' });
+      });
+
+      // Simple event tracking function
+      function trackEvent(eventName, data = {}) {
+        try {
+          fetch('/api/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event: eventName, data, timestamp: Date.now() })
+          }).catch(() => {}); // Silent fail
+        } catch (e) { /* ignore */ }
+      }
+
+      // Show header button on page load if not in PWA mode (for browsers that support PWA)
+      if (!isRunningAsPWA() && (isIOS() || 'BeforeInstallPromptEvent' in window || /Chrome|Edge|Samsung/.test(navigator.userAgent))) {
+        showHeaderButton();
+      }
+    })();
   </script>
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "74ca1af10e4b400184698343533d6882"}'></script>
+  <!-- End Cloudflare Web Analytics -->
 </body>
 </html>
 
