@@ -151,13 +151,13 @@
     }
     
     /* Enhanced form controls */
-    .form-group{margin-bottom:16px; position:relative;}
+    .form-group{margin-bottom:12px; position:relative;}
     label{
       display:block; font-weight:600; margin-bottom:6px; color:var(--text);
       font-size:14px;
       display:flex; align-items:center; gap:8px; /* For icons */
     }
-    input[type="text"], input[type="email"], input[type="tel"], select, textarea, input[type="datetime-local"]{
+    input[type="text"], input[type="email"], input[type="tel"], input[type="time"], input[type="date"], select, textarea, input[type="datetime-local"]{
       width:100%; padding:10px 14px; border:2px solid var(--border);
       border-radius:8px; background:#fff; outline:none;
       transition:all .2s ease; font-size:14px; font-family:inherit;
@@ -281,7 +281,9 @@
     }
     .check:nth-child(odd) { background: var(--checkbox-bg-odd); }
     .check:nth-child(even) { background: var(--checkbox-bg-even); }
-    .check:hover{background:#e9f2f0; border-color:var(--accent-2)}
+    @media (hover: hover) {
+      .check:hover{background:#e9f2f0; border-color:var(--accent-2)}
+    }
     .check input[type="checkbox"]{
       width:18px; height:18px; margin:0; cursor:pointer; flex-shrink:0;
       accent-color:var(--accent); margin-top:1px;
@@ -1211,7 +1213,7 @@
   <main>
     <div style="background:#fff3cd; color:#856404; padding:12px 20px; font-size:15px; text-align:center; border-bottom:1px solid #ffeeba; border-radius: var(--radius); margin-bottom: 16px;">
       ⚠️ Важно: В извънработно време сигналите по имейл не се следят от РИОСВ и се обработват в първия работен ден. Моля, при спешност звънете на  <strong>Зеления телефон</strong>:  
-      <strong><a href="tel:+35962620358" class="phone-link">062/620 358</a></strong>, <strong><a href="tel:+359885322969" class="phone-link">0885 322 969</a></strong>. По възможност изпратете и сигнал през приложението, за да сте сигурни, че той ще бъде входиран.
+      <strong><a href="tel:+35962620358" class="phone-link">062/620 358</a></strong>, <strong><a href="tel:+359885322969" class="phone-link">0885 322 969</a></strong>. Препоръчваме да подадете сигнал и чрез приложението, за да сте сигурни, че ще бъде входиран.
     </div>
     <form id="signalForm" class="card" autocomplete="on">
       <h2>Форма за сигнал</h2>
@@ -1254,11 +1256,17 @@
             <input id="when" type="datetime-local" required aria-describedby="when-hint">
             <div class="hint" id="when-hint"></div>
           </div>
-          
+
           <div class="form-group">
             <label for="address"><i class="fas fa-map-marker-alt"></i> Адрес / район</label>
             <input id="address" type="text" placeholder="ул., №, ориентир..." aria-describedby="address-hint">
             <div class="hint" id="address-hint">Опционално - помага за по-точна локализация</div>
+          </div>
+
+          <div class="form-group">
+            <label for="visitTimeOnly"><i class="fas fa-clock"></i> Препоръчителен час за проверка</label>
+            <input id="visitTimeOnly" type="time" aria-describedby="visit-time-hint">
+            <div class="hint" id="visit-time-hint">Опционално - предложете час, в който нарушението е най-видимо или Вие сте на място</div>
           </div>
         </div>
       </section>
@@ -1626,6 +1634,10 @@
       const customSource = sanitizeInput(sel('#customSource') ? sel('#customSource').value || '' : '');
       const district = sel('#district').value || '';
       const whenVal = sel('#when').value || '';
+
+      // Само час за предложено време за проверка
+      const visitTimeOnly = sel('#visitTimeOnly').value || '';
+
       const address = sanitizeInput(sel('#address').value || '');
       const subject = sanitizeInput(sel('#subject') ? sel('#subject').value || '' : '');
       const name = (sel('#name').value || '').trim();
@@ -1641,7 +1653,7 @@
       const checks = Array.from(document.querySelectorAll('#checks input:checked')).map(c => c.value);
       const allowStats = sel('#allowStats') ? sel('#allowStats').checked : false;
 
-      return {source, customSource, district, whenVal, address, subject, name, email, phone, desc, checks, allowStats};
+      return {source, customSource, district, whenVal, visitTimeOnly, address, subject, name, email, phone, desc, checks, allowStats};
     }
 
     // Речник с адреси на източници
@@ -1702,6 +1714,11 @@
         violationLine += ` Адрес / Район: ${d.address}.`;
       }
 
+      let visitTimeLine = "";
+      if (d.visitTimeOnly) {
+        visitTimeLine = `Настоявам проверката да бъде извършена в ${d.visitTimeOnly} ч.`;
+      }
+
       const descLine = d.desc ? `Допълнително описание: ${d.desc}` : "";
 
       let conditionalTexts = [];
@@ -1720,7 +1737,7 @@
 
       const footer = `Моля за входящ номер, както и за отговор от Ваша страна в законоустановения срок - на e-mail: ${d.email}.\n\nДата: ${todayBG()}    Подпис: ${d.name}`;
 
-      return [header, fromLine, "", intro, bullets, violationLine, descLine, ...conditionalTexts, footer].filter(Boolean).join("\n\n");
+      return [header, fromLine, "", intro, bullets, violationLine, visitTimeLine, descLine, ...conditionalTexts, footer].filter(Boolean).join("\n\n");
     }
 
     // Преглед
